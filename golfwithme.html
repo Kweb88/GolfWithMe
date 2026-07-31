@@ -210,23 +210,6 @@ table.gl-scorecard td.total-col{background:var(--parchment-2); font-weight:700; 
 .gl-explore-card b{font-family:'Fraunces',serif; font-size:14px;}
 .gl-explore-card .loc{font-size:11px; color:var(--ink-soft); margin-top:2px;}
 
-.gl-rm-score{display:flex; gap:18px; flex-wrap:wrap; margin:4px 0 2px;}
-.gl-rm-score .num{font-family:'Fraunces',serif; font-weight:900; font-size:26px; line-height:1;}
-.gl-rm-score .lbl{font-size:11px; color:var(--ink-soft); text-transform:uppercase; letter-spacing:0.5px; margin-top:2px;}
-.gl-rm-legend{display:flex; gap:14px; flex-wrap:wrap; margin-top:10px;}
-.gl-rm-legend-item{display:flex; align-items:center; gap:6px; font-size:11px; color:var(--ink-soft);}
-.gl-rm-dot{width:9px; height:9px; border-radius:50%; flex-shrink:0;}
-.gl-rm-dot.done{background:var(--fairway);} .gl-rm-dot.partial{background:var(--gold);} .gl-rm-dot.claudecode{background:var(--flag);}
-.gl-rm-badge{display:inline-block; font-size:9px; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; padding:3px 7px; border-radius:9px; flex-shrink:0;}
-.gl-rm-badge.done{background:#DCE9E0; color:var(--fairway);}
-.gl-rm-badge.partial{background:#F4E9C9; color:var(--gold);}
-.gl-rm-badge.claudecode{background:#F6DCD6; color:var(--flag-dark);}
-.gl-rm-section{font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:var(--fairway); margin:18px 0 8px;}
-.gl-rm-item{display:flex; gap:10px; padding:12px 0; border-bottom:1px solid var(--parchment-2);}
-.gl-rm-item:last-child{border-bottom:none;}
-.gl-rm-num{font-family:'JetBrains Mono'; color:var(--ink-soft); font-size:12px; width:20px; flex-shrink:0; padding-top:2px;}
-.gl-rm-title{font-weight:700; font-family:'Fraunces',serif; font-size:14px; margin-bottom:3px;}
-.gl-rm-detail{font-size:12.5px; color:var(--ink-soft); line-height:1.5;}
 
 #gl-loading{position:fixed; inset:0; z-index:200; background:var(--fairway); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:18px; transition:opacity 0.5s ease; opacity:1;}
 #gl-loading.gl-loading-hidden{ opacity:0; pointer-events:none; }
@@ -522,42 +505,9 @@ table.gl-scorecard td.total-col{background:var(--parchment-2); font-weight:700; 
     {name:"Wentworth Club", city:"Virginia Water", region:"Surrey", country:"England"},
   ];
 
-  const ROADMAP = [
-    { section: "Make the core loop irresistible", items: [
-      { status:'done', title:'Nail the "day-after" moment', detail:'Built: Trip Recap generates a formatted summary (standings, awards, settle-up) with Copy and Post-to-Feed buttons.' },
-      { status:'partial', title:'Add photos', detail:"Built: feed posts can attach a photo, resized and compressed client-side. Ceiling: everything lives inside one 5MB storage key per trip, so this won't scale past a handful of photos — needs real object storage (S3/Cloud Storage)." },
-      { status:'claudecode', title:'Push notifications', detail:'Needs a real server to send them; this sandbox has no backend of its own.' },
-      { status:'done', title:'A genuine trip awards ceremony', detail:'Built: Most Birdies and Biggest Comeback are computed automatically from real scorecard data; Longest Drive is a self-reported quick-add, clearly labeled as such.' },
-    ]},
-    { section: "Fix the bones", items: [
-      { status:'claudecode', title:'Offline-first, seriously', detail:"This app's storage requires a live connection to Anthropic's backend; there is no true local-offline mode available in this sandbox." },
-      { status:'claudecode', title:'Real accounts with Sign in with Apple/Google', detail:"OAuth flows aren't available inside a sandboxed iframe." },
-      { status:'claudecode', title:'A proper database, not a key-value hack', detail:'The current storage is a real persistent key-value store, but not a relational database — no complex querying across trips/users.' },
-      { status:'claudecode', title:'Automated backups', detail:'Storage is managed by the sandbox platform; no export/backup tooling is exposed to build against.' },
-    ]},
-    { section: "Give people a reason to pay", items: [
-      { status:'claudecode', title:'Group billing, one card', detail:'No real payment processing is available here — only payment links to Venmo/Cash App/Zelle, which is already built.' },
-      { status:'partial', title:'A generous free tier that converts at the right moment', detail:"The feature-gating logic (cap at 1 trip, unlock unlimited) is easy to build here, but there's no real subscription/billing enforcement without a backend." },
-      { status:'claudecode', title:'Founding member pricing', detail:'A marketing/business decision, not a code feature — execute this at launch.' },
-      { status:'claudecode', title:"A genuinely useful free tool that's expensive to build (GPS course database)", detail:'Requires a licensed data provider and real budget; the current course list stays hand-curated until then.' },
-    ]},
-    { section: "Make it feel alive", items: [
-      { status:'done', title:'Streaks and momentum around the group', detail:'Built: "Your Crew" on the Profile tab shows who you’ve played the most trips with.' },
-      { status:'done', title:'Course reviews tied to real rounds played', detail:'Built: star rating + short review attached to a round you actually logged, with average ratings surfaced in Explore.' },
-      { status:'done', title:'A "find a fourth" feature', detail:'Built: trips can flag as seeking players with a spots-needed count and note; surfaced and sorted to the top of Explore.' },
-      { status:'claudecode', title:'Weather + tee time reminders', detail:"The artifact's JS can't call arbitrary outside APIs — needs a backend proxy to a weather service." },
-    ]},
-    { section: "Go get users, don't wait for them", items: [
-      { status:'claudecode', title:'Launch with one real golf trip — yours', detail:'An execution step, not a code feature. Do this regardless of build stage.' },
-      { status:'claudecode', title:"Target bachelor party / annual guys'-trip organizers specifically", detail:'Go-to-market strategy, not code.' },
-      { status:'claudecode', title:'Build a tiny content engine off the course database', detail:'Marketing execution — the course data to power it already exists in the app.' },
-      { status:'claudecode', title:'Say the pitch out loud to five real golfers before finals', detail:'The highest-leverage item on this whole list, and it costs zero engineering hours.' },
-    ]},
-  ];
-  const ROADMAP_LABEL = { done:'Done', partial:'Partial', claudecode:'Claude Code' };
 
   let state = { profile: null, myTrips: [], trips: {}, currentCode: null, publicRegistry: [], courseReviews: {} };
-  let ui = { view: 'feed', tripTab: 'players', exploreTab: 'trips', roundId: null, modal: null, courseQuery: '', selectedCourse: null, joinErr: '', pollTimer: null, groupFilter: null, celebratedRounds: {}, celebratedTrip: false, newRoundFormat: 'stroke', pendingRemoveCode: null, editingProfile: false, profileDraft: null, composerTripCode: null, scorecardView: 'play', playHole: 0, avatarUploadBusy: false, pendingRatings: {}, composerPhoto: null, roadmapTab: 'todo' };
+  let ui = { view: 'feed', tripTab: 'players', exploreTab: 'trips', roundId: null, modal: null, courseQuery: '', selectedCourse: null, joinErr: '', pollTimer: null, groupFilter: null, celebratedRounds: {}, celebratedTrip: false, newRoundFormat: 'stroke', pendingRemoveCode: null, editingProfile: false, profileDraft: null, composerTripCode: null, scorecardView: 'play', playHole: 0, avatarUploadBusy: false, pendingRatings: {}, composerPhoto: null };
   let expenseChipState = {};
 
   const app = document.getElementById('gl-app');
@@ -876,7 +826,6 @@ table.gl-scorecard td.total-col{background:var(--parchment-2); font-weight:700; 
     else if(ui.view === 'trips') html += renderTripsView();
     else if(ui.view === 'explore') html += renderExploreView();
     else if(ui.view === 'profile') html += renderProfileView();
-    else if(ui.view === 'roadmap') html += renderRoadmapView();
     else if(ui.view === 'trip') html += renderTripDetail();
     if(state.profile) html += renderBottomNav();
     if(ui.modal) html += renderModal();
@@ -890,8 +839,6 @@ table.gl-scorecard td.total-col{background:var(--parchment-2); font-weight:700; 
     let right = '';
     if(trip){
       right = `<span class="gl-code-pill" id="copyCode" title="Tap to copy — share this code so others can join">CODE: ${trip.code}</span>`;
-    } else if(ui.view === 'roadmap'){
-      right = `<div class="gl-icon-btn" id="closeRoadmapBtn" title="Back to Profile">&times;</div>`;
     } else if(state.profile){
       right = `<div class="gl-icon-btn" id="quickAddBtn" title="Create or join a trip">${iconPlus()}</div>`;
     }
@@ -912,7 +859,7 @@ table.gl-scorecard td.total-col{background:var(--parchment-2); font-weight:700; 
       ['profile','Profile', iconProfile],
     ];
     return `<div class="gl-bottomnav">${items.map(([key,label,icon]) => {
-      const active = ui.view === key || (ui.view === 'trip' && key === 'trips') || (ui.view === 'roadmap' && key === 'profile');
+      const active = ui.view === key || (ui.view === 'trip' && key === 'trips');
       return `<button class="gl-navitem ${active?'active':''}" data-nav="${key}">${icon(active)}<span class="navlabel">${label}</span></button>`;
     }).join('')}</div>`;
   }
@@ -1044,8 +991,7 @@ table.gl-scorecard td.total-col{background:var(--parchment-2); font-weight:700; 
       const q = (ui.courseQuery||'').trim().toLowerCase();
       const list = q ? COURSES.filter(c => (c.name+' '+c.city+' '+c.region+' '+c.country).toLowerCase().includes(q)) : COURSES;
       const countries = [...new Set(COURSES.map(c=>c.country))];
-      body = `<div class="gl-hint" style="margin-top:0;">A growing, hand-curated list — not a full top-10-per-state directory yet.</div>
-        <div class="gl-field" style="margin:10px 0;"><input type="text" id="exploreSearch" placeholder="Search courses, cities, regions, countries..." value="${escapeHtml(ui.courseQuery||'')}"></div>
+      body = `<div class="gl-field" style="margin:10px 0;"><input type="text" id="exploreSearch" placeholder="Search courses, cities, regions, countries..." value="${escapeHtml(ui.courseQuery||'')}"></div>
         <div class="gl-chip-wrap" style="margin-bottom:12px;">${countries.map(c => `<span class="gl-chip" data-explore-country="${escapeHtml(c)}">${escapeHtml(c)}</span>`).join('')}</div>
         <div class="gl-explore-list">${list.map(c => { const avg = courseAvg(c.name); return `<div class="gl-explore-card"><b>${escapeHtml(c.name)}</b>${avg ? ` <span style="color:var(--gold); font-size:12px; font-weight:700;">★ ${avg.avg.toFixed(1)} (${avg.count})</span>` : ''}<div class="loc">${escapeHtml(c.city)}, ${escapeHtml(c.region)} · ${escapeHtml(c.country)}</div></div>`; }).join('') || '<div class="gl-empty-mini">No matches.</div>'}</div>`;
     }
@@ -1107,53 +1053,6 @@ table.gl-scorecard td.total-col{background:var(--parchment-2); font-weight:700; 
         <h3>Your Crew</h3>
         ${crew.length ? crew.map(c => `<div class="gl-menu-item"><div class="label">${escapeHtml(c.name)}</div><div style="font-family:'JetBrains Mono'; color:var(--ink-soft);">${c.count} trip${c.count===1?'':'s'}</div></div>`).join('') : `<div class="gl-empty-mini">Play a few trips together and your regular crew shows up here.</div>`}
       </div>
-      <div class="gl-card" id="openRoadmapCard" style="cursor:pointer;">
-        <h3>🚧 Roadmap: What's Left <span style="font-size:16px;">→</span></h3>
-        <div class="gl-hint" style="margin-top:0;">${roadmapCounts().doneOrPartial} of 20 growth ideas are shipped in this sandbox build. See what's next once this app moves into Claude Code.</div>
-      </div>
-    </div>`;
-  }
-  function roadmapCounts(){
-    let done=0, partial=0, claudecode=0;
-    ROADMAP.forEach(sec => sec.items.forEach(i => { if(i.status==='done') done++; else if(i.status==='partial') partial++; else claudecode++; }));
-    return { done, partial, claudecode, doneOrPartial: done+partial };
-  }
-
-  // ---------- ROADMAP ----------
-  function renderRoadmapView(){
-    const { doneOrPartial, claudecode: ccCount } = roadmapCounts();
-    const sections = ROADMAP.map(sec => {
-      const items = ui.roadmapTab === 'todo' ? sec.items.filter(i => i.status === 'claudecode') : sec.items;
-      if(!items.length) return '';
-      return `<div class="gl-rm-section">${escapeHtml(sec.section)}</div>
-        <div class="gl-card">${items.map(i => `
-          <div class="gl-rm-item">
-            <div style="flex:1; min-width:0;">
-              <div class="gl-rm-title">${escapeHtml(i.title)} <span class="gl-rm-badge ${i.status}">${ROADMAP_LABEL[i.status]}</span></div>
-              <div class="gl-rm-detail">${escapeHtml(i.detail)}</div>
-            </div>
-          </div>`).join('')}
-        </div>`;
-    }).join('');
-    return `<div class="gl-main">
-      <div class="gl-card">
-        <h3>Growth Roadmap</h3>
-        <div class="gl-rm-score">
-          <div><div class="num">${doneOrPartial}<span style="font-size:14px; color:var(--ink-soft);"> / 20</span></div><div class="lbl">Done or partial in sandbox</div></div>
-          <div><div class="num">${ccCount}<span style="font-size:14px; color:var(--ink-soft);"> / 20</span></div><div class="lbl">Need Claude Code</div></div>
-        </div>
-        <div class="gl-hint" style="margin-top:8px;">The Claude Code items need real infrastructure this sandbox can't provide: backend + database, real accounts, push notifications, offline sync, payment processing, weather integration, GPS course licensing, and everything on the go-to-market list.</div>
-        <div class="gl-rm-legend">
-          <div class="gl-rm-legend-item"><span class="gl-rm-dot done"></span>Done — built and working here</div>
-          <div class="gl-rm-legend-item"><span class="gl-rm-dot partial"></span>Partial — lightweight version exists</div>
-          <div class="gl-rm-legend-item"><span class="gl-rm-dot claudecode"></span>Claude Code — needs real infra, do this after moving over</div>
-        </div>
-      </div>
-      <div class="gl-segmented">
-        <div class="gl-seg-opt ${ui.roadmapTab==='todo'?'active':''}" data-roadmap-tab="todo">What's Left (${ccCount})</div>
-        <div class="gl-seg-opt ${ui.roadmapTab==='all'?'active':''}" data-roadmap-tab="all">All 20 Ideas</div>
-      </div>
-      ${sections}
     </div>`;
   }
   function renderPlayers(trip){
@@ -1688,9 +1587,6 @@ table.gl-scorecard td.total-col{background:var(--parchment-2); font-weight:700; 
     if($('#brandHome')) $('#brandHome').onclick = () => { ui.view = state.myTrips.length ? 'feed' : 'trips'; ui.modal=null; render(); };
     $$('[data-nav]').forEach(el => el.onclick = () => { ui.view = el.dataset.nav; ui.modal=null; ui.courseQuery=''; render(); });
     if($('#quickAddBtn')) $('#quickAddBtn').onclick = () => { ui.modal='quickActions'; render(); };
-    if($('#openRoadmapCard')) $('#openRoadmapCard').onclick = () => { ui.view='roadmap'; render(); };
-    if($('#closeRoadmapBtn')) $('#closeRoadmapBtn').onclick = () => { ui.view='profile'; render(); };
-    $$('[data-roadmap-tab]').forEach(el => el.onclick = () => { ui.roadmapTab = el.dataset.roadmapTab; render(); });
     if($('#actionNewTrip')) $('#actionNewTrip').onclick = () => { ui.modal='newTrip'; render(); };
     if($('#actionJoinTrip')) $('#actionJoinTrip').onclick = () => { ui.joinErr=''; ui.modal='joinTrip'; render(); };
 
