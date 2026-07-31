@@ -279,6 +279,12 @@ table.gl-scorecard td.total-col{background:var(--parchment-2); font-weight:700; 
 </div>
 <script>
 (function(){
+  if(!window.storage){
+    window.storage = {
+      async get(key){ try{ const v = localStorage.getItem(key); return v!==null ? {value:v} : null; }catch(e){ return null; } },
+      async set(key, value){ try{ localStorage.setItem(key, value); }catch(e){} }
+    };
+  }
   const PALETTE = ['#1B3A2B','#B8422F','#4A6FA5','#A9822E','#6B4C9A','#3A7D6B','#C1673A','#5B5347'];
   const CONFETTI_COLORS = ['#B8422F','#C7A467','#1B3A2B','#4A6FA5','#A9822E'];
   const AVATAR_OPTS = ['⛳','🏌️','🏆','🥇','🐦','🦅','🔥','⭐','🎯','🍀','😎','🦁','🐯','🐻','🦊','🐺','🐸','🦄','👑','🥷','🤠','🧢','💪','⚡','🌵','🍺','🎩','🕶️','🚀','😂'];
