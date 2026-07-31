@@ -1,0 +1,2176 @@
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,900&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap');
+
+:root{
+  --fairway:#1B3A2B; --fairway-2:#2C5741;
+  --parchment:#F1E9D3; --parchment-2:#E4D8B8; --parchment-3:#D8C9A0;
+  --ink:#241F1A; --ink-soft:#6B6151;
+  --flag:#B8422F; --flag-dark:#8F3123;
+  --sand:#C7A467; --gold:#A9822E; --white-line:#FBF6E9;
+}
+*{box-sizing:border-box;}
+#glroot{font-family:'Inter',sans-serif; color:var(--ink); background:var(--parchment); min-height:100%; -webkit-font-smoothing:antialiased; padding-bottom:64px;}
+#glroot .mono{font-family:'JetBrains Mono',monospace;}
+#glroot .display{font-family:'Fraunces',serif;}
+
+.gl-header{background:var(--fairway); color:var(--white-line); padding:14px 18px; display:flex; align-items:center; justify-content:space-between; gap:10px; border-bottom:4px solid var(--sand); position:sticky; top:0; z-index:40;}
+.gl-brand{display:flex; align-items:center; gap:9px; cursor:pointer;}
+.gl-brand .wordmark{font-family:'Fraunces',serif; font-weight:900; font-size:19px; letter-spacing:0.2px; margin:0; line-height:1;}
+.gl-brand .wordmark .with{color:var(--sand); font-weight:600; font-style:italic;}
+.gl-header-actions{display:flex; align-items:center; gap:8px;}
+.gl-icon-btn{width:36px; height:36px; border-radius:50%; background:var(--fairway-2); border:1.5px solid var(--sand); display:flex; align-items:center; justify-content:center; cursor:pointer; color:var(--white-line); font-size:20px; font-weight:700; line-height:1;}
+.gl-icon-btn:hover{filter:brightness(1.1);}
+.gl-code-pill{background:var(--fairway-2); border:1.5px solid var(--sand); color:var(--white-line); border-radius:20px; padding:6px 12px; font-family:'JetBrains Mono'; font-size:12px; font-weight:700; letter-spacing:1px; cursor:pointer;}
+
+.gl-bottomnav{position:fixed; bottom:0; left:0; right:0; height:60px; background:var(--fairway); border-top:3px solid var(--sand); display:flex; z-index:45;}
+.gl-navitem{flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:2px; cursor:pointer; color:rgba(251,246,233,0.55); background:none; border:none;}
+.gl-navitem.active{color:var(--white-line);}
+.gl-navitem svg{width:22px; height:22px;}
+.gl-navitem .navlabel{font-size:9px; font-weight:600; letter-spacing:0.4px; text-transform:uppercase;}
+.gl-navitem.active .navlabel{color:var(--sand);}
+
+.gl-btn{font-family:'Inter'; font-weight:600; font-size:13px; border:none; border-radius:6px; padding:9px 16px; cursor:pointer; transition:transform .1s ease, filter .1s ease;}
+.gl-btn:active{transform:scale(0.97);}
+.gl-btn-primary{background:var(--sand); color:var(--fairway);}
+.gl-btn-primary:hover{filter:brightness(1.08);}
+.gl-btn-ghost{background:transparent; color:var(--white-line); border:1px solid rgba(251,246,233,0.4);}
+.gl-btn-ghost:hover{background:rgba(251,246,233,0.1);}
+.gl-btn-flag{background:var(--flag); color:var(--white-line);}
+.gl-btn-flag:hover{background:var(--flag-dark);}
+.gl-btn-sm{padding:6px 11px; font-size:12px; border-radius:5px;}
+.gl-btn-outline{background:transparent;border:1.5px solid var(--fairway);color:var(--fairway);}
+.gl-btn-outline:hover{background:var(--fairway); color:var(--white-line);}
+.gl-btn-block{width:100%;}
+.gl-btn[disabled]{opacity:0.5; cursor:not-allowed;}
+
+.gl-main{padding:18px 18px 30px; max-width:640px; margin:0 auto;}
+.gl-card{background:var(--white-line); border:1px solid var(--parchment-3); border-radius:12px; padding:18px; margin-bottom:14px;}
+.gl-card h3{font-family:'Fraunces',serif; font-weight:700; font-size:16px; margin:0 0 12px; color:var(--fairway); display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;}
+.gl-row{display:flex; gap:10px; flex-wrap:wrap; align-items:center;}
+.gl-field{display:flex; flex-direction:column; gap:5px; flex:1; min-width:140px;}
+.gl-field label{font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:0.8px; color:var(--ink-soft);}
+.gl-field input, .gl-field select, .gl-field textarea{font-family:'Inter'; padding:9px 10px; border:1.5px solid var(--parchment-3); border-radius:6px; font-size:14px; background:var(--parchment); color:var(--ink);}
+.gl-field input:focus, .gl-field select:focus, .gl-field textarea:focus{outline:2px solid var(--sand); outline-offset:1px;}
+.gl-empty-mini{color:var(--ink-soft); font-size:13px; text-align:center; padding:22px 0;}
+.gl-hint{font-size:12px; color:var(--ink-soft); margin-top:8px; line-height:1.5;}
+
+.gl-avatar{width:44px; height:44px; border-radius:50%; background:var(--parchment-2); display:flex; align-items:center; justify-content:center; font-size:22px; flex-shrink:0; border:2px solid var(--sand);}
+.gl-avatar-sm{width:30px; height:30px; font-size:15px; border-width:1.5px;}
+.gl-emoji-pick{display:flex; gap:8px; flex-wrap:wrap; margin-top:6px;}
+.gl-emoji-opt{width:40px; height:40px; border-radius:50%; background:var(--parchment); border:2px solid transparent; font-size:20px; display:flex; align-items:center; justify-content:center; cursor:pointer;}
+.gl-emoji-opt.selected{border-color:var(--flag); background:var(--parchment-2);}
+
+.gl-onboard{max-width:420px; margin:30px auto; text-align:center; padding:0 18px;}
+.gl-onboard p{color:var(--ink-soft); font-size:14px; margin:10px 0 20px; line-height:1.5;}
+.gl-onboard .gl-card{text-align:left;}
+
+.gl-segmented{display:flex; background:var(--parchment-2); border-radius:10px; padding:3px; margin-bottom:16px;}
+.gl-seg-opt{flex:1; text-align:center; padding:9px 8px; border-radius:8px; font-size:13px; font-weight:600; cursor:pointer; color:var(--ink-soft);}
+.gl-seg-opt.active{background:var(--white-line); color:var(--fairway); box-shadow:0 1px 3px rgba(0,0,0,0.1);}
+
+.gl-post{background:var(--white-line); border:1px solid var(--parchment-3); border-radius:12px; margin-bottom:14px; overflow:hidden;}
+.gl-post-head{display:flex; align-items:center; gap:10px; padding:12px 14px;}
+.gl-post-head .who{font-weight:700; font-family:'Fraunces',serif; font-size:14px;}
+.gl-post-head .tripbadge{font-size:11px; color:var(--ink-soft);}
+.gl-post-body{padding:0 14px 12px; font-size:14px; line-height:1.5;}
+.gl-post-time{font-size:11px; color:var(--ink-soft); margin-left:auto;}
+.gl-post-actions{display:flex; align-items:center; gap:16px; padding:6px 14px 12px; border-top:1px solid var(--parchment-2);}
+.gl-react-btn{display:flex; align-items:center; gap:5px; cursor:pointer; font-size:13px; color:var(--ink-soft); background:none; border:none; padding:6px 0; font-family:'Inter'; font-weight:600;}
+.gl-react-btn.liked{color:var(--flag-dark);}
+.gl-composer{display:flex; gap:10px; align-items:flex-start; margin-bottom:18px;}
+.gl-composer textarea{flex:1; min-height:44px; resize:vertical;}
+
+.gl-trip-grid{display:grid; grid-template-columns:repeat(auto-fill, minmax(260px,1fr)); gap:14px;}
+.gl-trip-card{background:var(--white-line); border:1.5px solid var(--parchment-3); border-radius:12px; padding:16px; cursor:pointer; position:relative;}
+.gl-trip-card:hover{border-color:var(--sand);}
+.gl-status{display:inline-block; font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.6px; padding:3px 8px; border-radius:10px; margin-bottom:8px;}
+.gl-status.upcoming{background:#DCE9E0; color:var(--fairway);}
+.gl-status.active{background:#F4E9C9; color:var(--gold);}
+.gl-status.completed{background:var(--parchment-2); color:var(--ink-soft);}
+.gl-trip-card h4{font-family:'Fraunces',serif; font-size:17px; margin:0 0 4px;}
+.gl-trip-card .meta{font-size:12px; color:var(--ink-soft); margin-bottom:10px;}
+.gl-trip-card .stats{display:flex; gap:14px; font-size:12px; font-family:'JetBrains Mono'; color:var(--ink);}
+.gl-trip-card .code-tag{position:absolute; top:14px; right:14px; font-family:'JetBrains Mono'; font-size:10px; background:var(--parchment-2); padding:2px 6px; border-radius:4px; color:var(--ink-soft); letter-spacing:1px;}
+.gl-card-remove{position:absolute; bottom:12px; right:12px; width:22px; height:22px; border-radius:50%; background:var(--parchment-2); color:var(--ink-soft); display:flex; align-items:center; justify-content:center; font-size:15px; cursor:pointer; line-height:1;}
+.gl-card-remove:hover{background:var(--flag); color:#fff;}
+.gl-section-label{font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:var(--ink-soft); margin:18px 0 10px;}
+.gl-public-badge{display:inline-block; font-size:10px; font-weight:700; background:var(--fairway); color:#fff; padding:2px 7px; border-radius:8px; margin-left:6px;}
+
+.gl-tabs{display:flex; gap:2px; padding:0 18px; background:var(--parchment-2); border-bottom:2px solid var(--parchment-3); overflow-x:auto; position:sticky; top:60px; z-index:39;}
+.gl-tab{font-family:'Inter'; font-weight:600; font-size:13px; padding:13px 16px; cursor:pointer; color:var(--ink-soft); border-bottom:3px solid transparent; white-space:nowrap; letter-spacing:0.2px;}
+.gl-tab.active{color:var(--fairway); border-bottom-color:var(--flag);}
+.gl-tab:hover{color:var(--fairway);}
+.gl-menu-item{display:flex; align-items:center; justify-content:space-between; padding:14px 4px; border-bottom:1px solid var(--parchment-2); cursor:pointer;}
+.gl-menu-item:last-child{border-bottom:none;}
+.gl-menu-item .label{font-weight:600; font-family:'Fraunces',serif; font-size:15px;}
+.gl-menu-item .sub{font-size:12px; color:var(--ink-soft); margin-top:2px;}
+.gl-toggle{width:42px; height:24px; border-radius:12px; background:var(--parchment-3); position:relative; cursor:pointer; flex-shrink:0;}
+.gl-toggle.on{background:var(--fairway);}
+.gl-toggle .knob{width:18px; height:18px; border-radius:50%; background:#fff; position:absolute; top:3px; left:3px; transition:left 0.15s ease;}
+.gl-toggle.on .knob{left:21px;}
+
+.gl-player-row{display:flex; align-items:center; gap:12px; padding:10px 0; border-bottom:1px solid var(--parchment-2);}
+.gl-player-row:last-child{border-bottom:none;}
+.gl-swatch{width:12px;height:12px;border-radius:50%; flex-shrink:0;}
+.gl-player-name{font-weight:600; flex:1; min-width:100px;}
+.gl-player-contact{font-size:12px; color:var(--ink-soft); font-family:'JetBrains Mono';}
+
+.gl-round-list{display:flex; flex-direction:column; gap:8px; margin-bottom:16px;}
+.gl-round-item{display:flex; justify-content:space-between; align-items:center; padding:12px 14px; background:var(--white-line); border:1.5px solid var(--parchment-3); border-radius:8px; cursor:pointer;}
+.gl-round-item:hover{border-color:var(--sand);}
+.gl-round-item.active{border-color:var(--flag); background:#FBF0EC;}
+.gl-round-item .rname{font-weight:700; font-family:'Fraunces',serif; font-size:15px;}
+.gl-round-item .rmeta{font-size:12px; color:var(--ink-soft); margin-top:2px;}
+.gl-format-badge{display:inline-block; font-size:9px; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; padding:2px 6px; border-radius:8px; background:var(--fairway); color:#fff; margin-left:6px; vertical-align:middle;}
+
+.gl-group-tabs{display:flex; gap:6px; flex-wrap:wrap; margin-bottom:12px;}
+.gl-group-tab{font-size:12px; font-weight:600; padding:6px 12px; border-radius:16px; background:var(--parchment-2); cursor:pointer; border:1.5px solid transparent;}
+.gl-group-tab.active{background:var(--fairway); color:#fff;}
+
+.gl-leaderboard{width:100%; border-collapse:collapse; margin-bottom:16px;}
+.gl-leaderboard th{text-align:left; font-size:10px; text-transform:uppercase; letter-spacing:0.6px; color:var(--ink-soft); padding:6px 10px; border-bottom:2px solid var(--parchment-3);}
+.gl-leaderboard td{padding:8px 10px; border-bottom:1px solid var(--parchment-2); font-size:13px;}
+.gl-leaderboard tr:first-child td{font-weight:700;}
+.gl-lb-rank{font-family:'JetBrains Mono'; color:var(--ink-soft); width:24px;}
+.gl-lb-score{font-family:'JetBrains Mono'; font-weight:700;}
+.gl-lb-score.under{color:var(--fairway);}
+.gl-lb-score.over{color:var(--flag-dark);}
+
+.gl-scorecard-wrap{overflow-x:auto; border:1.5px solid var(--fairway); border-radius:8px;}
+table.gl-scorecard{border-collapse:collapse; width:100%; min-width:900px; font-family:'JetBrains Mono';}
+table.gl-scorecard th, table.gl-scorecard td{border:1px solid var(--parchment-3); text-align:center; padding:0; height:38px; font-size:13px;}
+table.gl-scorecard th.rowlabel, table.gl-scorecard td.rowlabel{text-align:left; padding-left:10px; font-family:'Inter'; font-weight:600; min-width:140px; position:sticky; left:0; background:var(--white-line); z-index:2;}
+table.gl-scorecard thead th{background:var(--fairway); color:var(--white-line); font-weight:700; font-size:12px;}
+table.gl-scorecard thead th.rowlabel{background:var(--fairway);}
+table.gl-scorecard td.holecell{width:42px;}
+table.gl-scorecard td.holecell input{width:100%; height:100%; border:none; text-align:center; font-family:'JetBrains Mono'; font-size:13px; background:transparent; color:var(--ink);}
+table.gl-scorecard td.holecell input:focus{outline:2px solid var(--sand); outline-offset:-2px; background:#fff;}
+table.gl-scorecard td.parrow input{color:var(--ink-soft); font-size:12px;}
+table.gl-scorecard td.holecell.divider9{border-right:3px solid var(--sand);}
+table.gl-scorecard td.skin-win{background:#F4E9C9; position:relative;}
+.skin-tag{position:absolute; top:1px; right:1px; background:var(--gold); color:#fff; font-size:8px; font-weight:700; padding:1px 3px; border-radius:3px; font-family:'Inter'; line-height:1;}
+table.gl-scorecard td.total-col{background:var(--parchment-2); font-weight:700; font-family:'Inter';}
+
+.gl-match-status{display:flex; align-items:center; justify-content:center; gap:18px; padding:20px; background:var(--parchment); border-radius:8px; margin-bottom:16px; flex-wrap:wrap;}
+.gl-match-side .nm{font-family:'Fraunces',serif; font-weight:700; font-size:15px;}
+.gl-match-mid{font-family:'JetBrains Mono'; font-size:20px; font-weight:700; color:var(--flag-dark);}
+.gl-team-score{display:flex; align-items:center; justify-content:center; gap:24px; padding:18px; flex-wrap:wrap;}
+.gl-team-score .tname{font-family:'Fraunces',serif; font-weight:900; font-size:18px;}
+.gl-team-score .tpts{font-family:'JetBrains Mono'; font-size:28px; font-weight:700; color:var(--fairway);}
+.gl-vs{font-family:'Fraunces',serif; font-style:italic; color:var(--ink-soft); font-size:14px;}
+
+.gl-round-social{border-top:1px solid var(--parchment-2); margin-top:14px; padding-top:12px;}
+.gl-comment{display:flex; gap:8px; margin-bottom:10px;}
+.gl-comment .bubble{background:var(--parchment); border-radius:10px; padding:8px 12px; flex:1;}
+.gl-comment .cauthor{font-weight:700; font-size:12px; font-family:'Fraunces',serif;}
+.gl-comment .ctext{font-size:13px; margin-top:2px;}
+.gl-comment .ctime{font-size:10px; color:var(--ink-soft); margin-top:3px;}
+.gl-comment-input{display:flex; gap:8px; margin-top:10px;}
+.gl-comment-input input{flex:1;}
+
+.gl-bal-table{width:100%; border-collapse:collapse;}
+.gl-bal-table th{text-align:left; font-size:11px; text-transform:uppercase; letter-spacing:0.6px; color:var(--ink-soft); padding:6px 8px; border-bottom:2px solid var(--parchment-3);}
+.gl-bal-table td{padding:9px 8px; border-bottom:1px solid var(--parchment-2); font-size:14px;}
+.amt-pos{color:var(--fairway); font-weight:700; font-family:'JetBrains Mono';}
+.amt-neg{color:var(--flag); font-weight:700; font-family:'JetBrains Mono';}
+.amt-zero{color:var(--ink-soft); font-family:'JetBrains Mono';}
+.gl-settle-item{display:flex; align-items:center; justify-content:space-between; gap:10px; padding:13px 14px; background:var(--parchment); border:1.5px solid var(--parchment-3); border-radius:8px; margin-bottom:8px; flex-wrap:wrap;}
+.gl-settle-text{font-size:14px;} .gl-settle-text b{font-family:'Fraunces',serif;}
+.gl-settle-amt{font-family:'JetBrains Mono'; font-weight:700; font-size:15px; color:var(--flag-dark);}
+.gl-settle-actions{display:flex; gap:6px;}
+.gl-expense-row{display:flex; justify-content:space-between; align-items:flex-start; padding:10px 0; border-bottom:1px solid var(--parchment-2); gap:10px;}
+.gl-expense-row:last-child{border-bottom:none;}
+.gl-expense-desc{font-weight:600;} .gl-expense-meta{font-size:12px; color:var(--ink-soft); margin-top:2px;}
+.gl-expense-amt{font-family:'JetBrains Mono'; font-weight:700; white-space:nowrap;}
+.gl-chip{display:inline-flex; align-items:center; gap:4px; background:var(--parchment-2); border-radius:20px; padding:5px 10px; font-size:12px; font-weight:600; cursor:pointer; border:1.5px solid transparent;}
+.gl-chip.selected{background:var(--fairway); color:#fff;}
+.gl-chip-wrap{display:flex; gap:6px; flex-wrap:wrap; margin-top:6px;}
+.gl-trophy-badge{display:inline-flex; align-items:center; gap:6px; background:#F4E9C9; color:var(--gold); font-size:12px; font-weight:700; padding:5px 10px; border-radius:16px;}
+
+.gl-modal-bg{position:fixed; inset:0; background:rgba(27,58,43,0.55); display:flex; align-items:center; justify-content:center; z-index:50; padding:20px;}
+.gl-modal{background:var(--white-line); border-radius:12px; padding:24px; max-width:440px; width:100%; max-height:85vh; overflow-y:auto;}
+.gl-modal h3{font-family:'Fraunces',serif; margin:0 0 16px;}
+.gl-modal .gl-field{margin-bottom:12px;}
+.gl-close{float:right; cursor:pointer; font-size:20px; color:var(--ink-soft); line-height:1;}
+.gl-total-badge{display:inline-block; font-family:'JetBrains Mono'; font-size:12px; background:var(--fairway); color:#fff; padding:3px 8px; border-radius:5px;}
+.gl-err{color:var(--flag-dark); font-size:12px; margin-top:6px;}
+.gl-actionsheet-item{display:flex; align-items:center; gap:12px; padding:14px 6px; border-bottom:1px solid var(--parchment-2); cursor:pointer; font-weight:600; font-family:'Fraunces',serif; font-size:15px;}
+.gl-actionsheet-item:last-child{border-bottom:none;}
+.gl-actionsheet-item .ico{width:32px; height:32px; border-radius:50%; background:var(--parchment); display:flex; align-items:center; justify-content:center; font-size:16px;}
+
+.gl-course-results{max-height:220px; overflow-y:auto; border:1.5px solid var(--parchment-3); border-radius:8px; margin-top:6px;}
+.gl-course-item{padding:9px 12px; border-bottom:1px solid var(--parchment-2); cursor:pointer; font-size:13px;}
+.gl-course-item:last-child{border-bottom:none;}
+.gl-course-item:hover{background:var(--parchment);}
+.gl-course-item b{font-family:'Fraunces',serif;}
+.gl-course-item .loc{color:var(--ink-soft); font-size:11px;}
+.gl-course-selected{background:var(--parchment); border:1.5px solid var(--sand); border-radius:8px; padding:10px 12px; margin-top:8px; font-size:13px; display:flex; justify-content:space-between; align-items:center;}
+.gl-explore-list{display:grid; grid-template-columns:repeat(auto-fill, minmax(220px,1fr)); gap:10px;}
+.gl-explore-card{background:var(--parchment); border:1px solid var(--parchment-3); border-radius:8px; padding:12px;}
+.gl-explore-card b{font-family:'Fraunces',serif; font-size:14px;}
+.gl-explore-card .loc{font-size:11px; color:var(--ink-soft); margin-top:2px;}
+
+.gl-rm-score{display:flex; gap:18px; flex-wrap:wrap; margin:4px 0 2px;}
+.gl-rm-score .num{font-family:'Fraunces',serif; font-weight:900; font-size:26px; line-height:1;}
+.gl-rm-score .lbl{font-size:11px; color:var(--ink-soft); text-transform:uppercase; letter-spacing:0.5px; margin-top:2px;}
+.gl-rm-legend{display:flex; gap:14px; flex-wrap:wrap; margin-top:10px;}
+.gl-rm-legend-item{display:flex; align-items:center; gap:6px; font-size:11px; color:var(--ink-soft);}
+.gl-rm-dot{width:9px; height:9px; border-radius:50%; flex-shrink:0;}
+.gl-rm-dot.done{background:var(--fairway);} .gl-rm-dot.partial{background:var(--gold);} .gl-rm-dot.claudecode{background:var(--flag);}
+.gl-rm-badge{display:inline-block; font-size:9px; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; padding:3px 7px; border-radius:9px; flex-shrink:0;}
+.gl-rm-badge.done{background:#DCE9E0; color:var(--fairway);}
+.gl-rm-badge.partial{background:#F4E9C9; color:var(--gold);}
+.gl-rm-badge.claudecode{background:#F6DCD6; color:var(--flag-dark);}
+.gl-rm-section{font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:var(--fairway); margin:18px 0 8px;}
+.gl-rm-item{display:flex; gap:10px; padding:12px 0; border-bottom:1px solid var(--parchment-2);}
+.gl-rm-item:last-child{border-bottom:none;}
+.gl-rm-num{font-family:'JetBrains Mono'; color:var(--ink-soft); font-size:12px; width:20px; flex-shrink:0; padding-top:2px;}
+.gl-rm-title{font-weight:700; font-family:'Fraunces',serif; font-size:14px; margin-bottom:3px;}
+.gl-rm-detail{font-size:12.5px; color:var(--ink-soft); line-height:1.5;}
+
+#gl-loading{position:fixed; inset:0; z-index:200; background:var(--fairway); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:18px; transition:opacity 0.5s ease; opacity:1;}
+#gl-loading.gl-loading-hidden{ opacity:0; pointer-events:none; }
+#gl-loading .loading-wordmark{ display:flex; align-items:center; gap:10px; }
+#gl-loading .loading-wordmark .wordmark{ font-family:'Fraunces',serif; font-weight:900; font-size:28px; color:var(--white-line); }
+#gl-loading .loading-wordmark .wordmark .with{ color:var(--sand); font-weight:600; font-style:italic; }
+#gl-hio-scene{ width:260px; max-width:70vw; }
+#gl-hio-caption{ font-family:'Fraunces',serif; font-weight:700; font-style:italic; font-size:16px; color:var(--sand); opacity:0; animation:gl-hio-flash 2.1s ease infinite; }
+@keyframes gl-hio-flash{ 0%, 78% { opacity:0; transform:scale(0.85); } 85% { opacity:1; transform:scale(1.08); } 93% { opacity:1; transform:scale(1); } 100% { opacity:0; transform:scale(1); } }
+#gl-loading .loading-tagline{ font-family:'Inter'; font-size:12px; letter-spacing:2px; text-transform:uppercase; color:var(--parchment-2); }
+
+.gl-confetti-overlay{position:fixed; inset:0; z-index:100; display:flex; align-items:center; justify-content:center; background:rgba(27,58,43,0.75); overflow:hidden;}
+.gl-confetti-piece{position:absolute; top:-20px; width:9px; height:14px; opacity:0.9; animation:gl-fall linear forwards;}
+@keyframes gl-fall{ to { transform:translateY(105vh) rotate(540deg); opacity:0.4; } }
+.gl-trophy-card{background:var(--white-line); border-radius:16px; padding:38px 32px; text-align:center; max-width:380px; position:relative; z-index:2; box-shadow:0 20px 60px rgba(0,0,0,0.4);}
+.gl-trophy-card .trophy-icon{font-size:52px; margin-bottom:6px; animation:gl-pop 0.6s ease;}
+@keyframes gl-pop{ 0%{transform:scale(0);} 60%{transform:scale(1.15);} 100%{transform:scale(1);} }
+.gl-trophy-card h2{font-family:'Fraunces',serif; font-weight:900; font-size:24px; margin:6px 0 4px; color:var(--fairway);}
+.gl-trophy-card .winner-name{font-family:'Fraunces',serif; font-weight:700; font-size:19px; color:var(--flag-dark); margin-bottom:6px;}
+.gl-trophy-card p{color:var(--ink-soft); font-size:13px; margin:0 0 20px;}
+
+@media (max-width:640px){ .gl-main{padding:14px 12px 24px;} .gl-header{padding:12px 14px;} }
+</style>
+
+<div id="glroot">
+  <div id="gl-loading">
+    <svg id="gl-hio-scene" viewBox="0 0 240 170" xmlns="http://www.w3.org/2000/svg">
+      <ellipse cx="120" cy="148" rx="108" ry="10" fill="#2C5741"/>
+      <ellipse cx="188" cy="146" rx="9" ry="3.2" fill="#0F2118"/>
+      <rect x="187" y="98" width="2" height="48" fill="#FBF6E9"/>
+      <path d="M189,100 L209,106 L189,112 Z" fill="#B8422F"/>
+      <circle r="4.2" fill="#C7A467">
+        <animateMotion dur="2.1s" repeatCount="indefinite" rotate="0" path="M18,150 Q112,14 188,146"/>
+        <animate attributeName="r" values="4.2;4.2;4.2;0" keyTimes="0;0.8;0.93;1" dur="2.1s" repeatCount="indefinite"/>
+      </circle>
+    </svg>
+    <div id="gl-hio-caption">Hole in One!</div>
+    <div class="loading-wordmark">
+      <svg width="30" height="30" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
+        <ellipse cx="20" cy="34" rx="15" ry="3" fill="#2C5741"/>
+        <rect x="19" y="6" width="2" height="26" fill="#FBF6E9"/>
+        <path d="M21 6 L34 11 L21 16 Z" fill="#B8422F"/>
+        <circle cx="20" cy="34" r="3.2" fill="#FBF6E9"/>
+      </svg>
+      <div class="wordmark">Golf<span class="with">With</span>Me</div>
+    </div>
+    <div class="loading-tagline">Teeing up your feed…</div>
+  </div>
+  <div id="gl-app"></div>
+</div>
+<script>
+(function(){
+  const PALETTE = ['#1B3A2B','#B8422F','#4A6FA5','#A9822E','#6B4C9A','#3A7D6B','#C1673A','#5B5347'];
+  const CONFETTI_COLORS = ['#B8422F','#C7A467','#1B3A2B','#4A6FA5','#A9822E'];
+  const AVATAR_OPTS = ['⛳','🏌️','🏆','🥇','🐦','🦅','🔥','⭐','🎯','🍀','😎','🦁','🐯','🐻','🦊','🐺','🐸','🦄','👑','🥷','🤠','🧢','💪','⚡','🌵','🍺','🎩','🕶️','🚀','😂'];
+  const uid = () => Math.random().toString(36).slice(2,9);
+  const fmt = (n) => (n<0?'-$':'$') + Math.abs(n).toFixed(2);
+  const CODE_CHARS = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  const MYTRIPS_KEY = 'golfwithme-mytrips-v4';
+  const PROFILE_KEY = 'golfwithme-profile-v4';
+  const REGISTRY_KEY = 'golfwithme-public-registry-v4';
+  const REVIEWS_KEY = 'golfwithme-course-reviews-v4';
+  const tripKey = (code) => `golfwithme-trip-v4:${code}`;
+  const timeAgo = (ts) => {
+    if(!ts) return '';
+    const diff = Math.max(0, Date.now() - ts);
+    const m = Math.floor(diff/60000), h = Math.floor(diff/3600000), d = Math.floor(diff/86400000);
+    if(m < 1) return 'just now';
+    if(m < 60) return m+'m';
+    if(h < 24) return h+'h';
+    return d+'d';
+  };
+
+  const COURSES = [
+    {name:"Westwood Country Club", city:"Vienna", region:"VA", country:"USA"},
+    {name:"Penderbrook Golf Club", city:"Fairfax", region:"VA", country:"USA"},
+    {name:"Jefferson District Golf Course", city:"Falls Church", region:"VA", country:"USA"},
+    {name:"Burke Lake Golf Center", city:"Fairfax Station", region:"VA", country:"USA"},
+    {name:"Twin Lakes Golf Course", city:"Clifton", region:"VA", country:"USA"},
+    {name:"East Potomac Golf Links", city:"Washington", region:"DC", country:"USA"},
+    {name:"Langston Golf Course", city:"Washington", region:"DC", country:"USA"},
+    {name:"Rock Creek Park Golf", city:"Washington", region:"DC", country:"USA"},
+    {name:"Northwest Golf Course", city:"Silver Spring", region:"MD", country:"USA"},
+    {name:"Blue Mash Golf Course", city:"Laytonsville", region:"MD", country:"USA"},
+    {name:"Real Club Sevilla Golf", city:"Alcalá de Guadaíra", region:"Sevilla", country:"Spain"},
+    {name:"Real Club Pineda de Sevilla", city:"Sevilla", region:"Sevilla", country:"Spain"},
+    {name:"Chaparral Golf Club", city:"Mijas", region:"Málaga", country:"Spain"},
+    {name:"Golf Torrequebrada", city:"Benalmádena", region:"Málaga", country:"Spain"},
+    {name:"Lauro Golf Resort", city:"Alhaurín de la Torre", region:"Málaga", country:"Spain"},
+    {name:"La Cala Golf", city:"La Cala de Mijas", region:"Málaga", country:"Spain"},
+    {name:"Real Guadalhorce Club de Golf", city:"Málaga", region:"Málaga", country:"Spain"},
+    {name:"Myrtle Beach National", city:"Myrtle Beach", region:"SC", country:"USA"},
+    {name:"Dunes Golf and Beach Club", city:"Myrtle Beach", region:"SC", country:"USA"},
+    {name:"TPC Myrtle Beach", city:"Murrells Inlet", region:"SC", country:"USA"},
+    {name:"Myrtlewood Golf Club", city:"Myrtle Beach", region:"SC", country:"USA"},
+    {name:"Arrowhead Country Club", city:"Myrtle Beach", region:"SC", country:"USA"},
+    {name:"Arcadian Shores Golf Club", city:"Myrtle Beach", region:"SC", country:"USA"},
+    {name:"TPC Scottsdale", city:"Scottsdale", region:"AZ", country:"USA"},
+    {name:"Scottsdale Silverado Golf Club", city:"Scottsdale", region:"AZ", country:"USA"},
+    {name:"Gainey Ranch Golf Club", city:"Scottsdale", region:"AZ", country:"USA"},
+    {name:"Troon North Golf Club", city:"Scottsdale", region:"AZ", country:"USA"},
+    {name:"Grayhawk Golf Club", city:"Scottsdale", region:"AZ", country:"USA"},
+    {name:"Talking Stick Golf Club", city:"Scottsdale", region:"AZ", country:"USA"},
+    {name:"Pinehurst Resort", city:"Pinehurst", region:"NC", country:"USA"},
+    {name:"Pinehurst No. 8", city:"Pinehurst", region:"NC", country:"USA"},
+    {name:"Southern Pines Golf Club", city:"Southern Pines", region:"NC", country:"USA"},
+    {name:"Forest Creek Golf Club", city:"Pinehurst", region:"NC", country:"USA"},
+    {name:"Legacy Golf Club", city:"Aberdeen", region:"NC", country:"USA"},
+    {name:"Robert Trent Jones Oceanfront Golf Course", city:"Hilton Head Island", region:"SC", country:"USA"},
+    {name:"Harbour Town Golf Links", city:"Hilton Head Island", region:"SC", country:"USA"},
+    {name:"Hilton Head National Golf Course", city:"Bluffton", region:"SC", country:"USA"},
+    {name:"Heron Point by Pete Dye", city:"Hilton Head Island", region:"SC", country:"USA"},
+    {name:"Atlantic Dunes by Davis Love III", city:"Hilton Head Island", region:"SC", country:"USA"},
+    {name:"Shingle Creek Golf Club", city:"Orlando", region:"FL", country:"USA"},
+    {name:"Dubsdread Golf Course", city:"Orlando", region:"FL", country:"USA"},
+    {name:"The Ritz-Carlton Golf Club, Grande Lakes", city:"Orlando", region:"FL", country:"USA"},
+    {name:"Waldorf Astoria Golf Club", city:"Orlando", region:"FL", country:"USA"},
+    {name:"ChampionsGate Golf Club", city:"Championsgate", region:"FL", country:"USA"},
+    {name:"Lake Placid Club", city:"Lake Placid", region:"NY", country:"USA"},
+    {name:"Craig Wood Golf & Country Club", city:"Lake Placid", region:"NY", country:"USA"},
+    {name:"Saranac Lake Golf Club", city:"Lake Placid", region:"NY", country:"USA"},
+    {name:"Whiteface Club & Resort", city:"Lake Placid", region:"NY", country:"USA"},
+    {name:"Pebble Beach Golf Links", city:"Pebble Beach", region:"CA", country:"USA"},
+    {name:"Cypress Point Club", city:"Pebble Beach", region:"CA", country:"USA"},
+    {name:"Poppy Hills Golf Course", city:"Pebble Beach", region:"CA", country:"USA"},
+    {name:"Pacific Grove Golf Links", city:"Pacific Grove", region:"CA", country:"USA"},
+    {name:"Bandon Dunes Golf Resort", city:"Bandon", region:"OR", country:"USA"},
+    {name:"Pacific Dunes", city:"Bandon", region:"OR", country:"USA"},
+    {name:"Bandon Trails", city:"Bandon", region:"OR", country:"USA"},
+    {name:"Sheep Ranch", city:"Bandon", region:"OR", country:"USA"},
+    {name:"Old Macdonald", city:"Bandon", region:"OR", country:"USA"},
+    {name:"Mauna Lani Golf", city:"Waimea", region:"HI", country:"USA"},
+    {name:"Nanea Golf Club", city:"Kailua-Kona", region:"HI", country:"USA"},
+    {name:"Royal Hawaiian Golf Club", city:"Kailua", region:"HI", country:"USA"},
+    {name:"Wailea Emerald Golf Course", city:"Kihei", region:"HI", country:"USA"},
+    {name:"Poipu Bay Golf Course", city:"Koloa", region:"HI", country:"USA"},
+    {name:"Augusta National Golf Club", city:"Augusta", region:"GA", country:"USA"},
+    {name:"Champions Retreat Golf Club", city:"Evans", region:"GA", country:"USA"},
+    {name:"Forest Hills Golf Course", city:"Augusta", region:"GA", country:"USA"},
+    {name:"Bartram Trail Golf Club", city:"Evans", region:"GA", country:"USA"},
+    {name:"Augusta Country Club", city:"Augusta", region:"GA", country:"USA"},
+    {name:"The Quarry Golf Course", city:"San Antonio", region:"TX", country:"USA"},
+    {name:"Spanish Oaks Golf Club", city:"Austin", region:"TX", country:"USA"},
+    {name:"Escondido Golf & Lake Club", city:"Horseshoe Bay", region:"TX", country:"USA"},
+    {name:"Canyon Springs Golf Club", city:"San Antonio", region:"TX", country:"USA"},
+    {name:"Whispering Pines Golf Club", city:"Trinity", region:"TX", country:"USA"},
+    {name:"Arcadia Bluffs Golf Club", city:"Arcadia", region:"MI", country:"USA"},
+    {name:"Forest Dunes Golf Club", city:"Roscommon", region:"MI", country:"USA"},
+    {name:"American Dunes Golf Club", city:"Grand Haven", region:"MI", country:"USA"},
+    {name:"Bay Harbor Golf Club", city:"Bay Harbor", region:"MI", country:"USA"},
+    {name:"Pilgrim's Run Golf Club", city:"Pierson", region:"MI", country:"USA"},
+    {name:"Whistling Straits", city:"Sheboygan", region:"WI", country:"USA"},
+    {name:"Blackwolf Run - River Course", city:"Kohler", region:"WI", country:"USA"},
+    {name:"Blackwolf Run - Meadow Valleys", city:"Kohler", region:"WI", country:"USA"},
+    {name:"The Bull at Pinehurst Farms", city:"Sheboygan Falls", region:"WI", country:"USA"},
+    {name:"Shadow Creek Golf Course", city:"North Las Vegas", region:"NV", country:"USA"},
+    {name:"Southern Highlands Golf Club", city:"Las Vegas", region:"NV", country:"USA"},
+    {name:"TPC Las Vegas", city:"Las Vegas", region:"NV", country:"USA"},
+    {name:"Reflection Bay Golf Club", city:"Henderson", region:"NV", country:"USA"},
+    {name:"Las Vegas Paiute Golf Resort", city:"Las Vegas", region:"NV", country:"USA"},
+    {name:"The Broadmoor Golf Club", city:"Colorado Springs", region:"CO", country:"USA"},
+    {name:"Castle Pines Golf Club", city:"Castle Rock", region:"CO", country:"USA"},
+    {name:"Arrowhead Golf Club", city:"Littleton", region:"CO", country:"USA"},
+    {name:"Colorado Golf Club", city:"Parker", region:"CO", country:"USA"},
+    {name:"Sanctuary Golf Course", city:"Sedalia", region:"CO", country:"USA"},
+    {name:"The Golf Club of Tennessee", city:"Kingston Springs", region:"TN", country:"USA"},
+    {name:"Troubadour Golf & Field Club", city:"College Grove", region:"TN", country:"USA"},
+    {name:"Sweetens Cove Golf Club", city:"South Pittsburg", region:"TN", country:"USA"},
+    {name:"Spring Creek Ranch", city:"Collierville", region:"TN", country:"USA"},
+    {name:"Gaylord Springs Golf Links", city:"Nashville", region:"TN", country:"USA"},
+    {name:"St Andrews Links (Old Course)", city:"St Andrews", region:"Fife", country:"Scotland"},
+    {name:"Carnoustie Golf Links", city:"Carnoustie", region:"Angus", country:"Scotland"},
+    {name:"Royal Troon", city:"Troon", region:"Ayrshire", country:"Scotland"},
+    {name:"Muirfield", city:"Gullane", region:"East Lothian", country:"Scotland"},
+    {name:"Gleneagles", city:"Auchterarder", region:"Perthshire", country:"Scotland"},
+    {name:"Turnberry (Ailsa Course)", city:"Turnberry", region:"Ayrshire", country:"Scotland"},
+    {name:"Royal County Down", city:"Newcastle", region:"County Down", country:"Northern Ireland"},
+    {name:"Royal Portrush Golf Club", city:"Portrush", region:"County Antrim", country:"Northern Ireland"},
+    {name:"Ballybunion Golf Club", city:"Ballybunion", region:"County Kerry", country:"Ireland"},
+    {name:"Lahinch Golf Club", city:"Lahinch", region:"County Clare", country:"Ireland"},
+    {name:"Royal Birkdale", city:"Southport", region:"Merseyside", country:"England"},
+    {name:"Royal St George's", city:"Sandwich", region:"Kent", country:"England"},
+    {name:"RTJ Golf Trail at Ross Bridge", city:"Hoover", region:"AL", country:"USA"},
+    {name:"RTJ Golf Trail at Grand National", city:"Opelika", region:"AL", country:"USA"},
+    {name:"RTJ Golf Trail at Capitol Hill", city:"Prattville", region:"AL", country:"USA"},
+    {name:"RTJ Golf Trail at Cambrian Ridge", city:"Greenville", region:"AL", country:"USA"},
+    {name:"RTJ Golf Trail at Oxmoor Valley", city:"Birmingham", region:"AL", country:"USA"},
+    {name:"RTJ Golf Trail at The Shoals", city:"Muscle Shoals", region:"AL", country:"USA"},
+    {name:"Firestone Country Club", city:"Akron", region:"OH", country:"USA"},
+    {name:"Sand Ridge Golf Club", city:"Chardon", region:"OH", country:"USA"},
+    {name:"Ohio State University Golf Club (Scarlet Course)", city:"Columbus", region:"OH", country:"USA"},
+    {name:"TPC River's Bend", city:"Maineville", region:"OH", country:"USA"},
+    {name:"Stone Ridge Golf Club", city:"Bowling Green", region:"OH", country:"USA"},
+    {name:"Oakmont Country Club", city:"Oakmont", region:"PA", country:"USA"},
+    {name:"Stonewall", city:"Elverson", region:"PA", country:"USA"},
+    {name:"Olde Stonewall Golf Club", city:"Ellwood City", region:"PA", country:"USA"},
+    {name:"Moselem Springs Golf Club", city:"Fleetwood", region:"PA", country:"USA"},
+    {name:"Fox Chapel Golf Club", city:"Pittsburgh", region:"PA", country:"USA"},
+    {name:"Windsong Farm Golf Club", city:"Maple Plain", region:"MN", country:"USA"},
+    {name:"Hazeltine National Golf Club", city:"Chaska", region:"MN", country:"USA"},
+    {name:"The Quarry at Giants Ridge", city:"Aurora", region:"MN", country:"USA"},
+    {name:"The Wilderness at Fortune Bay", city:"Tower", region:"MN", country:"USA"},
+    {name:"Dacotah Ridge Golf Club", city:"Morton", region:"MN", country:"USA"},
+    {name:"Olympic Hills Golf Club", city:"Eden Prairie", region:"MN", country:"USA"},
+    {name:"Glenwild Golf Club and Spa", city:"Park City", region:"UT", country:"USA"},
+    {name:"Entrada at Snow Canyon Country Club", city:"St. George", region:"UT", country:"USA"},
+    {name:"Sky Mountain Golf Course", city:"Hurricane", region:"UT", country:"USA"},
+    {name:"Eaglewood Golf Course", city:"North Salt Lake", region:"UT", country:"USA"},
+    {name:"Hidden Valley Country Club", city:"Sandy", region:"UT", country:"USA"},
+    {name:"Baltusrol Golf Club", city:"Springfield", region:"NJ", country:"USA"},
+    {name:"Liberty National Golf Club", city:"Jersey City", region:"NJ", country:"USA"},
+    {name:"Galloway National Golf Club", city:"Galloway", region:"NJ", country:"USA"},
+    {name:"Hollywood Golf Club", city:"Deal", region:"NJ", country:"USA"},
+    {name:"Bayonne Golf Club", city:"Bayonne", region:"NJ", country:"USA"},
+    {name:"Hidden Creek Golf Club", city:"Egg Harbor Township", region:"NJ", country:"USA"},
+    {name:"Chambers Bay Golf Course", city:"University Place", region:"WA", country:"USA"},
+    {name:"Gamble Sands", city:"Brewster", region:"WA", country:"USA"},
+    {name:"Salish Cliffs Golf Club", city:"Shelton", region:"WA", country:"USA"},
+    {name:"Gold Mountain Golf Club", city:"Bremerton", region:"WA", country:"USA"},
+    {name:"The Club at Snoqualmie Ridge", city:"Snoqualmie", region:"WA", country:"USA"},
+    {name:"Palouse Ridge Golf Club", city:"Pullman", region:"WA", country:"USA"},
+    {name:"Tiburón Golf Club", city:"Naples", region:"FL", country:"USA"},
+    {name:"The Quarry Golf Club Naples", city:"Naples", region:"FL", country:"USA"},
+    {name:"LaPlaya Golf Club", city:"Naples", region:"FL", country:"USA"},
+    {name:"TPC Treviso Bay", city:"Naples", region:"FL", country:"USA"},
+    {name:"Royal Poinciana Golf Club", city:"Naples", region:"FL", country:"USA"},
+    {name:"The National Golf Club of Kansas City", city:"Parkville", region:"MO", country:"USA"},
+    {name:"Shoal Creek Golf Course", city:"Kansas City", region:"MO", country:"USA"},
+    {name:"Swope Memorial Golf Course", city:"Kansas City", region:"MO", country:"USA"},
+    {name:"Stone Canyon Golf Club", city:"Blue Springs", region:"MO", country:"USA"},
+    {name:"Drumm Farm Golf Club", city:"Independence", region:"MO", country:"USA"},
+    {name:"Queenstown Harbor Golf", city:"Queenstown", region:"MD", country:"USA"},
+    {name:"Links at Perry Cabin", city:"St Michaels", region:"MD", country:"USA"},
+    {name:"Whiskey Creek Golf Club", city:"Ijamsville", region:"MD", country:"USA"},
+    {name:"Great Hope Golf Course", city:"Westover", region:"MD", country:"USA"},
+    {name:"Blue Heron Golf Course", city:"Stevensville", region:"MD", country:"USA"},
+    {name:"Quivira Golf Club", city:"Cabo San Lucas", region:"BCS", country:"Mexico"},
+    {name:"Cabo del Sol", city:"Cabo San Lucas", region:"BCS", country:"Mexico"},
+    {name:"Solmar Golf Links", city:"Cabo San Lucas", region:"BCS", country:"Mexico"},
+    {name:"El Cardonal at Diamante", city:"Cabo San Lucas", region:"BCS", country:"Mexico"},
+    {name:"Diamante Dunes Course", city:"Cabo San Lucas", region:"BCS", country:"Mexico"},
+    {name:"El Dorado Golf & Beach Club", city:"San José del Cabo", region:"BCS", country:"Mexico"},
+    {name:"Punta Espada Golf Club", city:"Punta Cana", region:"La Altagracia", country:"Dominican Republic"},
+    {name:"Corales Golf Course", city:"Punta Cana", region:"La Altagracia", country:"Dominican Republic"},
+    {name:"La Cana Golf Club", city:"Punta Cana", region:"La Altagracia", country:"Dominican Republic"},
+    {name:"Cocotal Golf & Country Club", city:"Punta Cana", region:"La Altagracia", country:"Dominican Republic"},
+    {name:"Iberostar Bávaro Golf Club", city:"Punta Cana", region:"La Altagracia", country:"Dominican Republic"},
+    {name:"Monte Rei Golf & Country Club", city:"Vila Nova de Cacela", region:"Algarve", country:"Portugal"},
+    {name:"Quinta do Lago South Course", city:"Almancil", region:"Algarve", country:"Portugal"},
+    {name:"Quinta do Lago North Course", city:"Almancil", region:"Algarve", country:"Portugal"},
+    {name:"San Lorenzo Golf Course", city:"Almancil", region:"Algarve", country:"Portugal"},
+    {name:"Old Course Vilamoura", city:"Quarteira", region:"Algarve", country:"Portugal"},
+    {name:"Quinta da Ria Golf Course", city:"Vila Nova de Cacela", region:"Algarve", country:"Portugal"},
+    {name:"Royal Melbourne Golf Club", city:"Black Rock", region:"VIC", country:"Australia"},
+    {name:"Victoria Golf Club", city:"Cheltenham", region:"VIC", country:"Australia"},
+    {name:"Kingston Heath Golf Club", city:"Heatherton", region:"VIC", country:"Australia"},
+    {name:"Peninsula Kingswood Country Golf Club", city:"Frankston", region:"VIC", country:"Australia"},
+    {name:"Huntingdale Golf Club", city:"Oakleigh South", region:"VIC", country:"Australia"},
+    {name:"Lake of Isles", city:"North Stonington", region:"CT", country:"USA"},
+    {name:"TPC River Highlands", city:"Cromwell", region:"CT", country:"USA"},
+    {name:"Sterling Farms Golf Course", city:"Stamford", region:"CT", country:"USA"},
+    {name:"Bull's Bridge Golf Club", city:"South Kent", region:"CT", country:"USA"},
+    {name:"Great River Golf Club", city:"Milford", region:"CT", country:"USA"},
+    {name:"Valhalla Golf Club", city:"Louisville", region:"KY", country:"USA"},
+    {name:"Persimmon Ridge Golf Club", city:"Louisville", region:"KY", country:"USA"},
+    {name:"Heritage Hill Golf Club", city:"Shepherdsville", region:"KY", country:"USA"},
+    {name:"University of Louisville Golf Club", city:"Simpsonville", region:"KY", country:"USA"},
+    {name:"The Pete Dye Course at French Lick", city:"French Lick", region:"IN", country:"USA"},
+    {name:"Chariot Run Golf Club", city:"Laconia", region:"IN", country:"USA"},
+    {name:"The Sagamore Club", city:"Noblesville", region:"IN", country:"USA"},
+    {name:"Purgatory Golf Club", city:"Noblesville", region:"IN", country:"USA"},
+    {name:"Sandy Pines Golf Club", city:"De Motte", region:"IN", country:"USA"},
+    {name:"The Coeur d'Alene Resort Golf Course", city:"Coeur d'Alene", region:"ID", country:"USA"},
+    {name:"Circling Raven Golf Club", city:"Worley", region:"ID", country:"USA"},
+    {name:"CDA National Reserve", city:"Coeur d'Alene", region:"ID", country:"USA"},
+    {name:"Coeur d'Alene Public Golf Club", city:"Coeur d'Alene", region:"ID", country:"USA"},
+    {name:"Santa Ana Golf Club", city:"Santa Ana Pueblo", region:"NM", country:"USA"},
+    {name:"Sandia Golf Club", city:"Albuquerque", region:"NM", country:"USA"},
+    {name:"Paako Ridge Golf Club", city:"Sandia Park", region:"NM", country:"USA"},
+    {name:"Twin Warriors Golf Club", city:"Santa Ana Pueblo", region:"NM", country:"USA"},
+    {name:"The Club at Las Campanas", city:"Santa Fe", region:"NM", country:"USA"},
+    {name:"Royal Isabela", city:"Isabela", region:"PR", country:"Puerto Rico"},
+    {name:"Bahia Beach Resort & Golf Club", city:"Río Grande", region:"PR", country:"Puerto Rico"},
+    {name:"Coco Beach Golf Club", city:"Río Grande", region:"PR", country:"Puerto Rico"},
+    {name:"Grand Reserve Golf Club", city:"Río Grande", region:"PR", country:"Puerto Rico"},
+    {name:"Río Bayamón Golf Course", city:"Bayamón", region:"PR", country:"Puerto Rico"},
+    {name:"Wentworth Club", city:"Virginia Water", region:"Surrey", country:"England"},
+  ];
+
+  const ROADMAP = [
+    { section: "Make the core loop irresistible", items: [
+      { status:'done', title:'Nail the "day-after" moment', detail:'Built: Trip Recap generates a formatted summary (standings, awards, settle-up) with Copy and Post-to-Feed buttons.' },
+      { status:'partial', title:'Add photos', detail:"Built: feed posts can attach a photo, resized and compressed client-side. Ceiling: everything lives inside one 5MB storage key per trip, so this won't scale past a handful of photos — needs real object storage (S3/Cloud Storage)." },
+      { status:'claudecode', title:'Push notifications', detail:'Needs a real server to send them; this sandbox has no backend of its own.' },
+      { status:'done', title:'A genuine trip awards ceremony', detail:'Built: Most Birdies and Biggest Comeback are computed automatically from real scorecard data; Longest Drive is a self-reported quick-add, clearly labeled as such.' },
+    ]},
+    { section: "Fix the bones", items: [
+      { status:'claudecode', title:'Offline-first, seriously', detail:"This app's storage requires a live connection to Anthropic's backend; there is no true local-offline mode available in this sandbox." },
+      { status:'claudecode', title:'Real accounts with Sign in with Apple/Google', detail:"OAuth flows aren't available inside a sandboxed iframe." },
+      { status:'claudecode', title:'A proper database, not a key-value hack', detail:'The current storage is a real persistent key-value store, but not a relational database — no complex querying across trips/users.' },
+      { status:'claudecode', title:'Automated backups', detail:'Storage is managed by the sandbox platform; no export/backup tooling is exposed to build against.' },
+    ]},
+    { section: "Give people a reason to pay", items: [
+      { status:'claudecode', title:'Group billing, one card', detail:'No real payment processing is available here — only payment links to Venmo/Cash App/Zelle, which is already built.' },
+      { status:'partial', title:'A generous free tier that converts at the right moment', detail:"The feature-gating logic (cap at 1 trip, unlock unlimited) is easy to build here, but there's no real subscription/billing enforcement without a backend." },
+      { status:'claudecode', title:'Founding member pricing', detail:'A marketing/business decision, not a code feature — execute this at launch.' },
+      { status:'claudecode', title:"A genuinely useful free tool that's expensive to build (GPS course database)", detail:'Requires a licensed data provider and real budget; the current course list stays hand-curated until then.' },
+    ]},
+    { section: "Make it feel alive", items: [
+      { status:'done', title:'Streaks and momentum around the group', detail:'Built: "Your Crew" on the Profile tab shows who you’ve played the most trips with.' },
+      { status:'done', title:'Course reviews tied to real rounds played', detail:'Built: star rating + short review attached to a round you actually logged, with average ratings surfaced in Explore.' },
+      { status:'done', title:'A "find a fourth" feature', detail:'Built: trips can flag as seeking players with a spots-needed count and note; surfaced and sorted to the top of Explore.' },
+      { status:'claudecode', title:'Weather + tee time reminders', detail:"The artifact's JS can't call arbitrary outside APIs — needs a backend proxy to a weather service." },
+    ]},
+    { section: "Go get users, don't wait for them", items: [
+      { status:'claudecode', title:'Launch with one real golf trip — yours', detail:'An execution step, not a code feature. Do this regardless of build stage.' },
+      { status:'claudecode', title:"Target bachelor party / annual guys'-trip organizers specifically", detail:'Go-to-market strategy, not code.' },
+      { status:'claudecode', title:'Build a tiny content engine off the course database', detail:'Marketing execution — the course data to power it already exists in the app.' },
+      { status:'claudecode', title:'Say the pitch out loud to five real golfers before finals', detail:'The highest-leverage item on this whole list, and it costs zero engineering hours.' },
+    ]},
+  ];
+  const ROADMAP_LABEL = { done:'Done', partial:'Partial', claudecode:'Claude Code' };
+
+  let state = { profile: null, myTrips: [], trips: {}, currentCode: null, publicRegistry: [], courseReviews: {} };
+  let ui = { view: 'feed', tripTab: 'players', exploreTab: 'trips', roundId: null, modal: null, courseQuery: '', selectedCourse: null, joinErr: '', pollTimer: null, groupFilter: null, celebratedRounds: {}, celebratedTrip: false, newRoundFormat: 'stroke', pendingRemoveCode: null, editingProfile: false, profileDraft: null, composerTripCode: null, scorecardView: 'play', playHole: 0, avatarUploadBusy: false, pendingRatings: {}, composerPhoto: null, roadmapTab: 'todo' };
+  let expenseChipState = {};
+
+  const app = document.getElementById('gl-app');
+  const currentTrip = () => state.trips[state.currentCode] || null;
+
+  function avatarGlyph(prof, pxSize){
+    if(!prof) return '⛳';
+    if(prof.avatarImage) return `<img src="${prof.avatarImage}" style="width:${pxSize||'100%'};height:${pxSize||'100%'};object-fit:cover;border-radius:50%;display:block;">`;
+    return escapeHtml(prof.avatar || '⛳');
+  }
+
+  function logoSvg(size){
+    return `<svg width="${size}" height="${size}" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
+      <ellipse cx="20" cy="34" rx="15" ry="3" fill="#2C5741"/>
+      <rect x="19" y="6" width="2" height="26" fill="#FBF6E9"/>
+      <path d="M21 6 L34 11 L21 16 Z" fill="#B8422F"/>
+      <circle cx="20" cy="34" r="3.2" fill="#FBF6E9"/>
+    </svg>`;
+  }
+
+  // ---------- STORAGE ----------
+  async function loadProfile(){
+    try{ const res = await window.storage.get(PROFILE_KEY, false); if(res && res.value) state.profile = JSON.parse(res.value); }
+    catch(e){ state.profile = null; }
+  }
+  async function saveProfile(){ try{ await window.storage.set(PROFILE_KEY, JSON.stringify(state.profile), false); }catch(e){ console.error(e); } }
+  async function loadMyTrips(){
+    try{ const res = await window.storage.get(MYTRIPS_KEY, false); if(res && res.value) state.myTrips = JSON.parse(res.value); }
+    catch(e){ state.myTrips = []; }
+  }
+  async function saveMyTrips(){ try{ await window.storage.set(MYTRIPS_KEY, JSON.stringify(state.myTrips), false); }catch(e){ console.error(e); } }
+  async function fetchTrip(code){
+    try{
+      const res = await window.storage.get(tripKey(code), true);
+      if(res && res.value){
+        const t = JSON.parse(res.value);
+        if(!t.lodging) t.lodging = [];
+        if(!t.teams) t.teams = null;
+        if(!t.feed) t.feed = [];
+        if(t.public === undefined) t.public = false;
+        state.trips[code] = t;
+        return t;
+      }
+      return null;
+    } catch(e){ return null; }
+  }
+  async function saveTrip(trip){ state.trips[trip.code] = trip; try{ await window.storage.set(tripKey(trip.code), JSON.stringify(trip), true); }catch(e){ console.error(e); } }
+  async function loadRegistry(){
+    try{ const res = await window.storage.get(REGISTRY_KEY, true); if(res && res.value) state.publicRegistry = JSON.parse(res.value); }
+    catch(e){ state.publicRegistry = []; }
+  }
+  async function saveRegistry(){ try{ await window.storage.set(REGISTRY_KEY, JSON.stringify(state.publicRegistry), true); }catch(e){ console.error(e); } }
+  async function loadReviews(){
+    try{ const res = await window.storage.get(REVIEWS_KEY, true); if(res && res.value) state.courseReviews = JSON.parse(res.value); }
+    catch(e){ state.courseReviews = {}; }
+  }
+  async function saveReviews(){ try{ await window.storage.set(REVIEWS_KEY, JSON.stringify(state.courseReviews), true); }catch(e){ console.error(e); } }
+  function courseAvg(courseName){
+    const list = state.courseReviews[courseName] || [];
+    if(!list.length) return null;
+    const avg = list.reduce((s,r)=>s+r.rating,0) / list.length;
+    return { avg, count: list.length };
+  }
+  async function syncRegistryEntry(trip){
+    await loadRegistry();
+    state.publicRegistry = state.publicRegistry.filter(r => r.code !== trip.code);
+    if(trip.public){
+      const sp = trip.seekingPlayers || { active:false, spotsNeeded:1, note:'' };
+      state.publicRegistry.push({ code: trip.code, name: trip.name, location: trip.location, players: trip.players.length, updatedAt: Date.now(), seekingActive: sp.active, spotsNeeded: sp.spotsNeeded, seekingNote: sp.note });
+    }
+    await saveRegistry();
+  }
+  async function setTripPublic(trip, isPublic){
+    trip.public = isPublic;
+    await saveTrip(trip);
+    await syncRegistryEntry(trip);
+  }
+  function genCode(){ let c=''; for(let i=0;i<5;i++) c += CODE_CHARS[Math.floor(Math.random()*CODE_CHARS.length)]; return c; }
+  async function uniqueCode(){ for(let i=0;i<8;i++){ const c = genCode(); const exists = await fetchTrip(c); if(!exists) return c; } return genCode()+Date.now().toString(36).slice(-2); }
+
+  function pushFeed(trip, type, text, photo){
+    trip.feed = trip.feed || [];
+    trip.feed.unshift({ id: uid(), type, text, ts: Date.now(), author: state.profile ? state.profile.name : 'Someone', likedBy: [], photo: photo || null });
+  }
+  function calcSkins(round, players){
+    const net = {}; players.forEach(p => net[p.id] = 0);
+    const holeResults = []; let carry = 0;
+    for(let h=0; h<18; h++){
+      const entries = players.map(p => ({id:p.id, score:(round.scores[p.id]||[])[h]})).filter(e => e.score !== undefined && e.score !== null && e.score !== '' && !isNaN(e.score));
+      carry += 1;
+      if(entries.length < players.length || entries.length < 2){ holeResults.push({hole:h+1, winner:null, skins:carry, incomplete:true}); continue; }
+      const min = Math.min(...entries.map(e => Number(e.score)));
+      const winners = entries.filter(e => Number(e.score) === min);
+      if(winners.length === 1){
+        const w = winners[0].id;
+        net[w] += round.skinsBet * (players.length - 1) * carry;
+        players.forEach(p => { if(p.id !== w) net[p.id] -= round.skinsBet * carry; });
+        holeResults.push({hole:h+1, winner:w, skins:carry, incomplete:false}); carry = 0;
+      } else holeResults.push({hole:h+1, winner:null, skins:carry, incomplete:false});
+    }
+    return { net, holeResults };
+  }
+  function segTotal(round, playerId, start, end){
+    const arr = round.scores[playerId] || []; let sum=0, count=0;
+    for(let i=start;i<end;i++){ const v = arr[i]; if(v===undefined||v===null||v===''||isNaN(v)) return null; sum+=Number(v); count++; }
+    return count ? sum : null;
+  }
+  function calcNassau(round, players){
+    const net = {}; players.forEach(p => net[p.id] = 0);
+    const segments = [{name:'Front 9', start:0, end:9},{name:'Back 9', start:9, end:18},{name:'Overall', start:0, end:18}];
+    const results = segments.map(seg => {
+      const totals = players.map(p => ({id:p.id, total: segTotal(round, p.id, seg.start, seg.end)})).filter(t => t.total !== null);
+      if(totals.length < players.length || totals.length < 2) return {name:seg.name, winner:null, incomplete:true};
+      const min = Math.min(...totals.map(t => t.total));
+      const winners = totals.filter(t => t.total === min);
+      if(winners.length === 1){ const w = winners[0].id; net[w] += round.nassauBet*(players.length-1); players.forEach(p => { if(p.id!==w) net[p.id] -= round.nassauBet; }); return {name:seg.name, winner:w, incomplete:false}; }
+      return {name:seg.name, winner:null, incomplete:false, tie:true};
+    });
+    return { net, results };
+  }
+  function calcMatchPlay(round, aId, bId){
+    let diff = 0; // positive = A up
+    const holeResults = [];
+    let decidedAt = null;
+    for(let h=0; h<18; h++){
+      const av = (round.scores[aId]||[])[h], bv = (round.scores[bId]||[])[h];
+      const holeNum = h+1, remaining = 18 - holeNum;
+      if(av==='' || av===undefined || av===null || bv==='' || bv===undefined || bv===null || isNaN(av) || isNaN(bv)){
+        holeResults.push({hole:holeNum, winner:null, incomplete:true}); continue;
+      }
+      if(Number(av) < Number(bv)){ diff += 1; holeResults.push({hole:holeNum, winner:aId}); }
+      else if(Number(bv) < Number(av)){ diff -= 1; holeResults.push({hole:holeNum, winner:bId}); }
+      else holeResults.push({hole:holeNum, winner:null});
+      if(!decidedAt && Math.abs(diff) > remaining){ decidedAt = { holeNum, upBy: Math.abs(diff), remaining }; }
+    }
+    const holesPlayed = holeResults.filter(h=>!h.incomplete).length;
+    let statusText = diff===0 ? 'All Square' : `${Math.abs(diff)} Up`;
+    let winnerId = null, decided = false, allSquareFinal = false;
+    if(decidedAt){ winnerId = diff>0?aId:bId; decided = true; statusText = `${decidedAt.upBy}&${decidedAt.remaining}`; }
+    else if(holesPlayed === 18){ decided = true; if(diff===0){ allSquareFinal = true; statusText = 'Halved — All Square'; } else { winnerId = diff>0?aId:bId; statusText = `${Math.abs(diff)} Up`; } }
+    else { statusText = (diff===0?'All Square':(diff>0?a_label(diff):a_label(-diff))) + ` thru ${holesPlayed}`; }
+    function a_label(n){ return n+' Up'; }
+    return { holeResults, diff, statusText, winnerId, decided, allSquareFinal, holesPlayed };
+  }
+  function allGameNet(trip){
+    const net = {}; trip.players.forEach(p => net[p.id] = 0);
+    trip.rounds.filter(r => r.format !== 'match' && r.format !== 'ryder').forEach(r => {
+      const groupList = r.groups && r.groups.length ? r.groups : [{ playerIds: trip.players.map(p=>p.id) }];
+      groupList.forEach(g => {
+        const gp = trip.players.filter(p => g.playerIds.includes(p.id));
+        const s = calcSkins(r, gp), n = calcNassau(r, gp);
+        gp.forEach(p => { net[p.id] += (s.net[p.id]||0) + (n.net[p.id]||0); });
+      });
+    });
+    return net;
+  }
+  function expenseNet(trip){
+    const net = {}; trip.players.forEach(p => net[p.id] = 0);
+    const items = [...trip.expenses, ...trip.lodging.map(l => ({ amount: l.cost, paidBy: l.paidBy, splitAmong: l.splitAmong }))];
+    items.forEach(ex => { const among = ex.splitAmong.length ? ex.splitAmong : trip.players.map(p=>p.id); const share = ex.amount/among.length; net[ex.paidBy] = (net[ex.paidBy]||0)+ex.amount; among.forEach(pid => { net[pid] = (net[pid]||0)-share; }); });
+    return net;
+  }
+  function grandNet(trip){ const g = allGameNet(trip), e = expenseNet(trip); const net = {}; trip.players.forEach(p => net[p.id] = (g[p.id]||0)+(e[p.id]||0)); return net; }
+  function simplifyDebts(balances){
+    const creditors = Object.entries(balances).filter(([,v])=>v>0.01).map(([id,amt])=>({id,amt})).sort((a,b)=>b.amt-a.amt);
+    const debtors = Object.entries(balances).filter(([,v])=>v<-0.01).map(([id,amt])=>({id,amt:-amt})).sort((a,b)=>b.amt-a.amt);
+    const txns = []; let i=0,j=0;
+    while(i<debtors.length && j<creditors.length){ const pay = Math.min(debtors[i].amt, creditors[j].amt); txns.push({from:debtors[i].id, to:creditors[j].id, amount:pay}); debtors[i].amt-=pay; creditors[j].amt-=pay; if(debtors[i].amt<0.01) i++; if(creditors[j].amt<0.01) j++; }
+    return txns;
+  }
+  function playerName(trip, id){ const p = trip.players.find(p=>p.id===id); return p ? p.name : '?'; }
+  function playerColor(trip, id){ const idx = trip.players.findIndex(p=>p.id===id); return PALETTE[idx % PALETTE.length]; }
+  function escapeHtml(s){ return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+  function roundIsComplete(round, players){
+    return players.every(p => { const s = round.scores[p.id]||[]; for(let i=0;i<18;i++){ const v = s[i]; if(v===undefined||v===null||v===''||isNaN(v)) return false; } return true; });
+  }
+  function tripChampion(trip){
+    const strokeRounds = trip.rounds.filter(r => r.format!=='match' && r.format!=='ryder');
+    const complete = strokeRounds.filter(r => roundIsComplete(r, trip.players));
+    if(!complete.length) return null;
+    const totals = {}; trip.players.forEach(p => totals[p.id]=0);
+    complete.forEach(r => trip.players.forEach(p => { const s = r.scores[p.id]||[]; totals[p.id] += s.reduce((a,b)=>a+(Number(b)||0),0); }));
+    let best = null;
+    trip.players.forEach(p => { if(best===null || totals[p.id] < totals[best.id]) best = { id:p.id, total: totals[p.id] }; });
+    return best;
+  }
+
+  function mostBirdiesAward(trip){
+    const strokeRounds = trip.rounds.filter(r => r.format!=='match' && r.format!=='ryder');
+    const counts = {}; trip.players.forEach(p => counts[p.id] = 0);
+    strokeRounds.forEach(r => {
+      trip.players.forEach(p => {
+        const scores = r.scores[p.id] || [];
+        for(let h=0; h<18; h++){
+          const v = scores[h];
+          if(v === '' || v === undefined || v === null || isNaN(v)) continue;
+          const diff = Number(v) - Number(r.par[h]||4);
+          if(diff <= -1) counts[p.id]++;
+        }
+      });
+    });
+    let best = null;
+    trip.players.forEach(p => { if(counts[p.id] > 0 && (best===null || counts[p.id] > counts[best.id])) best = { id:p.id, count: counts[p.id] }; });
+    return best;
+  }
+
+  function biggestComebackAward(trip){
+    const strokeRounds = trip.rounds.filter(r => r.format!=='match' && r.format!=='ryder');
+    let best = null;
+    strokeRounds.forEach(r => {
+      trip.players.forEach(p => {
+        const front = segTotal(r, p.id, 0, 9), back = segTotal(r, p.id, 9, 18);
+        if(front === null || back === null) return;
+        const improvement = front - back;
+        if(improvement > 0 && (best===null || improvement > best.improvement)) best = { id:p.id, improvement, course: r.course };
+      });
+    });
+    return best;
+  }
+
+  function crewStats(){
+    if(!state.profile) return [];
+    const counts = {};
+    state.myTrips.forEach(m => {
+      const t = state.trips[m.code]; if(!t) return;
+      t.players.forEach(p => {
+        if(p.name === state.profile.name) return;
+        counts[p.name] = (counts[p.name]||0) + 1;
+      });
+    });
+    return Object.entries(counts).map(([name,count]) => ({name,count})).sort((a,b)=>b.count-a.count).slice(0,6);
+  }
+
+  function generateRecapText(trip){
+    const lines = [];
+    lines.push(`🏌️ ${trip.name} — Trip Recap`);
+    if(trip.location) lines.push(trip.location);
+    lines.push('');
+    const champ = tripChampion(trip);
+    if(champ) lines.push(`🏆 Trip Champion: ${playerName(trip,champ.id)} (${champ.total} strokes)`);
+    const birdies = mostBirdiesAward(trip);
+    if(birdies) lines.push(`🎯 Most Birdies: ${playerName(trip,birdies.id)} (${birdies.count})`);
+    const comeback = biggestComebackAward(trip);
+    if(comeback) lines.push(`🔄 Biggest Comeback: ${playerName(trip,comeback.id)} (${comeback.improvement} strokes better on the back)`);
+    trip.rounds.forEach(r => {
+      if(r.longestDrive) lines.push(`🚀 Longest Drive (${r.course||'a round'}): ${playerName(trip,r.longestDrive.playerId)} — ${r.longestDrive.distance} yds`);
+    });
+    lines.push('');
+    const net = grandNet(trip);
+    const txns = simplifyDebts(net);
+    if(txns.length){
+      lines.push('💰 Settle Up:');
+      txns.forEach(t => lines.push(`  ${playerName(trip,t.from)} owes ${playerName(trip,t.to)} ${fmt(t.amount)}`));
+    } else {
+      lines.push('💰 Everyone\'s square.');
+    }
+    lines.push('');
+    lines.push(`${trip.rounds.length} round${trip.rounds.length===1?'':'s'} · ${trip.players.length} players · via GolfWithMe`);
+    return lines.join('\n');
+  }
+
+  function maybeCelebrate(trip, round){
+    if(round && round.format !== 'match' && round.format !== 'ryder'){
+      const groupList = round.groups && round.groups.length ? round.groups : [{ playerIds: trip.players.map(p=>p.id) }];
+      groupList.forEach(g => {
+        const gp = trip.players.filter(p => g.playerIds.includes(p.id));
+        if(gp.length < 2) return;
+        const key = round.id + ':' + (g.id||'all');
+        if(ui.celebratedRounds[key]) return;
+        if(roundIsComplete(round, gp)){
+          ui.celebratedRounds[key] = true;
+          const totals = gp.map(p => ({ id:p.id, name:p.name, total:(round.scores[p.id]||[]).reduce((a,b)=>a+(Number(b)||0),0) }));
+          totals.sort((a,b)=>a.total-b.total);
+          ui.celebrateData = { title: 'Round Complete!', winner: `${totals[0].name} — ${totals[0].total} strokes`, subtitle: `Low score on ${round.course || 'the course'} takes it.` };
+        }
+      });
+    }
+    if(round && round.format === 'match'){
+      const [aId,bId] = round.matchPlayers||[];
+      if(aId && bId){
+        const key = round.id+':match';
+        if(!ui.celebratedRounds[key]){
+          const m = calcMatchPlay(round, aId, bId);
+          if(m.decided){
+            ui.celebratedRounds[key] = true;
+            const trip2 = trip;
+            const winnerName = m.winnerId ? playerName(trip2, m.winnerId) : 'Nobody';
+            ui.celebrateData = { title: m.allSquareFinal ? 'Match Halved!' : 'Match Won!', winner: m.allSquareFinal ? 'All Square' : `${winnerName} wins ${m.statusText}`, subtitle: `${round.course || 'The match'} is settled.` };
+          }
+        }
+      }
+    }
+    if(!ui.celebratedTrip){
+      const strokeRounds = trip.rounds.filter(r => r.format!=='match' && r.format!=='ryder');
+      if(strokeRounds.length && strokeRounds.every(r => roundIsComplete(r, trip.players))){
+        const champ = tripChampion(trip);
+        if(champ){ ui.celebratedTrip = true; ui.celebrateData = { title: 'Trip Champion!', winner: `${playerName(trip, champ.id)} — ${champ.total} total strokes`, subtitle: `Every round on ${trip.name} is in the books.` }; }
+      }
+    }
+  }
+
+  // ---------- ICONS ----------
+  function iconHome(a){ return `<svg viewBox="0 0 24 24" fill="none" stroke="${a?'#FBF6E9':'currentColor'}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg>`; }
+  function iconTrips(a){ return `<svg viewBox="0 0 24 24" fill="none" stroke="${a?'#FBF6E9':'currentColor'}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3v18"/><path d="M6 4h11l-2.5 4L17 12H6"/></svg>`; }
+  function iconExplore(a){ return `<svg viewBox="0 0 24 24" fill="none" stroke="${a?'#FBF6E9':'currentColor'}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M15 9l-2 6-6 2 2-6 6-2z"/></svg>`; }
+  function iconProfile(a){ return `<svg viewBox="0 0 24 24" fill="none" stroke="${a?'#FBF6E9':'currentColor'}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>`; }
+  function iconPlus(){ return `<svg viewBox="0 0 24 24" fill="none" stroke="#FBF6E9" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>`; }
+
+  // ---------- MAIN RENDER ----------
+  function render(){
+    let html = renderHeader();
+    if(!state.profile){
+      html += renderOnboarding();
+    } else if(ui.view === 'feed') html += renderFeedView();
+    else if(ui.view === 'trips') html += renderTripsView();
+    else if(ui.view === 'explore') html += renderExploreView();
+    else if(ui.view === 'profile') html += renderProfileView();
+    else if(ui.view === 'roadmap') html += renderRoadmapView();
+    else if(ui.view === 'trip') html += renderTripDetail();
+    if(state.profile) html += renderBottomNav();
+    if(ui.modal) html += renderModal();
+    if(ui.celebrateData) html += renderCelebration();
+    app.innerHTML = html;
+    attachEvents();
+  }
+
+  function renderHeader(){
+    const trip = ui.view === 'trip' ? currentTrip() : null;
+    let right = '';
+    if(trip){
+      right = `<span class="gl-code-pill" id="copyCode" title="Tap to copy — share this code so others can join">CODE: ${trip.code}</span>`;
+    } else if(ui.view === 'roadmap'){
+      right = `<div class="gl-icon-btn" id="closeRoadmapBtn" title="Back to Profile">&times;</div>`;
+    } else if(state.profile){
+      right = `<div class="gl-icon-btn" id="quickAddBtn" title="Create or join a trip">${iconPlus()}</div>`;
+    }
+    return `<div class="gl-header">
+      <div class="gl-brand" id="brandHome">
+        ${logoSvg(32)}
+        <div><div class="wordmark">Golf<span class="with">With</span>Me</div></div>
+      </div>
+      <div class="gl-header-actions">${right}</div>
+    </div>`;
+  }
+
+  function renderBottomNav(){
+    const items = [
+      ['feed','Feed', iconHome],
+      ['trips','Trips', iconTrips],
+      ['explore','Explore', iconExplore],
+      ['profile','Profile', iconProfile],
+    ];
+    return `<div class="gl-bottomnav">${items.map(([key,label,icon]) => {
+      const active = ui.view === key || (ui.view === 'trip' && key === 'trips') || (ui.view === 'roadmap' && key === 'profile');
+      return `<button class="gl-navitem ${active?'active':''}" data-nav="${key}">${icon(active)}<span class="navlabel">${label}</span></button>`;
+    }).join('')}</div>`;
+  }
+
+  // ---------- ONBOARDING ----------
+  function renderOnboarding(){
+    const d = ui.profileDraft || { name:'', avatar:'⛳', homeCourse:'', favoriteFormat:'Stroke Play', bio:'' };
+    return `<div class="gl-onboard">
+      ${logoSvg(52)}
+      <h2 style="font-family:'Fraunces',serif; font-weight:900; font-size:22px; margin:10px 0 0;">Welcome to GolfWithMe</h2>
+      <p>Set up your golfer profile once — it follows you into every trip, so you're not retyping your name and Venmo every time.</p>
+      <div class="gl-card">
+        <div class="gl-field"><label>Your Name</label><input type="text" id="obName" placeholder="Kyle Webster" value="${escapeHtml(d.name)}"></div>
+        <div class="gl-field" style="margin-top:12px;"><label>Pick an Avatar</label>
+          <div style="display:flex; align-items:center; gap:12px; margin-bottom:8px;">
+            <div class="gl-avatar" style="width:52px; height:52px; font-size:26px;">${d.avatarImage ? `<img src="${d.avatarImage}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">` : escapeHtml(d.avatar)}</div>
+            <label class="gl-btn gl-btn-outline gl-btn-sm" style="cursor:pointer;">Upload Photo<input type="file" accept="image/*" id="obPhotoInput" style="display:none;"></label>
+            ${d.avatarImage ? `<button class="gl-btn gl-btn-outline gl-btn-sm" id="obClearPhoto">Remove Photo</button>` : ''}
+          </div>
+          <div class="gl-emoji-pick">${AVATAR_OPTS.map(e => `<div class="gl-emoji-opt ${d.avatar===e && !d.avatarImage?'selected':''}" data-avatar-pick="${e}">${e}</div>`).join('')}</div>
+        </div>
+        <div class="gl-field" style="margin-top:12px;"><label>Home Course (optional)</label><input type="text" id="obCourse" placeholder="Westwood Country Club" value="${escapeHtml(d.homeCourse)}"></div>
+        <div class="gl-field" style="margin-top:12px;"><label>Favorite Format</label>
+          <select id="obFormat">
+            ${['Stroke Play','Match Play','Skins','Nassau','Scramble'].map(f=>`<option ${d.favoriteFormat===f?'selected':''}>${f}</option>`).join('')}
+          </select>
+        </div>
+        <button class="gl-btn gl-btn-primary gl-btn-block" id="createProfileBtn" style="margin-top:16px;">Get Started</button>
+      </div>
+    </div>`;
+  }
+
+  // ---------- FEED ----------
+  function renderFeedView(){
+    const trips = state.myTrips.map(m => state.trips[m.code]).filter(Boolean);
+    const posts = [];
+    trips.forEach(t => (t.feed||[]).forEach(f => posts.push({ ...f, tripName: t.name, tripCode: t.code })));
+    posts.sort((a,b) => b.ts - a.ts);
+    const tripOptions = trips.map(t => `<option value="${t.code}">${escapeHtml(t.name)}</option>`).join('');
+    const composer = trips.length ? `<div class="gl-card">
+      <h3>Share an update</h3>
+      ${trips.length > 1 ? `<div class="gl-field" style="margin-bottom:8px;"><select id="composerTrip">${tripOptions}</select></div>` : `<input type="hidden" id="composerTripSingle" value="${trips[0].code}">`}
+      <div class="gl-composer"><span class="gl-avatar gl-avatar-sm">${avatarGlyph(state.profile)}</span><textarea id="composerText" placeholder="What happened out there?"></textarea></div>
+      ${ui.composerPhoto ? `<div style="position:relative; margin:8px 0 0 44px; max-width:200px;"><img src="${ui.composerPhoto}" style="width:100%; border-radius:8px; display:block;"><span id="composerPhotoRemove" style="position:absolute; top:-8px; right:-8px; background:var(--flag); color:#fff; width:22px; height:22px; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; font-size:14px;">&times;</span></div>` : ''}
+      <div class="gl-row" style="margin-top:8px;">
+        <label class="gl-btn gl-btn-outline gl-btn-sm" style="cursor:pointer;">📷 Add Photo<input type="file" accept="image/*" id="composerPhotoInput" style="display:none;"></label>
+        <button class="gl-btn gl-btn-primary" id="postUpdateBtn">Post</button>
+      </div>
+    </div>` : '';
+    const feedHtml = posts.length ? posts.map(p => renderPost(p)).join('') : `<div class="gl-empty-mini">No activity yet. Log a round or add a player to see it show up here.</div>`;
+    return `<div class="gl-main">${composer}${feedHtml}</div>`;
+  }
+
+  function renderPost(p){
+    const liked = state.profile && p.likedBy && p.likedBy.includes(state.profile.name);
+    const count = (p.likedBy||[]).length;
+    return `<div class="gl-post" data-open-post-trip="${p.tripCode}">
+      <div class="gl-post-head">
+        <span class="gl-avatar gl-avatar-sm">⛳</span>
+        <div><div class="who">${escapeHtml(p.author||p.tripName)}</div><div class="tripbadge">${escapeHtml(p.tripName)}</div></div>
+        <span class="gl-post-time">${timeAgo(p.ts)}</span>
+      </div>
+      <div class="gl-post-body">${escapeHtml(p.text)}</div>
+      ${p.photo ? `<div style="padding:0 14px 12px;"><img src="${p.photo}" style="width:100%; border-radius:8px; display:block;"></div>` : ''}
+      <div class="gl-post-actions">
+        <button class="gl-react-btn ${liked?'liked':''}" data-like-post="${p.tripCode}:${p.id}">${liked?'🔥':'🤍'} ${count>0?count:''} React</button>
+      </div>
+    </div>`;
+  }
+
+  // ---------- TRIPS GRID ----------
+  function tripStatus(trip){
+    const today = new Date().toISOString().slice(0,10);
+    if(trip.endDate && trip.endDate < today) return 'completed';
+    if(trip.startDate && trip.startDate > today) return 'upcoming';
+    return 'active';
+  }
+  function tripStats(trip){
+    const net = grandNet(trip); const txns = simplifyDebts(net);
+    return { players: trip.players.length, rounds: trip.rounds.length, settled: txns.reduce((s,t)=>s+t.amount,0) };
+  }
+  function renderTripsView(){
+    if(!state.myTrips.length){
+      return `<div class="gl-onboard">
+        ${logoSvg(48)}
+        <h2 style="font-family:'Fraunces',serif; font-weight:900; font-size:22px;">No trips yet</h2>
+        <p>Tap the + in the top corner to start a trip or join one with a code.</p>
+      </div>`;
+    }
+    const groups = { active: [], upcoming: [], completed: [] };
+    state.myTrips.forEach(m => { const t = state.trips[m.code]; if(t) groups[tripStatus(t)].push(t); });
+    function cardsFor(list){
+      return `<div class="gl-trip-grid">${list.map(t => {
+        const s = tripStats(t); const st = tripStatus(t);
+        return `<div class="gl-trip-card" data-open-trip="${t.code}">
+          <span class="code-tag">${t.code}</span><span class="gl-status ${st}">${st}</span>
+          <span class="gl-card-remove" data-remove-trip="${t.code}" title="Remove from My Trips">&times;</span>
+          <h4>${escapeHtml(t.name)}${t.public ? '<span class="gl-public-badge">Public</span>' : ''}</h4>
+          <div class="meta">${escapeHtml(t.location||'')} ${t.startDate?'· '+t.startDate:''}${t.endDate?' – '+t.endDate:''}</div>
+          <div class="stats"><span>${s.players} players</span><span>${s.rounds} round${s.rounds===1?'':'s'}</span><span>${fmt(s.settled)} settled</span></div>
+        </div>`;
+      }).join('')}</div>`;
+    }
+    let out = `<div class="gl-main">`;
+    if(groups.active.length){ out += `<div class="gl-section-label">Active</div>${cardsFor(groups.active)}`; }
+    if(groups.upcoming.length){ out += `<div class="gl-section-label">Upcoming</div>${cardsFor(groups.upcoming)}`; }
+    if(groups.completed.length){ out += `<div class="gl-section-label">Past Trips</div>${cardsFor(groups.completed)}`; }
+    out += `</div>`;
+    return out;
+  }
+
+  // ---------- EXPLORE ----------
+  function renderExploreView(){
+    let body = '';
+    if(ui.exploreTab === 'trips'){
+      const q = (ui.courseQuery||'').trim().toLowerCase();
+      const list = state.publicRegistry.filter(r => !q || (r.name+' '+(r.location||'')).toLowerCase().includes(q))
+        .sort((a,b) => (b.seekingActive?1:0) - (a.seekingActive?1:0));
+      body = `<div class="gl-field" style="margin-bottom:12px;"><input type="text" id="exploreSearch" placeholder="Search public trips..." value="${escapeHtml(ui.courseQuery||'')}"></div>
+        <div class="gl-trip-grid">${list.map(r => `<div class="gl-trip-card" data-view-public-trip="${r.code}">
+          <span class="code-tag">${r.code}</span>
+          ${r.seekingActive ? `<span class="gl-status active">🔍 Needs ${r.spotsNeeded||1}</span>` : ''}
+          <h4>${escapeHtml(r.name)}</h4>
+          <div class="meta">${escapeHtml(r.location||'')}</div>
+          ${r.seekingActive && r.seekingNote ? `<div class="meta" style="font-style:italic;">"${escapeHtml(r.seekingNote)}"</div>` : ''}
+          <div class="stats"><span>${r.players||0} players</span></div>
+        </div>`).join('') || '<div class="gl-empty-mini">No public trips yet. Make one of yours discoverable from its More tab.</div>'}</div>`;
+    } else {
+      const q = (ui.courseQuery||'').trim().toLowerCase();
+      const list = q ? COURSES.filter(c => (c.name+' '+c.city+' '+c.region+' '+c.country).toLowerCase().includes(q)) : COURSES;
+      const countries = [...new Set(COURSES.map(c=>c.country))];
+      body = `<div class="gl-hint" style="margin-top:0;">A growing, hand-curated list — not a full top-10-per-state directory yet.</div>
+        <div class="gl-field" style="margin:10px 0;"><input type="text" id="exploreSearch" placeholder="Search courses, cities, regions, countries..." value="${escapeHtml(ui.courseQuery||'')}"></div>
+        <div class="gl-chip-wrap" style="margin-bottom:12px;">${countries.map(c => `<span class="gl-chip" data-explore-country="${escapeHtml(c)}">${escapeHtml(c)}</span>`).join('')}</div>
+        <div class="gl-explore-list">${list.map(c => { const avg = courseAvg(c.name); return `<div class="gl-explore-card"><b>${escapeHtml(c.name)}</b>${avg ? ` <span style="color:var(--gold); font-size:12px; font-weight:700;">★ ${avg.avg.toFixed(1)} (${avg.count})</span>` : ''}<div class="loc">${escapeHtml(c.city)}, ${escapeHtml(c.region)} · ${escapeHtml(c.country)}</div></div>`; }).join('') || '<div class="gl-empty-mini">No matches.</div>'}</div>`;
+    }
+    return `<div class="gl-main">
+      <div class="gl-segmented">
+        <div class="gl-seg-opt ${ui.exploreTab==='trips'?'active':''}" data-explore-tab="trips">Trips</div>
+        <div class="gl-seg-opt ${ui.exploreTab==='courses'?'active':''}" data-explore-tab="courses">Courses</div>
+      </div>
+      ${body}
+    </div>`;
+  }
+
+  // ---------- PROFILE ----------
+  function renderProfileView(){
+    const p = state.profile;
+    if(ui.editingProfile){
+      const d = ui.profileDraft || p;
+      return `<div class="gl-main"><div class="gl-card">
+        <h3>Edit Profile</h3>
+        <div class="gl-field"><label>Name</label><input type="text" id="epName" value="${escapeHtml(d.name)}"></div>
+        <div class="gl-field" style="margin-top:12px;"><label>Avatar</label>
+          <div style="display:flex; align-items:center; gap:12px; margin-bottom:8px;">
+            <div class="gl-avatar" style="width:52px; height:52px; font-size:26px;">${d.avatarImage ? `<img src="${d.avatarImage}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">` : escapeHtml(d.avatar)}</div>
+            <label class="gl-btn gl-btn-outline gl-btn-sm" style="cursor:pointer;">Upload Photo<input type="file" accept="image/*" id="epPhotoInput" style="display:none;"></label>
+            ${d.avatarImage ? `<button class="gl-btn gl-btn-outline gl-btn-sm" id="epClearPhoto">Remove Photo</button>` : ''}
+          </div>
+          <div class="gl-emoji-pick">${AVATAR_OPTS.map(e => `<div class="gl-emoji-opt ${d.avatar===e && !d.avatarImage?'selected':''}" data-avatar-pick="${e}">${e}</div>`).join('')}</div>
+        </div>
+        <div class="gl-field" style="margin-top:12px;"><label>Home Course</label><input type="text" id="epCourse" value="${escapeHtml(d.homeCourse||'')}"></div>
+        <div class="gl-field" style="margin-top:12px;"><label>Favorite Format</label><select id="epFormat">${['Stroke Play','Match Play','Skins','Nassau','Scramble'].map(f=>`<option ${d.favoriteFormat===f?'selected':''}>${f}</option>`).join('')}</select></div>
+        <div class="gl-field" style="margin-top:12px;"><label>Bio</label><textarea id="epBio">${escapeHtml(d.bio||'')}</textarea></div>
+        <div class="gl-row" style="margin-top:16px;">
+          <button class="gl-btn gl-btn-outline" id="cancelEditProfile" style="flex:1;">Cancel</button>
+          <button class="gl-btn gl-btn-primary" id="saveProfileBtn" style="flex:1;">Save</button>
+        </div>
+      </div></div>`;
+    }
+    const myTripsCount = state.myTrips.length;
+    const crew = crewStats();
+    return `<div class="gl-main">
+      <div class="gl-card" style="text-align:center;">
+        <div class="gl-avatar" style="width:70px; height:70px; font-size:34px; margin:0 auto 10px;">${avatarGlyph(p)}</div>
+        <div style="font-family:'Fraunces',serif; font-weight:900; font-size:20px;">${escapeHtml(p.name)}</div>
+        ${p.homeCourse ? `<div class="gl-hint" style="margin-top:2px;">🏠 ${escapeHtml(p.homeCourse)}</div>` : ''}
+        <div class="gl-hint">Favorite format: ${escapeHtml(p.favoriteFormat||'Stroke Play')}</div>
+        ${p.bio ? `<div class="gl-hint" style="margin-top:8px; font-style:italic;">"${escapeHtml(p.bio)}"</div>` : ''}
+        <div class="gl-row" style="justify-content:center; margin-top:14px;">
+          <button class="gl-btn gl-btn-outline gl-btn-sm" id="editProfileBtn">Edit Profile</button>
+        </div>
+      </div>
+      <div class="gl-card">
+        <h3>Your Golf Life</h3>
+        <div class="stats" style="display:flex; gap:20px; font-family:'JetBrains Mono'; font-size:13px;">
+          <span>${myTripsCount} trip${myTripsCount===1?'':'s'}</span>
+        </div>
+        <div class="gl-hint">Your profile follows you into every trip you create or join — no more retyping your name and Venmo handle.</div>
+      </div>
+      <div class="gl-card">
+        <h3>Your Crew</h3>
+        ${crew.length ? crew.map(c => `<div class="gl-menu-item"><div class="label">${escapeHtml(c.name)}</div><div style="font-family:'JetBrains Mono'; color:var(--ink-soft);">${c.count} trip${c.count===1?'':'s'}</div></div>`).join('') : `<div class="gl-empty-mini">Play a few trips together and your regular crew shows up here.</div>`}
+      </div>
+      <div class="gl-card" id="openRoadmapCard" style="cursor:pointer;">
+        <h3>🚧 Roadmap: What's Left <span style="font-size:16px;">→</span></h3>
+        <div class="gl-hint" style="margin-top:0;">${roadmapCounts().doneOrPartial} of 20 growth ideas are shipped in this sandbox build. See what's next once this app moves into Claude Code.</div>
+      </div>
+    </div>`;
+  }
+  function roadmapCounts(){
+    let done=0, partial=0, claudecode=0;
+    ROADMAP.forEach(sec => sec.items.forEach(i => { if(i.status==='done') done++; else if(i.status==='partial') partial++; else claudecode++; }));
+    return { done, partial, claudecode, doneOrPartial: done+partial };
+  }
+
+  // ---------- ROADMAP ----------
+  function renderRoadmapView(){
+    const { doneOrPartial, claudecode: ccCount } = roadmapCounts();
+    const sections = ROADMAP.map(sec => {
+      const items = ui.roadmapTab === 'todo' ? sec.items.filter(i => i.status === 'claudecode') : sec.items;
+      if(!items.length) return '';
+      return `<div class="gl-rm-section">${escapeHtml(sec.section)}</div>
+        <div class="gl-card">${items.map(i => `
+          <div class="gl-rm-item">
+            <div style="flex:1; min-width:0;">
+              <div class="gl-rm-title">${escapeHtml(i.title)} <span class="gl-rm-badge ${i.status}">${ROADMAP_LABEL[i.status]}</span></div>
+              <div class="gl-rm-detail">${escapeHtml(i.detail)}</div>
+            </div>
+          </div>`).join('')}
+        </div>`;
+    }).join('');
+    return `<div class="gl-main">
+      <div class="gl-card">
+        <h3>Growth Roadmap</h3>
+        <div class="gl-rm-score">
+          <div><div class="num">${doneOrPartial}<span style="font-size:14px; color:var(--ink-soft);"> / 20</span></div><div class="lbl">Done or partial in sandbox</div></div>
+          <div><div class="num">${ccCount}<span style="font-size:14px; color:var(--ink-soft);"> / 20</span></div><div class="lbl">Need Claude Code</div></div>
+        </div>
+        <div class="gl-hint" style="margin-top:8px;">The Claude Code items need real infrastructure this sandbox can't provide: backend + database, real accounts, push notifications, offline sync, payment processing, weather integration, GPS course licensing, and everything on the go-to-market list.</div>
+        <div class="gl-rm-legend">
+          <div class="gl-rm-legend-item"><span class="gl-rm-dot done"></span>Done — built and working here</div>
+          <div class="gl-rm-legend-item"><span class="gl-rm-dot partial"></span>Partial — lightweight version exists</div>
+          <div class="gl-rm-legend-item"><span class="gl-rm-dot claudecode"></span>Claude Code — needs real infra, do this after moving over</div>
+        </div>
+      </div>
+      <div class="gl-segmented">
+        <div class="gl-seg-opt ${ui.roadmapTab==='todo'?'active':''}" data-roadmap-tab="todo">What's Left (${ccCount})</div>
+        <div class="gl-seg-opt ${ui.roadmapTab==='all'?'active':''}" data-roadmap-tab="all">All 20 Ideas</div>
+      </div>
+      ${sections}
+    </div>`;
+  }
+  function renderPlayers(trip){
+    const rows = trip.players.map(p => `
+      <div class="gl-player-row">
+        <span class="gl-swatch" style="background:${playerColor(trip,p.id)}"></span>
+        <span class="gl-player-name">${escapeHtml(p.name)}</span>
+        <span class="gl-player-contact">${p.venmo ? '@'+escapeHtml(p.venmo) : 'no venmo'}${p.cashapp ? ' · $'+escapeHtml(p.cashapp) : ''}${p.zelle ? ' · '+escapeHtml(p.zelle) : ''}</span>
+        <button class="gl-btn gl-btn-outline gl-btn-sm" data-remove-player="${p.id}">Remove</button>
+      </div>`).join('') || `<div class="gl-empty-mini">No players yet — add your group below.</div>`;
+    return `
+      <div class="gl-card">
+        <h3>${escapeHtml(trip.name)} <span class="gl-total-badge">${trip.players.length} players</span></h3>
+        <div class="gl-hint">${escapeHtml(trip.location||'')} ${trip.startDate ? '· '+trip.startDate : ''} ${trip.endDate ? '– '+trip.endDate : ''}</div>
+        <div class="gl-hint">Share code <b>${trip.code}</b> — anyone who joins sees and edits the same live trip from their own phone.</div>
+      </div>
+      <div class="gl-card"><h3>Players</h3>${rows}</div>
+      <div class="gl-card">
+        <h3>Add a Player</h3>
+        ${state.profile && !trip.players.find(p=>p.name===state.profile.name) ? `<button class="gl-btn gl-btn-outline gl-btn-sm" id="addMeBtn" style="margin-bottom:12px;">${state.profile.avatar} Add myself (${escapeHtml(state.profile.name)})</button>` : ''}
+        <div class="gl-row">
+          <div class="gl-field"><label>Name</label><input type="text" id="npName" placeholder="Kyle Webster"></div>
+          <div class="gl-field"><label>Venmo handle</label><input type="text" id="npVenmo" placeholder="kylewebster"></div>
+          <div class="gl-field"><label>Cash App $cashtag</label><input type="text" id="npCashapp" placeholder="kylewebster"></div>
+          <div class="gl-field"><label>Zelle (phone/email)</label><input type="text" id="npZelle" placeholder="kyle@email.com"></div>
+        </div>
+        <div style="margin-top:12px;"><button class="gl-btn gl-btn-primary" id="addPlayerBtn">Add Player</button></div>
+      </div>`;
+  }
+
+  function renderScorecard(trip){
+    if(trip.players.length < 2) return `<div class="gl-card"><h3>Scorecard</h3><div class="gl-empty-mini">Add at least 2 players before logging a round.</div></div>`;
+    const roundList = trip.rounds.map(r => `
+      <div class="gl-round-item ${r.id===ui.roundId?'active':''}" data-round="${r.id}">
+        <div><div class="rname">${escapeHtml(r.course||'Unnamed Course')}<span class="gl-format-badge">${r.format==='match'?'Match Play':r.format==='ryder'?'Ryder Cup':'Stroke Play'}</span></div>
+        <div class="rmeta">${r.courseLocation ? escapeHtml(r.courseLocation)+' · ' : ''}${r.date||'no date'}${r.format!=='match' ? ` · Skins $${r.skinsBet}/hole · Nassau $${r.nassauBet}/segment`:''}${r.groups && r.groups.length>1 ? ` · ${r.groups.length} foursomes`:''}</div></div>
+        <button class="gl-btn gl-btn-outline gl-btn-sm" data-remove-round="${r.id}">Delete</button>
+      </div>`).join('') || `<div class="gl-empty-mini">No rounds logged yet.</div>`;
+
+    let cardHtml = '';
+    const round = trip.rounds.find(r => r.id === ui.roundId);
+    if(round){
+      if(round.format === 'match'){
+        cardHtml = renderMatchRound(trip, round);
+      } else {
+        const groupList = round.groups && round.groups.length ? round.groups : [{ id:'all', name:'Foursome', playerIds: trip.players.map(p=>p.id) }];
+        if(!ui.groupFilter || !groupList.find(g=>g.id===ui.groupFilter)) ui.groupFilter = groupList[0].id;
+        const activeGroup = groupList.find(g=>g.id===ui.groupFilter);
+        const groupPlayers = trip.players.filter(p => activeGroup.playerIds.includes(p.id));
+        const { holeResults } = calcSkins(round, groupPlayers);
+        cardHtml = `<div class="gl-card"><h3>${escapeHtml(round.course||'Round')} — Hole by Hole</h3>
+          ${groupList.length>1 ? `<div class="gl-group-tabs">${groupList.map(g=>`<div class="gl-group-tab ${g.id===ui.groupFilter?'active':''}" data-group-filter="${g.id}">${escapeHtml(g.name)}</div>`).join('')}</div>` : ''}
+          <div class="gl-segmented" style="max-width:280px;">
+            <div class="gl-seg-opt ${ui.scorecardView!=='play'?'active':''}" data-scorecard-view="table">Table View</div>
+            <div class="gl-seg-opt ${ui.scorecardView==='play'?'active':''}" data-scorecard-view="play">Play Mode</div>
+          </div>
+          ${renderLiveLeaderboard(round, groupPlayers)}
+          ${ui.scorecardView==='play' ? renderPlayMode(trip, round, groupPlayers, holeResults) : renderScorecardTable(trip, round, groupPlayers, holeResults)}
+          <div class="gl-hint">Enter gross strokes per hole. Lowest score on a hole wins the skin (carries on ties). Front 9 / Back 9 / Overall totals feed the Nassau. See <b>Money</b> for payouts.</div>
+          ${renderRoundSocial(trip, round)}
+          </div>`;
+      }
+    }
+    return `
+      <div class="gl-card"><h3>Rounds</h3><div class="gl-round-list">${roundList}</div>
+      <button class="gl-btn gl-btn-primary" id="newRoundBtn">+ Log a Round</button></div>
+      ${cardHtml}`;
+  }
+
+  function renderLiveLeaderboard(round, players){
+    if(players.length < 1) return '';
+    const rows = players.map(p => {
+      const scores = round.scores[p.id] || [];
+      let strokes = 0, thru = 0, parSum = 0;
+      for(let i=0;i<18;i++){ const v = scores[i]; if(v!==undefined && v!==null && v!==''){ strokes += Number(v); parSum += Number(round.par[i]||4); thru++; } }
+      const diff = thru ? strokes - parSum : null;
+      return { id:p.id, name:p.name, strokes, thru, diff };
+    }).filter(r => r.thru > 0).sort((a,b) => (a.diff - b.diff) || (b.thru - a.thru));
+    if(!rows.length) return `<div class="gl-hint" style="margin-bottom:12px;">Leaderboard appears once scores are entered.</div>`;
+    return `<table class="gl-leaderboard"><thead><tr><th>#</th><th>Player</th><th>Thru</th><th>Strokes</th><th>Score</th></tr></thead><tbody>
+      ${rows.map((r,i) => `<tr><td class="gl-lb-rank">${i+1}</td><td>${escapeHtml(r.name)}</td><td class="mono">${r.thru}</td><td class="mono">${r.strokes}</td>
+      <td class="gl-lb-score ${r.diff<0?'under':r.diff>0?'over':''}">${r.diff===0?'E':(r.diff>0?'+':'')+r.diff}</td></tr>`).join('')}
+    </tbody></table>`;
+  }
+
+  function renderScorecardTable(trip, round, players, holeResults){
+    const front = [...Array(9).keys()];
+    function headerRow(){
+      return `<tr><th class="rowlabel">Hole</th>` + front.map(i=>`<th>${i+1}</th>`).join('') +
+        `<th style="border-right:3px solid var(--sand)">Out</th>` + front.map(i=>`<th>${i+10}</th>`).join('') +
+        `<th>In</th><th>Tot</th></tr>`;
+    }
+    function parRow(){
+      let cells = '';
+      for(let i=0;i<18;i++){
+        cells += `<td class="holecell parrow ${i===8?'divider9':''}"><input type="number" min="1" max="9" value="${round.par[i]}" data-par="${i}"></td>`;
+        if(i===8) cells += `<td class="total-col">${round.par.slice(0,9).reduce((a,b)=>a+Number(b||0),0)}</td>`;
+      }
+      cells += `<td class="total-col">${round.par.slice(9,18).reduce((a,b)=>a+Number(b||0),0)}</td>`;
+      cells += `<td class="total-col">${round.par.reduce((a,b)=>a+Number(b||0),0)}</td>`;
+      return `<tr><td class="rowlabel">Par</td>${cells}</tr>`;
+    }
+    function playerRow(p){
+      const scores = round.scores[p.id] || [];
+      let cells = '', outSum=0, inSum=0, outCount=0, inCount=0;
+      for(let i=0;i<18;i++){
+        const val = scores[i] !== undefined && scores[i] !== null ? scores[i] : '';
+        const hr = holeResults[i]; const isWin = hr && hr.winner === p.id;
+        cells += `<td class="holecell ${isWin?'skin-win':''} ${i===8?'divider9':''}">
+          ${isWin ? `<span class="skin-tag">${hr.skins>1? hr.skins+'sk':'SK'}</span>` : ''}
+          <input type="number" min="1" max="15" value="${val}" data-score-player="${p.id}" data-score-hole="${i}"></td>`;
+        if(val !== ''){ if(i<9){outSum+=Number(val); outCount++;} else {inSum+=Number(val); inCount++;} }
+        if(i===8) cells += `<td class="total-col">${outCount===9?outSum:'–'}</td>`;
+      }
+      cells += `<td class="total-col">${inCount===9?inSum:'–'}</td>`;
+      cells += `<td class="total-col">${(outCount===9&&inCount===9)?(outSum+inSum):'–'}</td>`;
+      return `<tr><td class="rowlabel"><span class="gl-swatch" style="background:${playerColor(trip,p.id)};display:inline-block;margin-right:6px;vertical-align:middle;"></span>${escapeHtml(p.name)}</td>${cells}</tr>`;
+    }
+    return `<div class="gl-scorecard-wrap"><table class="gl-scorecard"><thead>${headerRow()}</thead><tbody>${parRow()}${players.map(playerRow).join('')}</tbody></table></div>`;
+  }
+
+  function scoreTerm(strokes, par){
+    if(strokes === '' || strokes === undefined || strokes === null || isNaN(strokes)) return null;
+    const diff = Number(strokes) - Number(par);
+    const terms = { '-4':'Condor', '-3':'Albatross', '-2':'Eagle', '-1':'Birdie', '0':'Par', '1':'Bogey', '2':'Double Bogey', '3':'Triple Bogey' };
+    const term = terms[String(diff)] || (diff > 3 ? `+${diff}` : `${diff}`);
+    const cls = diff < 0 ? 'under' : diff > 0 ? 'over' : 'even';
+    // classic scorecard marks: circle(s) under par, square(s) over par
+    const marks = diff !== 0 ? Math.min(Math.abs(diff), 2) : 0;
+    const shape = diff < 0 ? 'circle' : diff > 0 ? 'square' : null;
+    return { term, cls, diff, shape, marks };
+  }
+
+  function renderPlayMode(trip, round, players, holeResults){
+    const h = Math.min(Math.max(ui.playHole||0, 0), 17);
+    ui.playHole = h;
+    const par = round.par[h] || 4;
+    const hr = holeResults[h];
+    const rows = players.map(p => {
+      const val = (round.scores[p.id]||[])[h];
+      const shown = (val !== undefined && val !== null) ? val : '';
+      const isWin = hr && hr.winner === p.id && !hr.incomplete;
+      const st = scoreTerm(val, par);
+      // style the live input itself like a scorecard mark: circle border under par, square border over par, plain otherwise
+      let inputStyle = "width:64px; height:64px; text-align:center; font-family:'JetBrains Mono'; font-size:20px; font-weight:700; background:var(--parchment); box-sizing:border-box;";
+      if(st && st.shape === 'circle'){
+        const color = 'var(--fairway)';
+        inputStyle += `border-radius:50%; border:${st.marks>1?'4px double':'2.5px solid'} ${color}; color:${color};`;
+      } else if(st && st.shape === 'square'){
+        const color = 'var(--flag-dark)';
+        inputStyle += `border-radius:6px; border:${st.marks>1?'4px double':'2.5px solid'} ${color}; color:${color};`;
+      } else {
+        inputStyle += "border-radius:8px; border:1.5px solid var(--parchment-3); color:var(--ink);";
+      }
+      return `<div class="gl-row" style="justify-content:space-between; align-items:center; padding:10px 0; border-bottom:1px solid var(--parchment-2);">
+        <span style="font-weight:600;"><span class="gl-swatch" style="background:${playerColor(trip,p.id)}; display:inline-block; margin-right:8px;"></span>${escapeHtml(p.name)}${isWin?' <span class="skin-tag" style="position:static; display:inline-block;">'+(hr.skins>1?hr.skins+'sk':'SK')+'</span>':''}</span>
+        <div style="display:flex; align-items:center; gap:10px;">
+          ${st ? `<span style="font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.4px; color:${st.cls==='under'?'var(--fairway)':st.cls==='over'?'var(--flag-dark)':'var(--ink-soft)'};">${st.term}</span>` : ''}
+          <input type="number" min="1" max="15" value="${shown}" data-play-score-player="${p.id}" data-play-score-hole="${h}" style="${inputStyle}">
+        </div>
+      </div>`;
+    }).join('');
+    return `<div style="text-align:center; margin-bottom:14px;">
+      <div style="display:flex; align-items:center; justify-content:center; gap:16px; margin-bottom:10px;">
+        <button class="gl-btn gl-btn-outline gl-btn-sm" id="playPrevHole" ${h===0?'disabled':''}>&larr; Prev</button>
+        <div>
+          <div style="font-family:'Fraunces',serif; font-weight:900; font-size:26px; color:var(--fairway);">Hole ${h+1}</div>
+          <div class="gl-hint" style="margin:0;">Par <b style="color:var(--ink); font-family:'JetBrains Mono';">${par}</b></div>
+        </div>
+        <button class="gl-btn gl-btn-outline gl-btn-sm" id="playNextHole" ${h===17?'disabled':''}>Next &rarr;</button>
+      </div>
+      <div style="display:flex; gap:4px; justify-content:center; margin-bottom:12px;">
+        ${Array.from({length:18}).map((_,i) => `<span data-play-jump="${i}" style="width:14px; height:6px; border-radius:3px; cursor:pointer; background:${i===h?'var(--flag)':(i<9?'var(--fairway)':'var(--sand)')}; opacity:${i===h?1:0.35};"></span>`).join('')}
+      </div>
+      <div class="gl-hint" style="margin-bottom:10px;">Score marks itself against par as you type — a circled score is under par, a squared score is over par, just like a real card.</div>
+    </div>
+    <div class="gl-hint" style="margin-bottom:10px;">Score shows against par as you enter it — circles for birdie or better, squares for bogey or worse, just like a real card.</div>
+    <div style="max-width:340px; margin:0 auto;">${rows}</div>`;
+  }
+
+  function renderMatchRound(trip, round){
+    const [aId, bId] = round.matchPlayers || [];
+    const a = trip.players.find(p=>p.id===aId), b = trip.players.find(p=>p.id===bId);
+    if(!a || !b) return `<div class="gl-card"><h3>${escapeHtml(round.course)}</h3><div class="gl-empty-mini">Match play needs two players assigned.</div></div>`;
+    const m = calcMatchPlay(round, aId, bId);
+    return `<div class="gl-card"><h3>${escapeHtml(round.course||'Round')} — Match Play</h3>
+      <div class="gl-match-status">
+        <div class="gl-match-side"><div class="nm">${escapeHtml(a.name)}</div></div>
+        <div><div class="gl-match-mid">${m.statusText}</div></div>
+        <div class="gl-match-side"><div class="nm">${escapeHtml(b.name)}</div></div>
+      </div>
+      ${renderScorecardTable(trip, round, [a,b], m.holeResults)}
+      <div class="gl-hint">Lower gross score wins the hole; ties halve it. Match play here is a straight 1-on-1 head-to-head, not a stroke-play skins/Nassau round.</div>
+      ${renderRoundSocial(trip, round)}
+      </div>`;
+  }
+
+  function renderRyder(trip){
+    if(trip.players.length < 2) return `<div class="gl-card"><h3>Ryder Cup Mode</h3><div class="gl-empty-mini">Add players first.</div></div>`;
+    if(!trip.teams){
+      const opts = trip.players.map(p => `<option value="${p.id}">${escapeHtml(p.name)}</option>`).join('');
+      return `<div class="gl-card"><h3>Set Up Ryder Cup Teams</h3>
+        <div class="gl-hint" style="margin-top:0;">Split your group into two teams. Any round set to "Ryder Cup" format pairs players 1v1 in singles matches, and match results roll up into team points here.</div>
+        <div class="gl-row">
+          <div class="gl-field"><label>Team A Name</label><input type="text" id="teamAName" placeholder="Team USA"></div>
+          <div class="gl-field"><label>Team B Name</label><input type="text" id="teamBName" placeholder="Team Europe"></div>
+        </div>
+        <div class="gl-hint">Assign each player to a team below.</div>
+        <div id="teamAssignments">${trip.players.map(p => `
+          <div class="gl-row" style="margin-top:8px;"><span style="flex:1;">${escapeHtml(p.name)}</span>
+            <select data-team-assign="${p.id}"><option value="A">Team A</option><option value="B">Team B</option></select>
+          </div>`).join('')}</div>
+        <button class="gl-btn gl-btn-primary" id="saveTeamsBtn" style="margin-top:14px;">Create Teams</button>
+      </div>`;
+    }
+    const ryderRounds = trip.rounds.filter(r => r.format === 'ryder');
+    let ptsA = 0, ptsB = 0;
+    ryderRounds.forEach(r => { (r.ryderPairs||[]).forEach(pair => { const res = calcMatchPlay(r, pair.a, pair.b, `pair-${pair.a}-${pair.b}`); if(res.winnerId===pair.a) ptsA+=1; else if(res.winnerId===pair.b) ptsB+=1; else if(res.decided===false && res.allSquareFinal){ ptsA+=0.5; ptsB+=0.5; } }); });
+    return `<div class="gl-card">
+      <h3>${escapeHtml(trip.teams.teamAName)} <span class="gl-vs">vs</span> ${escapeHtml(trip.teams.teamBName)}</h3>
+      <div class="gl-team-score">
+        <div><div class="tname">${escapeHtml(trip.teams.teamAName)}</div><div class="tpts">${ptsA}</div></div>
+        <div class="gl-vs">points</div>
+        <div><div class="tname">${escapeHtml(trip.teams.teamBName)}</div><div class="tpts">${ptsB}</div></div>
+      </div>
+      <div class="gl-hint">Points come from rounds set to Ryder Cup format in the Scorecard tab. Each singles match is worth 1 point (0.5 each if it ends all square).</div>
+      <button class="gl-btn gl-btn-outline gl-btn-sm" id="resetTeamsBtn" style="margin-top:10px;">Reset Teams</button>
+    </div>`;
+  }
+
+  function renderLodging(trip){
+    const rows = trip.lodging.map(l => `
+      <div class="gl-expense-row"><div><div class="gl-expense-desc">${escapeHtml(l.name)}</div>
+      <div class="gl-expense-meta">${escapeHtml(l.address||'')} ${l.checkin?'· '+l.checkin+' → '+l.checkout:''} ${l.confirmation?'· Conf# '+escapeHtml(l.confirmation):''}</div>
+      <div class="gl-expense-meta">Paid by ${escapeHtml(playerName(trip,l.paidBy))} · split ${l.splitAmong.length || trip.players.length} ways</div></div>
+      <div style="text-align:right;"><div class="gl-expense-amt">${fmt(l.cost)}</div>
+      <button class="gl-btn gl-btn-outline gl-btn-sm" data-remove-lodging="${l.id}" style="margin-top:4px;">Remove</button></div></div>`).join('') || `<div class="gl-empty-mini">No lodging logged yet.</div>`;
+    return `<div class="gl-card"><h3>Lodging</h3>
+      <div class="gl-hint" style="margin-top:0;">A tracker for what you've booked elsewhere (Airbnb, hotel, etc.) — not a live booking engine, since that needs real inventory and payment access this app doesn't have. Costs here fold into the trip's overall settle-up automatically.</div>
+      ${rows}
+      <button class="gl-btn gl-btn-primary" id="newLodgingBtn" style="margin-top:14px;">+ Add Lodging</button>
+    </div>`;
+  }
+
+  function renderMoney(trip){
+    if(trip.players.length < 2) return `<div class="gl-card"><h3>Money</h3><div class="gl-empty-mini">Add at least 2 players to calculate anything.</div></div>`;
+    const gameNet = allGameNet(trip);
+    const strokeRounds = trip.rounds.filter(r => r.format !== 'match' && r.format !== 'ryder');
+    const champ = tripChampion(trip);
+    const gameRows = trip.players.map(p => `<tr><td><span class="gl-swatch" style="background:${playerColor(trip,p.id)};display:inline-block;margin-right:6px;"></span>${escapeHtml(p.name)}</td><td class="${gameNet[p.id]>0.01?'amt-pos':gameNet[p.id]<-0.01?'amt-neg':'amt-zero'}">${fmt(gameNet[p.id])}</td></tr>`).join('');
+    const roundBreakdown = strokeRounds.map(r => {
+      const groupList = r.groups && r.groups.length ? r.groups : [{ id:'all', playerIds: trip.players.map(p=>p.id) }];
+      const skinsWon = {}; let nassauLines = [];
+      groupList.forEach(g => {
+        const gp = trip.players.filter(p => g.playerIds.includes(p.id));
+        const s = calcSkins(r, gp); const n = calcNassau(r, gp);
+        s.holeResults.forEach(hr => { if(hr.winner) skinsWon[hr.winner] = (skinsWon[hr.winner]||0)+hr.skins; });
+        nassauLines.push(n.results.map(res => res.winner ? `${res.name} → ${escapeHtml(playerName(trip,res.winner))}` : `${res.name} → push`).join(' · '));
+      });
+      return `<div style="margin-bottom:14px;">
+        <div style="font-weight:700; font-family:'Fraunces',serif; margin-bottom:6px;">${escapeHtml(r.course||'Round')} ${r.date?'· '+r.date:''}</div>
+        <div class="gl-hint" style="margin-top:0;">Skins: ${trip.players.map(p=>`${escapeHtml(p.name)} ${skinsWon[p.id]||0}`).join(' · ')}</div>
+        <div class="gl-hint">Nassau: ${nassauLines.join(' | ')}</div>
+      </div>`;
+    }).join('') || `<div class="gl-empty-mini">Log a stroke-play round to see skins &amp; Nassau breakdowns.</div>`;
+    const expenseRows = trip.expenses.map(ex => `
+      <div class="gl-expense-row"><div><div class="gl-expense-desc">${escapeHtml(ex.desc)}</div>
+      <div class="gl-expense-meta">Paid by ${escapeHtml(playerName(trip,ex.paidBy))} · split ${ex.splitAmong.length || trip.players.length} ways</div></div>
+      <div style="text-align:right;"><div class="gl-expense-amt">${fmt(ex.amount)}</div>
+      <button class="gl-btn gl-btn-outline gl-btn-sm" data-remove-expense="${ex.id}" style="margin-top:4px;">Remove</button></div></div>`).join('') || `<div class="gl-empty-mini">No expenses logged yet.</div>`;
+    const net = grandNet(trip);
+    const netRows = trip.players.map(p => `<tr><td><span class="gl-swatch" style="background:${playerColor(trip,p.id)};display:inline-block;margin-right:6px;"></span>${escapeHtml(p.name)}${champ && champ.id===p.id ? ' <span class="gl-trophy-badge">🏆 Trip Champion</span>' : ''}</td><td class="${net[p.id]>0.01?'amt-pos':net[p.id]<-0.01?'amt-neg':'amt-zero'}">${fmt(net[p.id])}</td></tr>`).join('');
+    const txns = simplifyDebts(net);
+    const settleHtml = txns.length ? txns.map(t => {
+      const toPlayer = trip.players.find(p=>p.id===t.to);
+      const venmoUrl = toPlayer && toPlayer.venmo ? `https://venmo.com/?txn=pay&recipients=${encodeURIComponent(toPlayer.venmo)}&amount=${t.amount.toFixed(2)}&note=${encodeURIComponent('Golf trip: '+trip.name)}` : null;
+      const cashAppUrl = toPlayer && toPlayer.cashapp ? `https://cash.app/$${encodeURIComponent(toPlayer.cashapp)}/${t.amount.toFixed(2)}` : null;
+      const zelleText = toPlayer && toPlayer.zelle ? `Send ${fmt(t.amount)} via Zelle to ${toPlayer.zelle} — ${trip.name}` : null;
+      return `<div class="gl-settle-item"><div class="gl-settle-text"><b>${escapeHtml(playerName(trip,t.from))}</b> owes <b>${escapeHtml(playerName(trip,t.to))}</b></div>
+        <div class="gl-settle-amt">${fmt(t.amount)}</div>
+        <div class="gl-settle-actions">
+          ${venmoUrl ? `<a class="gl-btn gl-btn-sm gl-btn-primary" href="${venmoUrl}" target="_blank" rel="noopener">Pay via Venmo</a>` : ''}
+          ${cashAppUrl ? `<a class="gl-btn gl-btn-sm gl-btn-primary" href="${cashAppUrl}" target="_blank" rel="noopener">Pay via Cash App</a>` : ''}
+          ${zelleText ? `<button class="gl-btn gl-btn-sm gl-btn-outline" data-copy-zelle="${escapeHtml(zelleText)}">Copy Zelle Note</button>` : ''}
+          ${(!venmoUrl && !cashAppUrl && !zelleText) ? `<span class="gl-hint" style="margin:0;">no payment method on file</span>` : ''}
+        </div></div>`;
+    }).join('') : `<div class="gl-empty-mini">Everyone's square. Nothing to settle.</div>`;
+
+    const birdiesAward = mostBirdiesAward(trip);
+    const comebackAward = biggestComebackAward(trip);
+    const driveEntries = trip.rounds.filter(r => r.longestDrive);
+    const awardsHtml = `
+      <div class="gl-card"><h3>Trip Awards</h3>
+        ${champ ? `<div class="gl-menu-item"><div><div class="label">🏆 Trip Champion</div><div class="sub">Lowest total strokes across completed rounds</div></div><div style="font-weight:700;">${escapeHtml(playerName(trip,champ.id))}</div></div>` : ''}
+        ${birdiesAward ? `<div class="gl-menu-item"><div><div class="label">🎯 Most Birdies</div><div class="sub">Birdie or better, counted across the trip</div></div><div style="font-weight:700;">${escapeHtml(playerName(trip,birdiesAward.id))} (${birdiesAward.count})</div></div>` : ''}
+        ${comebackAward ? `<div class="gl-menu-item"><div><div class="label">🔄 Biggest Comeback</div><div class="sub">Best back-9 improvement over the front 9</div></div><div style="font-weight:700;">${escapeHtml(playerName(trip,comebackAward.id))} (+${comebackAward.improvement})</div></div>` : ''}
+        ${driveEntries.map(r => `<div class="gl-menu-item"><div><div class="label">🚀 Longest Drive</div><div class="sub">${escapeHtml(r.course||'a round')} · self-reported</div></div><div style="font-weight:700;">${escapeHtml(playerName(trip,r.longestDrive.playerId))} (${r.longestDrive.distance} yds)</div></div>`).join('')}
+        ${!champ && !birdiesAward && !comebackAward && !driveEntries.length ? `<div class="gl-empty-mini">Awards fill in as rounds get played.</div>` : ''}
+        ${trip.rounds.length ? `<div style="margin-top:12px;"><select id="ldRoundSelect">${trip.rounds.map(r=>`<option value="${r.id}">${escapeHtml(r.course||'Round')}</option>`).join('')}</select>
+        <select id="ldPlayerSelect">${trip.players.map(p=>`<option value="${p.id}">${escapeHtml(p.name)}</option>`).join('')}</select>
+        <input type="number" min="0" id="ldDistance" placeholder="yds" style="width:70px; padding:8px; border:1.5px solid var(--parchment-3); border-radius:6px; background:var(--parchment);">
+        <button class="gl-btn gl-btn-outline gl-btn-sm" id="addLongestDriveBtn" style="margin-top:6px;">Log Longest Drive</button></div>` : ''}
+      </div>
+      <div class="gl-card"><h3>Trip Recap</h3>
+        <div class="gl-hint" style="margin-top:0;">A shareable, auto-written summary of the whole trip — standings, awards, and who owes who.</div>
+        <button class="gl-btn gl-btn-primary" id="showRecapBtn" style="margin-top:10px;">View &amp; Share Recap</button>
+      </div>`;
+    return `
+      ${awardsHtml}
+      <div class="gl-card"><h3>Game Winnings (Skins + Nassau)</h3>
+      <table class="gl-bal-table"><thead><tr><th>Player</th><th>Net</th></tr></thead><tbody>${gameRows}</tbody></table>
+      <div style="margin-top:14px;">${roundBreakdown}</div></div>
+      <div class="gl-card"><h3>Trip Expenses</h3>${expenseRows}
+      <div style="margin-top:14px;"><button class="gl-btn gl-btn-primary" id="newExpenseBtn">+ Add Expense</button></div></div>
+      <div class="gl-card"><h3>Net Balance (Games + Expenses + Lodging)</h3>
+      <table class="gl-bal-table"><thead><tr><th>Player</th><th>Net</th></tr></thead><tbody>${netRows}</tbody></table></div>
+      <div class="gl-card"><h3>Settle Up</h3>${settleHtml}</div>`;
+  }
+
+  // ---------- MODALS ----------
+
+  function renderCourseRating(round){
+    if(!round.course) return '';
+    const existing = state.courseReviews[round.course] || [];
+    const myReview = state.profile ? existing.find(r => r.author === state.profile.name) : null;
+    const avg = courseAvg(round.course);
+    const stars = (n) => Array.from({length:5}).map((_,i) => `<span data-rate-course="${round.id}" data-rate-value="${i+1}" style="cursor:pointer; font-size:20px; color:${i<n?'var(--gold)':'var(--parchment-3)'};">★</span>`).join('');
+    const currentRating = ui.pendingRatings[round.id] !== undefined ? ui.pendingRatings[round.id] : (myReview ? myReview.rating : 0);
+    return `<div class="gl-round-social" style="border-top:1px dashed var(--parchment-3);">
+      <div style="font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; color:var(--ink-soft); margin-bottom:6px;">Rate ${escapeHtml(round.course)}${avg ? ` <span style="color:var(--gold);">★ ${avg.avg.toFixed(1)}</span> (${avg.count})` : ''}</div>
+      <div>${stars(currentRating)}</div>
+      <div class="gl-comment-input"><input type="text" id="reviewText-${round.id}" placeholder="Short review (optional)" value="${myReview ? escapeHtml(myReview.text) : ''}"><button class="gl-btn gl-btn-outline gl-btn-sm" data-submit-review="${round.id}">${myReview?'Update':'Submit'}</button></div>
+    </div>`;
+  }
+
+  function renderRoundSocial(trip, round){
+    round.comments = round.comments || [];
+    round.likedBy = round.likedBy || [];
+    const liked = state.profile && round.likedBy.includes(state.profile.name);
+    const commentsHtml = round.comments.map(c => `
+      <div class="gl-comment"><span class="gl-avatar gl-avatar-sm">⛳</span>
+        <div class="bubble"><div class="cauthor">${escapeHtml(c.author)}</div><div class="ctext">${escapeHtml(c.text)}</div><div class="ctime">${timeAgo(c.ts)}</div></div>
+      </div>`).join('') || `<div class="gl-hint" style="margin-top:0;">No comments yet — be the first to chirp about this round.</div>`;
+    return `<div class="gl-round-social">
+      <button class="gl-react-btn ${liked?'liked':''}" data-like-round="${round.id}">${liked?'🔥':'🤍'} ${round.likedBy.length>0?round.likedBy.length:''} React</button>
+      <div style="margin-top:10px;">${commentsHtml}</div>
+      <div class="gl-comment-input"><input type="text" id="commentInput-${round.id}" placeholder="Add a comment..."><button class="gl-btn gl-btn-outline gl-btn-sm" data-add-comment="${round.id}">Post</button></div>
+    </div>
+    ${renderCourseRating(round)}`;
+  }
+
+  function renderMore(trip){
+    trip.seekingPlayers = trip.seekingPlayers || { active:false, spotsNeeded:1, note:'' };
+    return `
+      <div class="gl-card">
+        <h3>Trip Settings</h3>
+        <div class="gl-menu-item">
+          <div><div class="label">Discoverable in Explore</div><div class="sub">Let other GolfWithMe users find and view this trip publicly.</div></div>
+          <div class="gl-toggle ${trip.public?'on':''}" id="publicToggle"><div class="knob"></div></div>
+        </div>
+        <div class="gl-menu-item">
+          <div><div class="label">🔍 Looking for Players</div><div class="sub">Show this trip as needing more players in Explore (requires Discoverable).</div></div>
+          <div class="gl-toggle ${trip.seekingPlayers.active?'on':''}" id="seekingToggle"><div class="knob"></div></div>
+        </div>
+        ${trip.seekingPlayers.active ? `<div class="gl-row" style="margin-top:10px;">
+          <div class="gl-field"><label>Spots needed</label><input type="number" min="1" max="20" id="spotsNeeded" value="${trip.seekingPlayers.spotsNeeded}"></div>
+          <div class="gl-field"><label>Note (optional)</label><input type="text" id="seekingNote" value="${escapeHtml(trip.seekingPlayers.note)}" placeholder="Need 2 more for Saturday!"></div>
+        </div>
+        <button class="gl-btn gl-btn-outline gl-btn-sm" id="saveSeekingBtn" style="margin-top:8px;">Save</button>` : ''}
+      </div>
+      ${renderRyder(trip)}
+      ${renderLodging(trip)}`;
+  }
+
+  function renderTripDetail(){
+    const trip = currentTrip();
+    if(!trip) return `<div class="gl-main"><div class="gl-empty-mini">Loading trip…</div></div>`;
+    const tabs = [['players','Players'],['scorecard','Scorecard'],['money','Money'],['more','More']];
+    let body = '';
+    if(ui.tripTab === 'players') body = renderPlayers(trip);
+    else if(ui.tripTab === 'scorecard') body = renderScorecard(trip);
+    else if(ui.tripTab === 'money') body = renderMoney(trip);
+    else if(ui.tripTab === 'more') body = renderMore(trip);
+    return `<div class="gl-tabs">${tabs.map(([k,label]) => `<div class="gl-tab ${ui.tripTab===k?'active':''}" data-trip-tab="${k}">${label}</div>`).join('')}</div>
+      <div class="gl-main">${body}</div>`;
+  }
+  function renderModal(){
+    const trip = currentTrip();
+    if(ui.modal === 'tripRecap'){
+      const text = generateRecapText(trip);
+      return `<div class="gl-modal-bg" id="modalBg"><div class="gl-modal"><span class="gl-close" id="closeModal">&times;</span><h3>Trip Recap</h3>
+        <div style="background:var(--parchment); border-radius:8px; padding:14px; white-space:pre-wrap; font-family:'JetBrains Mono'; font-size:12.5px; line-height:1.6; max-height:340px; overflow-y:auto;">${escapeHtml(text)}</div>
+        <div class="gl-row" style="margin-top:14px;">
+          <button class="gl-btn gl-btn-primary" id="copyRecapBtn" style="flex:1;">Copy</button>
+          <button class="gl-btn gl-btn-outline" id="postRecapBtn" style="flex:1;">Post to Feed</button>
+        </div>
+      </div></div>`;
+    }
+    if(ui.modal === 'confirmDelete'){
+      const d = ui.pendingDelete || {};
+      const nouns = { player:'player', round:'round', expense:'expense', lodging:'lodging entry' };
+      return `<div class="gl-modal-bg" id="modalBg"><div class="gl-modal"><span class="gl-close" id="closeModal">&times;</span><h3>Remove ${nouns[d.type]||'item'}?</h3>
+        <div class="gl-hint" style="margin-top:0;">Remove <b>${escapeHtml(d.label||'')}</b>? This can't be undone from here.</div>
+        <div class="gl-row" style="margin-top:16px;">
+          <button class="gl-btn gl-btn-outline" id="closeModal2" style="flex:1;">Cancel</button>
+          <button class="gl-btn gl-btn-flag" id="confirmDeleteBtn" style="flex:1;">Remove</button>
+        </div>
+      </div></div>`;
+    }
+    if(ui.modal === 'quickActions'){
+      return `<div class="gl-modal-bg" id="modalBg"><div class="gl-modal"><span class="gl-close" id="closeModal">&times;</span><h3>New</h3>
+        <div class="gl-actionsheet-item" id="actionNewTrip"><span class="ico">⛳</span> Create a new trip</div>
+        <div class="gl-actionsheet-item" id="actionJoinTrip"><span class="ico">🔑</span> Join with a code</div>
+      </div></div>`;
+    }
+    if(ui.modal === 'removeTrip'){
+      const code = ui.pendingRemoveCode;
+      const t = state.trips[code];
+      const name = t ? t.name : code;
+      return `<div class="gl-modal-bg" id="modalBg"><div class="gl-modal"><span class="gl-close" id="closeModal">&times;</span><h3>Remove Trip?</h3>
+        <div class="gl-hint" style="margin-top:0;">Remove <b>${escapeHtml(name)}</b> (${code}) from My Trips? This only removes it from your list — anyone else with the code can still open it, and you can always rejoin later with the code.</div>
+        <div class="gl-row" style="margin-top:16px;">
+          <button class="gl-btn gl-btn-outline" id="closeModal2" style="flex:1;">Cancel</button>
+          <button class="gl-btn gl-btn-flag" id="confirmRemoveTripBtn" style="flex:1;">Remove</button>
+        </div>
+      </div></div>`;
+    }
+    if(ui.modal === 'newTrip'){
+      return `<div class="gl-modal-bg" id="modalBg"><div class="gl-modal"><span class="gl-close" id="closeModal">&times;</span><h3>New Trip</h3>
+        <div class="gl-field"><label>Trip Name</label><input type="text" id="mTripName" placeholder="Seville &amp; Malaga Golf Trip"></div>
+        <div class="gl-field"><label>Location</label><input type="text" id="mTripLoc" placeholder="Seville, Spain"></div>
+        <div class="gl-row"><div class="gl-field"><label>Start Date</label><input type="date" id="mTripStart"></div><div class="gl-field"><label>End Date</label><input type="date" id="mTripEnd"></div></div>
+        <button class="gl-btn gl-btn-primary gl-btn-block" id="createTripBtn">Create Trip</button>
+        <div class="gl-hint">You'll get a share code right after — send it to your group so they can join from their own phones.</div>
+      </div></div>`;
+    }
+    if(ui.modal === 'joinTrip'){
+      return `<div class="gl-modal-bg" id="modalBg"><div class="gl-modal"><span class="gl-close" id="closeModal">&times;</span><h3>Join a Trip</h3>
+        <div class="gl-field"><label>Trip Code</label><input type="text" id="mJoinCode" placeholder="ABCDE" maxlength="8" style="text-transform:uppercase; letter-spacing:2px; font-family:'JetBrains Mono';"></div>
+        ${ui.joinErr ? `<div class="gl-err">${escapeHtml(ui.joinErr)}</div>` : ''}
+        <button class="gl-btn gl-btn-primary gl-btn-block" id="doJoinBtn">Join Trip</button>
+      </div></div>`;
+    }
+    if(ui.modal === 'newRound'){
+      const q = ui.courseQuery.trim().toLowerCase();
+      const matches = q.length ? COURSES.filter(c => (c.name+' '+c.city+' '+c.region+' '+c.country).toLowerCase().includes(q)).slice(0,8) : [];
+      const format = ui.newRoundFormat || 'stroke';
+      const groupSplit = trip.players.length > 4;
+      return `<div class="gl-modal-bg" id="modalBg"><div class="gl-modal"><span class="gl-close" id="closeModal">&times;</span><h3>Log a Round</h3>
+        <div class="gl-field"><label>Format</label>
+          <select id="mFormat">
+            <option value="stroke" ${format==='stroke'?'selected':''}>Stroke Play (skins &amp; Nassau)</option>
+            <option value="match" ${format==='match'?'selected':''}>Match Play (1v1)</option>
+            ${trip.teams ? `<option value="ryder" ${format==='ryder'?'selected':''}>Ryder Cup Singles</option>` : ''}
+          </select>
+        </div>
+        <div class="gl-field"><label>Find a course</label>
+          <input type="text" id="mCourseSearch" placeholder="e.g. Scottsdale, Pinehurst, St Andrews..." value="${escapeHtml(ui.courseQuery)}" autocomplete="off">
+          ${matches.length ? `<div class="gl-course-results">${matches.map(c => `<div class="gl-course-item" data-pick-course='${escapeHtml(JSON.stringify(c))}'><b>${escapeHtml(c.name)}</b><div class="loc">${escapeHtml(c.city)}, ${escapeHtml(c.region)}, ${escapeHtml(c.country)}</div></div>`).join('')}</div>` : ''}
+          ${ui.selectedCourse ? `<div class="gl-course-selected"><span><b>${escapeHtml(ui.selectedCourse.name)}</b> — ${escapeHtml(ui.selectedCourse.city)}, ${escapeHtml(ui.selectedCourse.region)}</span><span data-clear-course style="cursor:pointer; color:var(--flag-dark);">&times;</span></div>` : ''}
+          <div class="gl-hint">Can't find it? Type the course name below — it's saved as a custom course.</div>
+        </div>
+        <div class="gl-field"><label>Course Name</label><input type="text" id="mCourse" value="${ui.selectedCourse ? escapeHtml(ui.selectedCourse.name) : ''}"></div>
+        <div class="gl-field"><label>Date</label><input type="date" id="mRoundDate"></div>
+        ${format==='stroke' ? `<div class="gl-row">
+          <div class="gl-field"><label>Skins bet ($/hole)</label><input type="number" min="0" step="0.5" id="mSkinsBet" value="2"></div>
+          <div class="gl-field"><label>Nassau bet ($/segment)</label><input type="number" min="0" step="1" id="mNassauBet" value="10"></div>
+        </div>` : ''}
+        ${format==='stroke' && groupSplit ? `<div class="gl-field"><label>Split into foursomes?</label>
+          <select id="mSplitGroups"><option value="no">No — one group</option><option value="yes">Yes — auto-split into groups of 4</option></select></div>` : ''}
+        ${format==='match' ? `<div class="gl-row">
+          <div class="gl-field"><label>Player A</label><select id="mMatchA">${trip.players.map(p=>`<option value="${p.id}">${escapeHtml(p.name)}</option>`).join('')}</select></div>
+          <div class="gl-field"><label>Player B</label><select id="mMatchB">${trip.players.map((p,i)=>`<option value="${p.id}" ${i===1?'selected':''}>${escapeHtml(p.name)}</option>`).join('')}</select></div>
+        </div>` : ''}
+        ${format==='ryder' ? `<div class="gl-hint">Ryder Cup singles pairings are generated automatically: each Team A player faces a Team B player.</div>` : ''}
+        <button class="gl-btn gl-btn-primary gl-btn-block" id="createRoundBtn">Create Round</button>
+      </div></div>`;
+    }
+    if(ui.modal === 'newExpense'){
+      const chips = trip.players.map(p => `<span class="gl-chip selected" data-expense-chip="${p.id}">${escapeHtml(p.name)}</span>`).join('');
+      const paidOptions = trip.players.map(p => `<option value="${p.id}">${escapeHtml(p.name)}</option>`).join('');
+      return `<div class="gl-modal-bg" id="modalBg"><div class="gl-modal"><span class="gl-close" id="closeModal">&times;</span><h3>Add Expense</h3>
+        <div class="gl-field"><label>Description</label><input type="text" id="mExpDesc" placeholder="Green fees, dinner..."></div>
+        <div class="gl-field"><label>Amount</label><input type="number" min="0" step="0.01" id="mExpAmount" placeholder="240.00"></div>
+        <div class="gl-field"><label>Paid by</label><select id="mExpPaidBy">${paidOptions}</select></div>
+        <div class="gl-field"><label>Split among (tap to toggle)</label><div class="gl-chip-wrap" id="chipWrap">${chips}</div></div>
+        <button class="gl-btn gl-btn-primary gl-btn-block" id="createExpenseBtn">Add Expense</button>
+      </div></div>`;
+    }
+    if(ui.modal === 'newLodging'){
+      const chips = trip.players.map(p => `<span class="gl-chip selected" data-lodging-chip="${p.id}">${escapeHtml(p.name)}</span>`).join('');
+      const paidOptions = trip.players.map(p => `<option value="${p.id}">${escapeHtml(p.name)}</option>`).join('');
+      return `<div class="gl-modal-bg" id="modalBg"><div class="gl-modal"><span class="gl-close" id="closeModal">&times;</span><h3>Add Lodging</h3>
+        <div class="gl-field"><label>Name</label><input type="text" id="mLodgeName" placeholder="Airbnb — 3BR near the course"></div>
+        <div class="gl-field"><label>Address</label><input type="text" id="mLodgeAddr" placeholder="123 Fairway Ln"></div>
+        <div class="gl-row"><div class="gl-field"><label>Check-in</label><input type="date" id="mLodgeIn"></div><div class="gl-field"><label>Check-out</label><input type="date" id="mLodgeOut"></div></div>
+        <div class="gl-field"><label>Total Cost</label><input type="number" min="0" step="0.01" id="mLodgeCost" placeholder="850.00"></div>
+        <div class="gl-field"><label>Confirmation # / Link (optional)</label><input type="text" id="mLodgeConf" placeholder="ABC123 or booking link"></div>
+        <div class="gl-field"><label>Paid by</label><select id="mLodgePaidBy">${paidOptions}</select></div>
+        <div class="gl-field"><label>Split among</label><div class="gl-chip-wrap" id="lodgeChipWrap">${chips}</div></div>
+        <button class="gl-btn gl-btn-primary gl-btn-block" id="createLodgingBtn">Add Lodging</button>
+      </div></div>`;
+    }
+    return '';
+  }
+
+  function renderCelebration(){
+    const d = ui.celebrateData;
+    let pieces = '';
+    for(let i=0;i<60;i++){
+      const left = Math.random()*100, delay = Math.random()*0.6, dur = 2.2+Math.random()*1.6, color = CONFETTI_COLORS[i%CONFETTI_COLORS.length], rot = Math.random()*360;
+      pieces += `<div class="gl-confetti-piece" style="left:${left}%; background:${color}; animation-duration:${dur}s; animation-delay:${delay}s; transform:rotate(${rot}deg);"></div>`;
+    }
+    return `<div class="gl-confetti-overlay" id="celebrationBg">
+      ${pieces}
+      <div class="gl-trophy-card">
+        <div class="trophy-icon">🏆</div>
+        <h2>${escapeHtml(d.title)}</h2>
+        <div class="winner-name">${escapeHtml(d.winner)}</div>
+        <p>${escapeHtml(d.subtitle)}</p>
+        <button class="gl-btn gl-btn-primary gl-btn-block" id="closeCelebration">Nice!</button>
+      </div>
+    </div>`;
+  }
+
+  // ---------- EVENTS ----------
+  function attachEvents(){
+    const $ = sel => app.querySelector(sel);
+    const $$ = sel => Array.from(app.querySelectorAll(sel));
+    const trip = currentTrip();
+
+    if($('#brandHome')) $('#brandHome').onclick = () => { ui.view = state.myTrips.length ? 'feed' : 'trips'; ui.modal=null; render(); };
+    $$('[data-nav]').forEach(el => el.onclick = () => { ui.view = el.dataset.nav; ui.modal=null; ui.courseQuery=''; render(); });
+    if($('#quickAddBtn')) $('#quickAddBtn').onclick = () => { ui.modal='quickActions'; render(); };
+    if($('#openRoadmapCard')) $('#openRoadmapCard').onclick = () => { ui.view='roadmap'; render(); };
+    if($('#closeRoadmapBtn')) $('#closeRoadmapBtn').onclick = () => { ui.view='profile'; render(); };
+    $$('[data-roadmap-tab]').forEach(el => el.onclick = () => { ui.roadmapTab = el.dataset.roadmapTab; render(); });
+    if($('#actionNewTrip')) $('#actionNewTrip').onclick = () => { ui.modal='newTrip'; render(); };
+    if($('#actionJoinTrip')) $('#actionJoinTrip').onclick = () => { ui.joinErr=''; ui.modal='joinTrip'; render(); };
+
+    if($('#exploreSearch')) $('#exploreSearch').oninput = (e) => { ui.courseQuery = e.target.value; render(); const el=app.querySelector('#exploreSearch'); if(el){ el.focus(); el.selectionStart=el.selectionEnd=el.value.length; } };
+    $$('[data-explore-country]').forEach(el => el.onclick = () => { ui.courseQuery = el.dataset.exploreCountry; render(); });
+    $$('[data-explore-tab]').forEach(el => el.onclick = () => { ui.exploreTab = el.dataset.exploreTab; ui.courseQuery=''; render(); });
+    $$('[data-view-public-trip]').forEach(el => el.onclick = async () => {
+      const code = el.dataset.viewPublicTrip;
+      await fetchTrip(code);
+      if(!state.myTrips.find(m => m.code === code)) { state.myTrips.push({ code, name: state.trips[code] ? state.trips[code].name : code }); await saveMyTrips(); }
+      state.currentCode = code; ui.view='trip'; ui.tripTab='players'; render(); startPolling();
+    });
+
+    if($('#copyCode')) $('#copyCode').onclick = () => {
+      const done = () => { $('#copyCode').textContent = 'Copied!'; setTimeout(()=>render(),1200); };
+      if(navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(trip.code).then(done).catch(() => { $('#copyCode').textContent = trip.code + ' (copy manually)'; setTimeout(()=>render(),2000); });
+      else { $('#copyCode').textContent = trip.code + ' (copy manually)'; setTimeout(()=>render(),2000); }
+    };
+    if($('#closeModal')) $('#closeModal').onclick = () => { ui.modal=null; ui.courseQuery=''; ui.selectedCourse=null; render(); };
+    if($('#closeModal2')) $('#closeModal2').onclick = () => { ui.modal=null; ui.pendingRemoveCode=null; ui.pendingDelete=null; render(); };
+    if($('#modalBg')) $('#modalBg').addEventListener('click', (e) => { if(e.target.id==='modalBg'){ ui.modal=null; ui.courseQuery=''; ui.selectedCourse=null; render(); } });
+    if($('#closeCelebration')) $('#closeCelebration').onclick = () => { ui.celebrateData = null; render(); };
+    if($('#celebrationBg')) $('#celebrationBg').addEventListener('click', (e) => { if(e.target.id==='celebrationBg'){ ui.celebrateData=null; render(); } });
+
+    // ----- Onboarding / Profile -----
+    $$('[data-avatar-pick]').forEach(el => el.onclick = () => {
+      const emoji = el.dataset.avatarPick;
+      if(ui.editingProfile){
+        ui.profileDraft = ui.profileDraft || {...state.profile};
+        if($('#epName')) ui.profileDraft.name = $('#epName').value;
+        if($('#epCourse')) ui.profileDraft.homeCourse = $('#epCourse').value;
+        if($('#epFormat')) ui.profileDraft.favoriteFormat = $('#epFormat').value;
+        if($('#epBio')) ui.profileDraft.bio = $('#epBio').value;
+        ui.profileDraft.avatar = emoji;
+        ui.profileDraft.avatarImage = null;
+      } else {
+        ui.profileDraft = ui.profileDraft || { name:'', avatar:'⛳', avatarImage:null, homeCourse:'', favoriteFormat:'Stroke Play', bio:'' };
+        if($('#obName')) ui.profileDraft.name = $('#obName').value;
+        if($('#obCourse')) ui.profileDraft.homeCourse = $('#obCourse').value;
+        if($('#obFormat')) ui.profileDraft.favoriteFormat = $('#obFormat').value;
+        ui.profileDraft.avatar = emoji;
+        ui.profileDraft.avatarImage = null;
+      }
+      render();
+    });
+    function readAndResizeImage(file, callback){
+      if(!file || !file.type || !file.type.startsWith('image/')){ callback(null); return; }
+      if(file.size > 8 * 1024 * 1024){ callback(null); return; }
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        const img = new Image();
+        img.onload = () => {
+          const size = 200;
+          const canvas = document.createElement('canvas');
+          canvas.width = size; canvas.height = size;
+          const ctx = canvas.getContext('2d');
+          const scale = Math.max(size / img.width, size / img.height);
+          const w = img.width * scale, h = img.height * scale;
+          ctx.drawImage(img, (size - w) / 2, (size - h) / 2, w, h);
+          try{ callback(canvas.toDataURL('image/jpeg', 0.8)); }
+          catch(e){ callback(null); }
+        };
+        img.onerror = () => callback(null);
+        img.src = ev.target.result;
+      };
+      reader.onerror = () => callback(null);
+      reader.readAsDataURL(file);
+    }
+    function readAndResizeImageRect(file, maxDim, callback){
+      if(!file || !file.type || !file.type.startsWith('image/')){ callback(null); return; }
+      if(file.size > 8 * 1024 * 1024){ callback(null); return; }
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        const img = new Image();
+        img.onload = () => {
+          const scale = Math.min(1, maxDim / Math.max(img.width, img.height));
+          const w = Math.round(img.width * scale), h = Math.round(img.height * scale);
+          const canvas = document.createElement('canvas');
+          canvas.width = w; canvas.height = h;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, w, h);
+          try{ callback(canvas.toDataURL('image/jpeg', 0.55)); }
+          catch(e){ callback(null); }
+        };
+        img.onerror = () => callback(null);
+        img.src = ev.target.result;
+      };
+      reader.onerror = () => callback(null);
+      reader.readAsDataURL(file);
+    }
+    if($('#composerPhotoInput')) $('#composerPhotoInput').onchange = (e) => {
+      const file = e.target.files && e.target.files[0]; if(!file) return;
+      readAndResizeImageRect(file, 480, (dataUrl) => {
+        if(!dataUrl){ alert('Could not read that image — try a different photo.'); return; }
+        ui.composerPhoto = dataUrl;
+        render();
+      });
+    };
+    if($('#composerPhotoRemove')) $('#composerPhotoRemove').onclick = () => { ui.composerPhoto = null; render(); };
+    if($('#obPhotoInput')) $('#obPhotoInput').onchange = (e) => {
+      const file = e.target.files && e.target.files[0]; if(!file) return;
+      readAndResizeImage(file, (dataUrl) => {
+        if(!dataUrl){ alert('Could not read that image — try a different photo.'); return; }
+        ui.profileDraft = ui.profileDraft || { name: $('#obName')?$('#obName').value:'', avatar:'⛳', homeCourse:'', favoriteFormat:'Stroke Play', bio:'' };
+        if($('#obName')) ui.profileDraft.name = $('#obName').value;
+        ui.profileDraft.avatarImage = dataUrl;
+        render();
+      });
+    };
+    if($('#obClearPhoto')) $('#obClearPhoto').onclick = () => { if(ui.profileDraft) ui.profileDraft.avatarImage = null; render(); };
+    if($('#epPhotoInput')) $('#epPhotoInput').onchange = (e) => {
+      const file = e.target.files && e.target.files[0]; if(!file) return;
+      readAndResizeImage(file, (dataUrl) => {
+        if(!dataUrl){ alert('Could not read that image — try a different photo.'); return; }
+        ui.profileDraft = ui.profileDraft || {...state.profile};
+        if($('#epName')) ui.profileDraft.name = $('#epName').value;
+        if($('#epCourse')) ui.profileDraft.homeCourse = $('#epCourse').value;
+        if($('#epFormat')) ui.profileDraft.favoriteFormat = $('#epFormat').value;
+        if($('#epBio')) ui.profileDraft.bio = $('#epBio').value;
+        ui.profileDraft.avatarImage = dataUrl;
+        render();
+      });
+    };
+    if($('#epClearPhoto')) $('#epClearPhoto').onclick = () => { if(ui.profileDraft) ui.profileDraft.avatarImage = null; render(); };
+    if($('#createProfileBtn')) $('#createProfileBtn').onclick = async () => {
+      const name = $('#obName').value.trim(); if(!name) return;
+      const btn = $('#createProfileBtn'); if(btn.disabled) return; btn.disabled = true;
+      const avatar = (ui.profileDraft && ui.profileDraft.avatar) || '⛳';
+      const avatarImage = (ui.profileDraft && ui.profileDraft.avatarImage) || null;
+      state.profile = { name, avatar, avatarImage, homeCourse: $('#obCourse').value.trim(), favoriteFormat: $('#obFormat').value, bio: '' };
+      await saveProfile();
+      ui.profileDraft = null; ui.view = 'feed';
+      render();
+    };
+    if($('#editProfileBtn')) $('#editProfileBtn').onclick = () => { ui.editingProfile = true; ui.profileDraft = {...state.profile}; render(); };
+    if($('#cancelEditProfile')) $('#cancelEditProfile').onclick = () => { ui.editingProfile = false; ui.profileDraft = null; render(); };
+    if($('#saveProfileBtn')) $('#saveProfileBtn').onclick = async () => {
+      const name = $('#epName').value.trim(); if(!name) return;
+      const btn = $('#saveProfileBtn'); if(btn.disabled) return; btn.disabled = true;
+      state.profile = { name, avatar: (ui.profileDraft&&ui.profileDraft.avatar)||state.profile.avatar, avatarImage: (ui.profileDraft&&('avatarImage' in ui.profileDraft))?ui.profileDraft.avatarImage:(state.profile.avatarImage||null), homeCourse: $('#epCourse').value.trim(), favoriteFormat: $('#epFormat').value, bio: $('#epBio').value.trim() };
+      await saveProfile();
+      ui.editingProfile = false; ui.profileDraft = null;
+      render();
+    };
+
+    // ----- Feed -----
+    if($('#postUpdateBtn')) $('#postUpdateBtn').onclick = async () => {
+      const btn = $('#postUpdateBtn'); if(btn.disabled) return;
+      const text = $('#composerText').value.trim(); if(!text) return;
+      const codeSel = $('#composerTrip') || $('#composerTripSingle');
+      const code = codeSel ? codeSel.value : null;
+      const t = code ? state.trips[code] : null;
+      if(!t) return;
+      btn.disabled = true;
+      pushFeed(t, 'post', text, ui.composerPhoto);
+      await saveTrip(t);
+      ui.composerPhoto = null;
+      render();
+    };
+    $$('[data-like-post]').forEach(el => el.onclick = async () => {
+      const [code, id] = el.dataset.likePost.split(':');
+      const t = state.trips[code]; if(!t) return;
+      const post = (t.feed||[]).find(f => f.id === id); if(!post) return;
+      post.likedBy = post.likedBy || [];
+      const name = state.profile.name;
+      if(post.likedBy.includes(name)) post.likedBy = post.likedBy.filter(n=>n!==name); else post.likedBy.push(name);
+      await saveTrip(t); render();
+    });
+    $$('[data-open-post-trip]').forEach(el => el.onclick = (e) => {
+      if(e.target.closest('[data-like-post]')) return;
+      const code = el.dataset.openPostTrip;
+      state.currentCode = code; ui.view='trip'; ui.tripTab='players'; render(); startPolling();
+    });
+
+    // ----- Trips -----
+    $$('[data-open-trip]').forEach(el => el.onclick = async () => { const code = el.dataset.openTrip; await fetchTrip(code); state.currentCode = code; ui.view='trip'; ui.tripTab='players'; ui.roundId=null; render(); startPolling(); });
+    $$('[data-remove-trip]').forEach(el => el.onclick = (e) => { e.stopPropagation(); ui.pendingRemoveCode = el.dataset.removeTrip; ui.modal = 'removeTrip'; render(); });
+    if($('#confirmRemoveTripBtn')) $('#confirmRemoveTripBtn').onclick = async () => {
+      state.myTrips = state.myTrips.filter(m => m.code !== ui.pendingRemoveCode);
+      await saveMyTrips(); ui.modal = null; ui.pendingRemoveCode = null; render();
+    };
+    if($('#confirmDeleteBtn')) $('#confirmDeleteBtn').onclick = async () => {
+      const d = ui.pendingDelete; if(!d || !trip){ ui.modal=null; render(); return; }
+      if(d.type === 'player') trip.players = trip.players.filter(p => p.id !== d.id);
+      else if(d.type === 'round'){ trip.rounds = trip.rounds.filter(r => r.id !== d.id); if(ui.roundId===d.id) ui.roundId=null; }
+      else if(d.type === 'expense') trip.expenses = trip.expenses.filter(ex => ex.id !== d.id);
+      else if(d.type === 'lodging') trip.lodging = trip.lodging.filter(l => l.id !== d.id);
+      await saveTrip(trip);
+      ui.modal = null; ui.pendingDelete = null; render();
+    };
+
+    if($('#createTripBtn')) $('#createTripBtn').onclick = async () => {
+      const name = $('#mTripName').value.trim(); if(!name) return;
+      $('#createTripBtn').disabled = true; $('#createTripBtn').textContent = 'Creating…';
+      const code = await uniqueCode();
+      const newTrip = { code, name, location: $('#mTripLoc').value.trim(), startDate: $('#mTripStart').value, endDate: $('#mTripEnd').value, players: [], rounds: [], expenses: [], lodging: [], teams: null, feed: [], public: false };
+      if(state.profile) newTrip.players.push({ id: uid(), name: state.profile.name, venmo:'', cashapp:'', zelle:'' });
+      pushFeed(newTrip, 'created', `${state.profile ? state.profile.name : 'Someone'} started the trip 🏌️`);
+      await saveTrip(newTrip);
+      state.myTrips.push({ code, name }); await saveMyTrips();
+      state.currentCode = code; ui.view='trip'; ui.tripTab='players'; ui.modal=null;
+      render(); startPolling();
+    };
+    if($('#doJoinBtn')) $('#doJoinBtn').onclick = async () => {
+      const raw = $('#mJoinCode').value.trim().toUpperCase(); if(!raw){ ui.joinErr='Enter a code.'; render(); return; }
+      $('#doJoinBtn').disabled = true; $('#doJoinBtn').textContent = 'Looking up…';
+      const t = await fetchTrip(raw);
+      if(!t){ ui.joinErr = `No trip found for code "${raw}".`; render(); return; }
+      if(!state.myTrips.find(m => m.code === raw)){ state.myTrips.push({ code: raw, name: t.name }); await saveMyTrips(); }
+      state.currentCode = raw; ui.view='trip'; ui.tripTab='players'; ui.modal=null; ui.joinErr='';
+      render(); startPolling();
+    };
+
+    if($('#addMeBtn')) $('#addMeBtn').onclick = async () => {
+      const btn = $('#addMeBtn'); if(btn.disabled) return; btn.disabled = true;
+      trip.players.push({ id: uid(), name: state.profile.name, venmo:'', cashapp:'', zelle:'' });
+      pushFeed(trip, 'join', `${state.profile.name} joined the trip`);
+      await saveTrip(trip); render();
+    };
+    if($('#addPlayerBtn')) $('#addPlayerBtn').onclick = async () => {
+      const btn = $('#addPlayerBtn'); if(btn.disabled) return;
+      const name = $('#npName').value.trim(); if(!name) return;
+      btn.disabled = true;
+      trip.players.push({ id: uid(), name, venmo: $('#npVenmo').value.trim(), cashapp: $('#npCashapp').value.trim().replace(/^\$/, ''), zelle: $('#npZelle').value.trim() });
+      pushFeed(trip, 'join', `${name} joined the trip`);
+      await saveTrip(trip); render();
+    };
+    $$('[data-remove-player]').forEach(el => el.onclick = () => {
+      const p = trip.players.find(pl => pl.id === el.dataset.removePlayer);
+      ui.pendingDelete = { type:'player', id: el.dataset.removePlayer, label: p ? p.name : 'this player' };
+      ui.modal = 'confirmDelete'; render();
+    });
+
+    $$('[data-trip-tab]').forEach(el => el.onclick = () => { ui.tripTab = el.dataset.tripTab; render(); });
+
+    if($('#newRoundBtn')) $('#newRoundBtn').onclick = () => { ui.courseQuery=''; ui.selectedCourse=null; ui.newRoundFormat='stroke'; ui.modal='newRound'; render(); };
+    if($('#mFormat')) $('#mFormat').onchange = (e) => { ui.newRoundFormat = e.target.value; render(); };
+    if($('#mCourseSearch')) $('#mCourseSearch').oninput = (e) => { ui.courseQuery = e.target.value; render(); const el=app.querySelector('#mCourseSearch'); if(el){ el.focus(); el.selectionStart=el.selectionEnd=el.value.length; } };
+    $$('[data-pick-course]').forEach(el => el.onclick = () => { ui.selectedCourse = JSON.parse(el.dataset.pickCourse); ui.courseQuery=''; render(); });
+    if(app.querySelector('[data-clear-course]')) app.querySelector('[data-clear-course]').onclick = () => { ui.selectedCourse = null; render(); };
+
+    if($('#createRoundBtn')) $('#createRoundBtn').onclick = async () => {
+      const btn = $('#createRoundBtn'); if(btn.disabled) return;
+      const format = ($('#mFormat') && $('#mFormat').value) || 'stroke';
+      const course = $('#mCourse').value.trim();
+      if(!course) return;
+      btn.disabled = true;
+      const defaultPar = [4,4,3,5,4,4,3,5,4,4,4,3,5,4,4,3,5,4];
+      const newRound = { id: uid(), course, courseLocation: ui.selectedCourse ? `${ui.selectedCourse.city}, ${ui.selectedCourse.region}` : '', date: $('#mRoundDate').value, format, skinsBet:0, nassauBet:0, par: defaultPar, scores: {}, groups: [], matchPlayers: null, ryderPairs: null, comments: [], likedBy: [] };
+      trip.players.forEach(p => { newRound.scores[p.id] = new Array(18).fill(''); });
+      if(format==='stroke'){
+        newRound.skinsBet = Math.max(0, Number(($('#mSkinsBet')&&$('#mSkinsBet').value)||0));
+        newRound.nassauBet = Math.max(0, Number(($('#mNassauBet')&&$('#mNassauBet').value)||0));
+        const split = $('#mSplitGroups') && $('#mSplitGroups').value === 'yes';
+        if(split){
+          const chunks = []; for(let i=0;i<trip.players.length;i+=4) chunks.push(trip.players.slice(i,i+4));
+          newRound.groups = chunks.map((c,i) => ({ id: uid(), name: `Group ${i+1}`, playerIds: c.map(p=>p.id) }));
+        }
+      } else if(format==='match'){
+        newRound.matchPlayers = [$('#mMatchA').value, $('#mMatchB').value];
+      } else if(format==='ryder' && trip.teams){
+        const teamA = trip.players.filter(p => trip.teams.teamA.includes(p.id));
+        const teamB = trip.players.filter(p => trip.teams.teamB.includes(p.id));
+        const n = Math.min(teamA.length, teamB.length);
+        const pairs = []; for(let i=0;i<n;i++) pairs.push({ a: teamA[i].id, b: teamB[i].id });
+        newRound.ryderPairs = pairs;
+      }
+      trip.rounds.push(newRound);
+      pushFeed(trip, 'round', `New round logged: ${course || 'a course'}${newRound.courseLocation ? ' — '+newRound.courseLocation : ''}`);
+      await saveTrip(trip);
+      ui.roundId = newRound.id; ui.modal = null; ui.courseQuery=''; ui.selectedCourse=null; ui.groupFilter=null; ui.scorecardView='play'; ui.playHole=0;
+      render();
+    };
+    $$('[data-round]').forEach(el => el.onclick = (e) => { if(e.target.closest('[data-remove-round]')) return; ui.roundId = el.dataset.round; ui.groupFilter=null; ui.playHole=0; render(); });
+    $$('[data-remove-round]').forEach(el => el.onclick = (e) => {
+      e.stopPropagation();
+      const r = trip.rounds.find(rd => rd.id === el.dataset.removeRound);
+      ui.pendingDelete = { type:'round', id: el.dataset.removeRound, label: r ? (r.course || 'this round') : 'this round' };
+      ui.modal = 'confirmDelete'; render();
+    });
+    $$('[data-group-filter]').forEach(el => el.onclick = () => { ui.groupFilter = el.dataset.groupFilter; render(); });
+    $$('[data-par]').forEach(el => el.onchange = async () => { const round = trip.rounds.find(r=>r.id===ui.roundId); round.par[Number(el.dataset.par)] = Number(el.value)||0; await saveTrip(trip); render(); });
+    $$('[data-score-player]').forEach(el => el.onchange = async () => {
+      const round = trip.rounds.find(r=>r.id===ui.roundId);
+      const pid = el.dataset.scorePlayer, hole = Number(el.dataset.scoreHole);
+      if(!round.scores[pid]) round.scores[pid] = new Array(18).fill('');
+      round.scores[pid][hole] = el.value === '' ? '' : Number(el.value);
+      const wasCelebrating = !!ui.celebrateData;
+      maybeCelebrate(trip, round);
+      if(ui.celebrateData && !wasCelebrating) pushFeed(trip, 'milestone', ui.celebrateData.title + ' ' + ui.celebrateData.winner);
+      await saveTrip(trip);
+      render();
+    });
+
+    // ----- Play Mode -----
+    $$('[data-scorecard-view]').forEach(el => el.onclick = () => { ui.scorecardView = el.dataset.scorecardView; render(); });
+    $$('[data-play-score-player]').forEach(el => el.onchange = async () => {
+      const round = trip.rounds.find(r=>r.id===ui.roundId); if(!round) return;
+      const pid = el.dataset.playScorePlayer, hole = Number(el.dataset.playScoreHole);
+      if(!round.scores[pid]) round.scores[pid] = new Array(18).fill('');
+      const raw = el.value === '' ? '' : Math.max(1, Math.min(15, Number(el.value)));
+      round.scores[pid][hole] = raw;
+      const wasCelebrating = !!ui.celebrateData;
+      maybeCelebrate(trip, round);
+      if(ui.celebrateData && !wasCelebrating) pushFeed(trip, 'milestone', ui.celebrateData.title + ' ' + ui.celebrateData.winner);
+      await saveTrip(trip);
+      render();
+    });
+    if($('#playPrevHole')) $('#playPrevHole').onclick = () => { ui.playHole = Math.max(0, (ui.playHole||0)-1); render(); syncNow(); };
+    if($('#playNextHole')) $('#playNextHole').onclick = () => { ui.playHole = Math.min(17, (ui.playHole||0)+1); render(); syncNow(); };
+    $$('[data-play-jump]').forEach(el => el.onclick = () => { ui.playHole = Number(el.dataset.playJump); render(); syncNow(); });
+
+    // ----- Round comments / reactions -----
+    $$('[data-like-round]').forEach(el => el.onclick = async () => {
+      const round = trip.rounds.find(r=>r.id===el.dataset.likeRound); if(!round) return;
+      round.likedBy = round.likedBy || [];
+      const name = state.profile.name;
+      if(round.likedBy.includes(name)) round.likedBy = round.likedBy.filter(n=>n!==name); else round.likedBy.push(name);
+      await saveTrip(trip); render();
+    });
+    $$('[data-add-comment]').forEach(el => el.onclick = async () => {
+      const roundId = el.dataset.addComment;
+      const input = $(`#commentInput-${roundId}`); if(!input) return;
+      const text = input.value.trim(); if(!text) return;
+      const round = trip.rounds.find(r=>r.id===roundId); if(!round) return;
+      round.comments = round.comments || [];
+      round.comments.push({ id: uid(), author: state.profile.name, text, ts: Date.now() });
+      await saveTrip(trip); render();
+    });
+
+    // ----- Ryder Cup -----
+    if($('#saveTeamsBtn')) $('#saveTeamsBtn').onclick = async () => {
+      const teamAName = $('#teamAName').value.trim() || 'Team A';
+      const teamBName = $('#teamBName').value.trim() || 'Team B';
+      const teamA = [], teamB = [];
+      $$('[data-team-assign]').forEach(sel => { if(sel.value==='A') teamA.push(sel.dataset.teamAssign); else teamB.push(sel.dataset.teamAssign); });
+      trip.teams = { teamAName, teamBName, teamA, teamB };
+      await saveTrip(trip); render();
+    };
+    if($('#resetTeamsBtn')) $('#resetTeamsBtn').onclick = async () => { trip.teams = null; await saveTrip(trip); render(); };
+
+    // ----- Expenses -----
+    // ----- Course reviews -----
+    $$('[data-rate-course]').forEach(el => el.onclick = () => {
+      ui.pendingRatings[el.dataset.rateCourse] = Number(el.dataset.rateValue);
+      render();
+    });
+    $$('[data-submit-review]').forEach(el => el.onclick = async () => {
+      const roundId = el.dataset.submitReview;
+      const round = trip.rounds.find(r => r.id === roundId); if(!round || !round.course) return;
+      const rating = ui.pendingRatings[roundId];
+      if(!rating){ alert('Tap a star to rate the course first.'); return; }
+      const textInput = $(`#reviewText-${roundId}`);
+      const text = textInput ? textInput.value.trim() : '';
+      const list = state.courseReviews[round.course] || [];
+      const existingIdx = list.findIndex(r => r.author === state.profile.name);
+      const entry = { author: state.profile.name, rating, text, ts: Date.now() };
+      if(existingIdx >= 0) list[existingIdx] = entry; else list.push(entry);
+      state.courseReviews[round.course] = list;
+      await saveReviews();
+      delete ui.pendingRatings[roundId];
+      render();
+    });
+
+    // ----- Trip Awards / Recap -----
+    if($('#addLongestDriveBtn')) $('#addLongestDriveBtn').onclick = async () => {
+      const roundId = $('#ldRoundSelect').value, playerId = $('#ldPlayerSelect').value, distance = Number($('#ldDistance').value);
+      if(!isFinite(distance) || distance <= 0) return;
+      const round = trip.rounds.find(r => r.id === roundId); if(!round) return;
+      round.longestDrive = { playerId, distance };
+      await saveTrip(trip); render();
+    };
+    if($('#showRecapBtn')) $('#showRecapBtn').onclick = () => { ui.modal = 'tripRecap'; render(); };
+    if($('#copyRecapBtn')) $('#copyRecapBtn').onclick = () => {
+      const text = generateRecapText(trip);
+      const btn = $('#copyRecapBtn');
+      if(navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(() => { btn.textContent = 'Copied!'; setTimeout(()=>{ btn.textContent='Copy'; },1500); }).catch(() => { btn.textContent = 'Copy failed'; setTimeout(()=>{ btn.textContent='Copy'; },1500); });
+      else { btn.textContent = 'Not supported here'; setTimeout(()=>{ btn.textContent='Copy'; },1500); }
+    };
+    if($('#postRecapBtn')) $('#postRecapBtn').onclick = async () => {
+      const text = generateRecapText(trip);
+      pushFeed(trip, 'recap', text);
+      await saveTrip(trip);
+      ui.modal = null; render();
+    };
+
+    if($('#newExpenseBtn')) $('#newExpenseBtn').onclick = () => { expenseChipState = {}; trip.players.forEach(p => expenseChipState[p.id] = true); ui.modal='newExpense'; render(); };
+    $$('[data-expense-chip]').forEach(el => el.onclick = () => { const id = el.dataset.expenseChip; expenseChipState[id] = !expenseChipState[id]; el.classList.toggle('selected', expenseChipState[id]); });
+    if($('#createExpenseBtn')) $('#createExpenseBtn').onclick = async () => {
+      const btn = $('#createExpenseBtn'); if(btn.disabled) return;
+      const desc = $('#mExpDesc').value.trim(); const amount = Number($('#mExpAmount').value); const paidBy = $('#mExpPaidBy').value;
+      if(!desc || !isFinite(amount) || amount <= 0) return;
+      btn.disabled = true;
+      trip.expenses.push({ id: uid(), desc, amount, paidBy, splitAmong: Object.keys(expenseChipState).filter(id => expenseChipState[id]) });
+      pushFeed(trip, 'expense', `💸 New expense: ${desc} (${fmt(amount)})`);
+      await saveTrip(trip); ui.modal = null; render();
+    };
+    $$('[data-remove-expense]').forEach(el => el.onclick = () => {
+      const ex = trip.expenses.find(e => e.id === el.dataset.removeExpense);
+      ui.pendingDelete = { type:'expense', id: el.dataset.removeExpense, label: ex ? ex.desc : 'this expense' };
+      ui.modal = 'confirmDelete'; render();
+    });
+
+    // ----- Lodging -----
+    if($('#newLodgingBtn')) $('#newLodgingBtn').onclick = () => { expenseChipState = {}; trip.players.forEach(p => expenseChipState[p.id] = true); ui.modal='newLodging'; render(); };
+    $$('[data-lodging-chip]').forEach(el => el.onclick = () => { const id = el.dataset.lodgingChip; expenseChipState[id] = !expenseChipState[id]; el.classList.toggle('selected', expenseChipState[id]); });
+    if($('#createLodgingBtn')) $('#createLodgingBtn').onclick = async () => {
+      const btn = $('#createLodgingBtn'); if(btn.disabled) return;
+      const name = $('#mLodgeName').value.trim(); const cost = Number($('#mLodgeCost').value); const paidBy = $('#mLodgePaidBy').value;
+      if(!name || !isFinite(cost) || cost <= 0) return;
+      btn.disabled = true;
+      trip.lodging.push({ id: uid(), name, address: $('#mLodgeAddr').value.trim(), checkin: $('#mLodgeIn').value, checkout: $('#mLodgeOut').value, cost, confirmation: $('#mLodgeConf').value.trim(), paidBy, splitAmong: Object.keys(expenseChipState).filter(id => expenseChipState[id]) });
+      pushFeed(trip, 'lodging', `🏠 Lodging booked: ${name}`);
+      await saveTrip(trip); ui.modal = null; render();
+    };
+    $$('[data-remove-lodging]').forEach(el => el.onclick = () => {
+      const l = trip.lodging.find(lo => lo.id === el.dataset.removeLodging);
+      ui.pendingDelete = { type:'lodging', id: el.dataset.removeLodging, label: l ? l.name : 'this lodging entry' };
+      ui.modal = 'confirmDelete'; render();
+    });
+
+    // ----- Trip settings (public toggle) -----
+    if($('#publicToggle')) $('#publicToggle').onclick = async () => {
+      await setTripPublic(trip, !trip.public);
+      render();
+    };
+    if($('#seekingToggle')) $('#seekingToggle').onclick = async () => {
+      trip.seekingPlayers = trip.seekingPlayers || { active:false, spotsNeeded:1, note:'' };
+      trip.seekingPlayers.active = !trip.seekingPlayers.active;
+      await saveTrip(trip);
+      if(trip.public) await syncRegistryEntry(trip);
+      render();
+    };
+    if($('#saveSeekingBtn')) $('#saveSeekingBtn').onclick = async () => {
+      trip.seekingPlayers.spotsNeeded = Math.max(1, Number($('#spotsNeeded').value)||1);
+      trip.seekingPlayers.note = $('#seekingNote').value.trim();
+      await saveTrip(trip);
+      if(trip.public) await syncRegistryEntry(trip);
+      render();
+    };
+
+    $$('[data-copy-zelle]').forEach(el => el.onclick = () => {
+      const text = el.dataset.copyZelle;
+      const done = () => { el.textContent = 'Copied!'; setTimeout(()=>{ el.textContent='Copy Zelle Note'; }, 1500); };
+      if(navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(done).catch(() => { el.textContent = 'Copy failed — select manually'; setTimeout(()=>{ el.textContent='Copy Zelle Note'; }, 2000); });
+      else { el.textContent = 'Copy not supported here'; setTimeout(()=>{ el.textContent='Copy Zelle Note'; }, 2000); }
+    });
+  }
+
+  function startPolling(){
+    if(ui.pollTimer) clearInterval(ui.pollTimer);
+    ui.pollTimer = setInterval(async () => {
+      if(!state.currentCode || ui.modal || ui.celebrateData) return;
+      const active = document.activeElement;
+      const isTyping = active && app.contains(active) && (active.tagName === 'INPUT' || active.tagName === 'SELECT' || active.tagName === 'TEXTAREA');
+      if(isTyping) return;
+      const before = JSON.stringify(state.trips[state.currentCode]);
+      const fresh = await fetchTrip(state.currentCode);
+      if(fresh && JSON.stringify(fresh) !== before) render();
+    }, 3000);
+  }
+  async function syncNow(){
+    if(!state.currentCode || ui.modal || ui.celebrateData) return;
+    const before = JSON.stringify(state.trips[state.currentCode]);
+    const fresh = await fetchTrip(state.currentCode);
+    if(fresh && JSON.stringify(fresh) !== before) render();
+  }
+
+  function hideLoadingScreen(){
+    const el = document.getElementById('gl-loading');
+    if(el){ el.classList.add('gl-loading-hidden'); setTimeout(() => { el.remove(); }, 550); }
+  }
+
+  async function boot(){
+    const minDisplay = new Promise(resolve => setTimeout(resolve, 1600));
+    await loadProfile();
+    await loadMyTrips();
+    await loadRegistry();
+    await loadReviews();
+    if(state.myTrips.length) await Promise.all(state.myTrips.map(m => fetchTrip(m.code)));
+    ui.view = state.profile ? (state.myTrips.length ? 'feed' : 'trips') : 'feed';
+    render();
+    if(state.currentCode) startPolling();
+    await minDisplay;
+    hideLoadingScreen();
+  }
+  boot();
+})();
+</script>
