@@ -1,0 +1,61 @@
+.header {
+  background: var(--fairway);
+  color: var(--white-line);
+  padding: 14px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  border-bottom: 4px solid var(--sand);
+  position: sticky;
+  top: 0;
+  z-index: 40;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.wordmark {
+  font-weight: 900;
+  font-size: 19px;
+  letter-spacing: 0.2px;
+  margin: 0;
+  line-height: 1;
+}
+
+.wordmark .with {
+  color: var(--sand);
+  font-weight: 600;
+  font-style: italic;
+}
+
+.codePill {
+  background: var(--fairway-2);
+  border: 1.5px solid var(--sand);
+  color: var(--white-line);
+  border-radius: 20px;
+  padding: 6px 12px;
+  font-family: var(--font-jetbrains-mono), monospace;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+.signOut {
+  font-family: var(--font-inter), sans-serif;
+  font-weight: 600;
+  font-size: 12px;
+  background: transparent;
+  color: var(--white-line);
+  border: 1px solid rgba(251, 246, 233, 0.4);
+  border-radius: 6px;
+  padding: 7px 12px;
+  cursor: pointer;
+}
+
+.signOut:hover {
+  background: rgba(251, 246, 233, 0.1);
+}

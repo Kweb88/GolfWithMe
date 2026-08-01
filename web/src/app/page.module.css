@@ -1,0 +1,125 @@
+.main {
+  padding: 18px 18px 40px;
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 18px;
+  margin-bottom: 14px;
+}
+
+.card h3 {
+  font-family: var(--font-fraunces), serif;
+  font-weight: 700;
+  font-size: 16px;
+  margin: 0 0 12px;
+  color: var(--fairway);
+}
+
+.row {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  flex: 1;
+  min-width: 140px;
+}
+
+.field label {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: var(--text-soft);
+}
+
+.field input {
+  font-family: var(--font-inter), sans-serif;
+  padding: 9px 10px;
+  border: 1.5px solid var(--border);
+  border-radius: 6px;
+  font-size: 14px;
+  background: var(--bg);
+  color: var(--text);
+}
+
+.field input:focus {
+  outline: 2px solid var(--sand);
+  outline-offset: 1px;
+}
+
+.btn {
+  font-family: var(--font-inter), sans-serif;
+  font-weight: 600;
+  font-size: 13px;
+  border: none;
+  border-radius: 6px;
+  padding: 9px 16px;
+  cursor: pointer;
+  background: var(--sand);
+  color: var(--fairway);
+  margin-top: 12px;
+}
+
+.btn:hover {
+  filter: brightness(1.08);
+}
+
+.tripGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 14px;
+  margin-bottom: 18px;
+}
+
+.tripCard {
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: 12px;
+  padding: 16px;
+  position: relative;
+}
+
+.tripCard:hover {
+  border-color: var(--sand);
+}
+
+.tripCard .codeTag {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  font-family: var(--font-jetbrains-mono), monospace;
+  font-size: 10px;
+  background: var(--parchment-2);
+  padding: 2px 6px;
+  border-radius: 4px;
+  color: var(--text-soft);
+  letter-spacing: 1px;
+}
+
+.tripCard h4 {
+  font-family: var(--font-fraunces), serif;
+  font-size: 17px;
+  margin: 0 0 4px;
+}
+
+.tripCard .meta {
+  font-size: 12px;
+  color: var(--text-soft);
+}
+
+.emptyMini {
+  color: var(--text-soft);
+  font-size: 13px;
+  text-align: center;
+  padding: 22px 0;
+}
