@@ -5,15 +5,30 @@ import styles from "@/app/page.module.css";
 import teamStyles from "./round-format-fields.module.css";
 
 type Player = { id: string; name: string };
-type Format = "stroke" | "match" | "scramble";
+type Format = "stroke" | "match" | "scramble" | "ryder";
 
-export function RoundFormatFields({ players }: { players: Player[] }) {
+export function RoundFormatFields({
+  players,
+  ryderTeamAName,
+  ryderTeamBName,
+  ryderTeamAPlayers,
+  ryderTeamBPlayers,
+}: {
+  players: Player[];
+  ryderTeamAName?: string | null;
+  ryderTeamBName?: string | null;
+  ryderTeamAPlayers?: Player[];
+  ryderTeamBPlayers?: Player[];
+}) {
   const [format, setFormat] = useState<Format>("stroke");
   const [teams, setTeams] = useState<Record<string, "a" | "b">>(() => {
     const initial: Record<string, "a" | "b"> = {};
     players.forEach((p, i) => (initial[p.id] = i % 2 === 0 ? "a" : "b"));
     return initial;
   });
+
+  const ryderAvailable = !!(ryderTeamAPlayers?.length && ryderTeamBPlayers?.length);
+  const pairCount = ryderAvailable ? Math.min(ryderTeamAPlayers!.length, ryderTeamBPlayers!.length) : 0;
 
   return (
     <>
@@ -24,6 +39,7 @@ export function RoundFormatFields({ players }: { players: Player[] }) {
             <option value="stroke">Stroke Play (skins &amp; Nassau)</option>
             <option value="match">Match Play (1v1)</option>
             <option value="scramble">Scramble (teams)</option>
+            {ryderAvailable && <option value="ryder">Ryder Cup Singles</option>}
           </select>
         </div>
       </div>
@@ -104,6 +120,13 @@ export function RoundFormatFields({ players }: { players: Player[] }) {
             ))}
           </div>
         </>
+      )}
+
+      {format === "ryder" && ryderAvailable && (
+        <div className={styles.hint} style={{ marginTop: 10 }}>
+          Ryder Cup singles pairings are generated automatically — each {ryderTeamAName} player faces a{" "}
+          {ryderTeamBName} player: {pairCount} pair{pairCount === 1 ? "" : "s"} this round.
+        </div>
       )}
     </>
   );

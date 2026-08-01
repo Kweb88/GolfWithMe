@@ -28,7 +28,7 @@ export default async function RoundPage({
 
   const { data: trip } = await supabase
     .from("trips")
-    .select("id, code, name")
+    .select("id, code, name, team_a_name, team_b_name")
     .eq("code", code.toUpperCase())
     .maybeSingle();
   if (!trip) notFound();
@@ -43,16 +43,18 @@ export default async function RoundPage({
     .maybeSingle();
   if (!round) notFound();
 
-  const [{ data: members }, { data: scoreRows }, { data: roundPlayers }] = await Promise.all([
+  const [{ data: members }, { data: scoreRows }, { data: roundPlayers }, { data: pairRows }] = await Promise.all([
     supabase.from("trip_members").select("id, name").eq("trip_id", trip.id).order("joined_at"),
     supabase.from("scores").select("member_id, hole, strokes").eq("round_id", round.id),
     supabase.from("round_players").select("member_id, team").eq("round_id", round.id),
+    supabase.from("round_ryder_pairs").select("id, member_a, member_b").eq("round_id", round.id),
   ]);
 
   const players = members ?? [];
   const par = round.par as number[];
   const isMatch = round.format === "match";
   const isScramble = round.format === "scramble";
+  const isRyder = round.format === "ryder";
 
   const scores: Record<string, (number | null)[]> = {};
   for (const p of players) scores[p.id] = new Array(18).fill(null);
@@ -96,6 +98,26 @@ export default async function RoundPage({
       ? teamRows
       : players;
 
+  const nameOf = (id: string) => players.find((p) => p.id === id)?.name ?? "?";
+  const ryderMatches = (pairRows ?? []).map((pr) => ({
+    id: pr.id,
+    aId: pr.member_a,
+    bId: pr.member_b,
+    aName: nameOf(pr.member_a),
+    bName: nameOf(pr.member_b),
+    match: calcMatchPlay(scores, pr.member_a, pr.member_b),
+  }));
+  let ryderPtsA = 0;
+  let ryderPtsB = 0;
+  for (const m of ryderMatches) {
+    if (m.match.winnerId === m.aId) ryderPtsA += 1;
+    else if (m.match.winnerId === m.bId) ryderPtsB += 1;
+    else if (m.match.allSquareFinal) {
+      ryderPtsA += 0.5;
+      ryderPtsB += 0.5;
+    }
+  }
+
   const leaderboard = players
     .map((p) => {
       const holes = scores[p.id] ?? [];
@@ -131,7 +153,7 @@ export default async function RoundPage({
             {round.round_date ? ` · ${round.round_date}` : ""}
           </div>
           <div className={styles.hint}>
-            {isMatch ? "Match Play" : isScramble ? "Scramble" : (
+            {isMatch ? "Match Play" : isScramble ? "Scramble" : isRyder ? "Ryder Cup Singles" : (
               <>
                 {round.skins_bet > 0 ? `Skins: $${round.skins_bet}/hole` : ""}
                 {round.skins_bet > 0 && round.nassau_bet > 0 ? " · " : ""}
@@ -140,6 +162,29 @@ export default async function RoundPage({
             )}
           </div>
         </div>
+
+        {isRyder && (
+          <div className={styles.card}>
+            <h3>Ryder Cup</h3>
+            <div className={styles.matchStatus}>
+              <span className={styles.matchName}>
+                {trip.team_a_name ?? "Team A"} {ryderPtsA}
+              </span>
+              <span className={styles.matchStatusText}>vs</span>
+              <span className={styles.matchName}>
+                {ryderPtsB} {trip.team_b_name ?? "Team B"}
+              </span>
+            </div>
+            {ryderMatches.map((m) => (
+              <div key={m.id} className={styles.segmentRow}>
+                <span>
+                  {m.aName} vs {m.bName}
+                </span>
+                <span className={styles.segmentWinner}>{m.match.statusText}</span>
+              </div>
+            ))}
+          </div>
+        )}
 
         {isScramble && (
           <div className={styles.card}>
@@ -181,7 +226,7 @@ export default async function RoundPage({
           </div>
         )}
 
-        {!isMatch && !isScramble && (
+        {!isMatch && !isScramble && !isRyder && (
           <div className={styles.card}>
             <h3>Leaderboard</h3>
             {leaderboard.length ? (

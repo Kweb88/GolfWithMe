@@ -72,6 +72,8 @@ export interface Database {
           seeking_active: boolean;
           seeking_spots: number;
           seeking_note: string | null;
+          team_a_name: string | null;
+          team_b_name: string | null;
           created_by: string;
           created_at: string;
         };
@@ -86,6 +88,8 @@ export interface Database {
           seeking_active?: boolean;
           seeking_spots?: number;
           seeking_note?: string | null;
+          team_a_name?: string | null;
+          team_b_name?: string | null;
           created_by: string;
           created_at?: string;
         };
@@ -101,6 +105,7 @@ export interface Database {
           venmo: string | null;
           cashapp: string | null;
           zelle: string | null;
+          team: "a" | "b" | null;
           joined_at: string;
         };
         Insert: {
@@ -111,6 +116,7 @@ export interface Database {
           venmo?: string | null;
           cashapp?: string | null;
           zelle?: string | null;
+          team?: "a" | "b" | null;
           joined_at?: string;
         };
         Update: Partial<Database["public"]["Tables"]["trip_members"]["Insert"]>;

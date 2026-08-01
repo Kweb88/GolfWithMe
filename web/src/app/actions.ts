@@ -128,6 +128,31 @@ export async function addPlayer(tripId: string, formData: FormData) {
   });
 }
 
+// Ryder Cup teams live at the trip level (they persist across every round
+// of the trip), unlike Scramble's teams which are set per-round.
+export async function setTripTeams(tripId: string, formData: FormData) {
+  const { supabase } = await requireUser();
+
+  const teamAName = String(formData.get("teamAName") ?? "").trim() || "Team A";
+  const teamBName = String(formData.get("teamBName") ?? "").trim() || "Team B";
+
+  const { data: members } = await supabase.from("trip_members").select("id").eq("trip_id", tripId);
+  if (!members || members.length < 2) return;
+
+  const hasA = members.some((m) => String(formData.get(`team_${m.id}`) ?? "a") === "a");
+  const hasB = members.some((m) => String(formData.get(`team_${m.id}`) ?? "a") === "b");
+  if (!hasA || !hasB) return;
+
+  await supabase.from("trips").update({ team_a_name: teamAName, team_b_name: teamBName }).eq("id", tripId);
+
+  await Promise.all(
+    members.map((m) => {
+      const team = String(formData.get(`team_${m.id}`) ?? "a") === "b" ? "b" : "a";
+      return supabase.from("trip_members").update({ team }).eq("id", m.id);
+    }),
+  );
+}
+
 // Matches a typical par-72 routing: a mix of 3s, 4s, and 5s rather than an
 // unrealistic flat set of par-4s.
 const DEFAULT_PAR = [4, 4, 3, 5, 4, 4, 3, 5, 4, 4, 4, 3, 5, 4, 4, 3, 5, 4];
@@ -145,15 +170,16 @@ export async function createRound(tripId: string, tripCode: string, formData: Fo
 
   const isMatch = format === "match";
   const isScramble = format === "scramble";
+  const isRyder = format === "ryder";
 
-  const skinsBet = !isMatch && !isScramble ? Number(formData.get("skinsBet") ?? 0) || 0 : 0;
-  const nassauBet = !isMatch && !isScramble ? Number(formData.get("nassauBet") ?? 0) || 0 : 0;
+  const skinsBet = !isMatch && !isScramble && !isRyder ? Number(formData.get("skinsBet") ?? 0) || 0 : 0;
+  const nassauBet = !isMatch && !isScramble && !isRyder ? Number(formData.get("nassauBet") ?? 0) || 0 : 0;
 
   const matchPlayerA = isMatch ? String(formData.get("matchPlayerA") ?? "").trim() || null : null;
   const matchPlayerB = isMatch ? String(formData.get("matchPlayerB") ?? "").trim() || null : null;
   if (isMatch && (!matchPlayerA || !matchPlayerB || matchPlayerA === matchPlayerB)) return;
 
-  const { data: members } = await supabase.from("trip_members").select("id").eq("trip_id", tripId);
+  const { data: members } = await supabase.from("trip_members").select("id, team").eq("trip_id", tripId);
 
   let teamAName: string | null = null;
   let teamBName: string | null = null;
@@ -171,6 +197,15 @@ export async function createRound(tripId: string, tripCode: string, formData: Fo
     if (!hasA || !hasB) return;
   }
 
+  let ryderPairs: { a: string; b: string }[] = [];
+  if (isRyder && members) {
+    const teamAMembers = members.filter((m) => m.team === "a");
+    const teamBMembers = members.filter((m) => m.team === "b");
+    const pairCount = Math.min(teamAMembers.length, teamBMembers.length);
+    if (pairCount < 1) return;
+    ryderPairs = Array.from({ length: pairCount }, (_, i) => ({ a: teamAMembers[i].id, b: teamBMembers[i].id }));
+  }
+
   const { data: round, error } = await supabase
     .from("rounds")
     .insert({
@@ -179,7 +214,7 @@ export async function createRound(tripId: string, tripCode: string, formData: Fo
       course_id: courseId,
       course_location: courseLocation,
       round_date: roundDate,
-      format: isMatch ? "match" : isScramble ? "scramble" : "stroke",
+      format: isMatch ? "match" : isScramble ? "scramble" : isRyder ? "ryder" : "stroke",
       skins_bet: skinsBet,
       nassau_bet: nassauBet,
       match_player_a: matchPlayerA,
@@ -204,6 +239,12 @@ export async function createRound(tripId: string, tripCode: string, formData: Fo
         team: isScramble ? (memberTeam.get(m.id) ?? "a") : null,
       })),
     );
+  }
+
+  if (ryderPairs.length) {
+    await supabase
+      .from("round_ryder_pairs")
+      .insert(ryderPairs.map((p) => ({ round_id: round.id, member_a: p.a, member_b: p.b })));
   }
 
   redirect(`/t/${tripCode}/r/${round.id}`);

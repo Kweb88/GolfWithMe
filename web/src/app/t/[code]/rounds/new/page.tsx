@@ -15,7 +15,7 @@ export default async function NewRoundPage({ params }: { params: Promise<{ code:
 
   const { data: trip } = await supabase
     .from("trips")
-    .select("id, code, name")
+    .select("id, code, name, team_a_name, team_b_name")
     .eq("code", code.toUpperCase())
     .maybeSingle();
 
@@ -23,8 +23,11 @@ export default async function NewRoundPage({ params }: { params: Promise<{ code:
 
   const [{ data: courses }, { data: players }] = await Promise.all([
     supabase.from("courses").select("id, name, city, region, country").order("name"),
-    supabase.from("trip_members").select("id, name").eq("trip_id", trip.id).order("joined_at"),
+    supabase.from("trip_members").select("id, name, team").eq("trip_id", trip.id).order("joined_at"),
   ]);
+
+  const ryderTeamAPlayers = (players ?? []).filter((p) => p.team === "a");
+  const ryderTeamBPlayers = (players ?? []).filter((p) => p.team === "b");
 
   const createRoundForTrip = createRound.bind(null, trip.id, trip.code);
 
@@ -42,8 +45,14 @@ export default async function NewRoundPage({ params }: { params: Promise<{ code:
                 <input id="roundDate" name="roundDate" type="date" />
               </div>
             </div>
-            <RoundFormatFields players={players ?? []} />
-            <div className={styles.hint}>Scramble and Ryder Cup are coming next. Set either bet to 0 to skip it.</div>
+            <RoundFormatFields
+              players={players ?? []}
+              ryderTeamAName={trip.team_a_name}
+              ryderTeamBName={trip.team_b_name}
+              ryderTeamAPlayers={ryderTeamAPlayers}
+              ryderTeamBPlayers={ryderTeamBPlayers}
+            />
+            <div className={styles.hint}>Set either bet to 0 to skip it.</div>
             <button type="submit" className={styles.btn}>
               Create Round
             </button>

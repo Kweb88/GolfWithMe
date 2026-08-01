@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { AppHeader } from "@/components/app-header";
 import { BottomNav } from "@/components/bottom-nav";
+import { TripTeamSetup } from "@/components/trip-team-setup";
 import { addPlayer } from "../../actions";
 import styles from "./page.module.css";
 
@@ -14,7 +15,7 @@ export default async function TripPage({ params }: { params: Promise<{ code: str
 
   const { data: trip } = await supabase
     .from("trips")
-    .select("id, code, name, location, start_date, end_date")
+    .select("id, code, name, location, start_date, end_date, team_a_name, team_b_name")
     .eq("code", code.toUpperCase())
     .maybeSingle();
 
@@ -35,7 +36,7 @@ export default async function TripPage({ params }: { params: Promise<{ code: str
   const [{ data: players }, { data: membership }, { data: rounds }] = await Promise.all([
     supabase
       .from("trip_members")
-      .select("id, name, venmo, cashapp, zelle")
+      .select("id, name, venmo, cashapp, zelle, team")
       .eq("trip_id", trip.id)
       .order("joined_at", { ascending: true }),
     supabase
@@ -106,6 +107,18 @@ export default async function TripPage({ params }: { params: Promise<{ code: str
             </Link>
           )}
         </div>
+
+        {isMember && players && players.length >= 2 && (
+          <div className={styles.card}>
+            <h3>Ryder Cup Teams</h3>
+            <TripTeamSetup
+              tripId={trip.id}
+              players={players.map((p) => ({ id: p.id, name: p.name, team: p.team }))}
+              teamAName={trip.team_a_name}
+              teamBName={trip.team_b_name}
+            />
+          </div>
+        )}
 
         {isMember && (
           <div className={styles.card}>
