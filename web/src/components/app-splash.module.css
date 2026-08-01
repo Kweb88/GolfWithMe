@@ -1,0 +1,13 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: var(--bg);
+  opacity: 1;
+  transition: opacity 300ms ease;
+}
+
+.fadeOut {
+  opacity: 0;
+  pointer-events: none;
+}
