@@ -6,7 +6,9 @@ import { BottomNav } from "@/components/bottom-nav";
 import { TripTeamSetup } from "@/components/trip-team-setup";
 import { DeleteTripButton } from "@/components/delete-trip-button";
 import { SettleUp } from "@/components/settle-up";
+import { TripAwards } from "@/components/trip-awards";
 import { computeTripBetBalances } from "@/lib/settle-up";
+import { computeTripAwards } from "@/lib/awards";
 import { simplifyDebts } from "@/lib/money";
 import { addPlayer } from "../../actions";
 import styles from "./page.module.css";
@@ -51,7 +53,7 @@ export default async function TripPage({ params }: { params: Promise<{ code: str
       .maybeSingle(),
     supabase
       .from("rounds")
-      .select("id, course_name, round_date")
+      .select("id, course_name, round_date, format, par")
       .eq("trip_id", trip.id)
       .order("created_at", { ascending: false }),
   ]);
@@ -76,6 +78,22 @@ export default async function TripPage({ params }: { params: Promise<{ code: str
     debts = simplifyDebts(balances);
   }
   const playersById = new Map((players ?? []).map((p) => [p.id, p]));
+
+  const eligibleAwardRounds = (rounds ?? []).filter((r) => r.format === "stroke" || r.format === "scramble");
+  let awards = computeTripAwards([], [], []);
+  if (eligibleAwardRounds.length > 0) {
+    const awardRoundIds = eligibleAwardRounds.map((r) => r.id);
+    const [{ data: awardRoundPlayers }, { data: awardScores }] = await Promise.all([
+      supabase.from("round_players").select("round_id, member_id").in("round_id", awardRoundIds),
+      supabase.from("scores").select("round_id, member_id, hole, strokes").in("round_id", awardRoundIds),
+    ]);
+    awards = computeTripAwards(
+      eligibleAwardRounds.map((r) => ({ id: r.id, course_name: r.course_name, format: r.format, par: r.par as number[] })),
+      awardRoundPlayers ?? [],
+      awardScores ?? [],
+    );
+  }
+  const playerName = (id: string) => playersById.get(id)?.name ?? "Someone";
 
   return (
     <>
@@ -130,6 +148,23 @@ export default async function TripPage({ params }: { params: Promise<{ code: str
             </Link>
           )}
         </div>
+
+        {(rounds?.length ?? 0) > 0 && (
+          <div className={styles.card}>
+            <h3>Trip Awards</h3>
+            <TripAwards
+              champion={awards.champion ? { name: playerName(awards.champion.id), total: awards.champion.total } : null}
+              worstGolfer={awards.worstGolfer ? { name: playerName(awards.worstGolfer.id), total: awards.worstGolfer.total } : null}
+              birdies={awards.birdies ? { name: playerName(awards.birdies.id), count: awards.birdies.count } : null}
+              comeback={
+                awards.comeback
+                  ? { name: playerName(awards.comeback.id), improvement: awards.comeback.improvement, courseName: awards.comeback.courseName }
+                  : null
+              }
+              worstHole={awards.worstHole}
+            />
+          </div>
+        )}
 
         {debts.length > 0 && (
           <div className={styles.card}>
