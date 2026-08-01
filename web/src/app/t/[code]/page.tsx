@@ -4,6 +4,9 @@ import { createClient } from "@/lib/supabase/server";
 import { AppHeader } from "@/components/app-header";
 import { BottomNav } from "@/components/bottom-nav";
 import { TripTeamSetup } from "@/components/trip-team-setup";
+import { SettleUp } from "@/components/settle-up";
+import { computeTripBetBalances } from "@/lib/settle-up";
+import { simplifyDebts } from "@/lib/money";
 import { addPlayer } from "../../actions";
 import styles from "./page.module.css";
 
@@ -54,6 +57,24 @@ export default async function TripPage({ params }: { params: Promise<{ code: str
 
   const isMember = !!membership;
   const addPlayerForTrip = addPlayer.bind(null, trip.id);
+
+  const { data: strokeRounds } = await supabase
+    .from("rounds")
+    .select("id, skins_bet, nassau_bet")
+    .eq("trip_id", trip.id)
+    .eq("format", "stroke");
+
+  let debts: { from: string; to: string; amount: number }[] = [];
+  if (strokeRounds && strokeRounds.length > 0 && players && players.length > 0) {
+    const roundIds = strokeRounds.map((r) => r.id);
+    const [{ data: roundPlayers }, { data: scores }] = await Promise.all([
+      supabase.from("round_players").select("round_id, member_id").in("round_id", roundIds),
+      supabase.from("scores").select("round_id, member_id, hole, strokes").in("round_id", roundIds),
+    ]);
+    const balances = computeTripBetBalances(strokeRounds, roundPlayers ?? [], scores ?? [], players);
+    debts = simplifyDebts(balances);
+  }
+  const playersById = new Map((players ?? []).map((p) => [p.id, p]));
 
   return (
     <>
@@ -108,6 +129,25 @@ export default async function TripPage({ params }: { params: Promise<{ code: str
           )}
         </div>
 
+        {debts.length > 0 && (
+          <div className={styles.card}>
+            <h3>Settle Up</h3>
+            <div className={styles.hint} style={{ marginTop: -8, marginBottom: 10 }}>
+              Net skins &amp; Nassau winnings across every round this trip.
+            </div>
+            <SettleUp
+              debts={debts.map((d) => ({
+                fromName: playersById.get(d.from)?.name ?? "Someone",
+                toName: playersById.get(d.to)?.name ?? "Someone",
+                amount: d.amount,
+                toVenmo: playersById.get(d.to)?.venmo ?? null,
+                toCashapp: playersById.get(d.to)?.cashapp ?? null,
+              }))}
+              tripName={trip.name}
+            />
+          </div>
+        )}
+
         {isMember && players && players.length >= 2 && (
           <div className={styles.card}>
             <h3>Ryder Cup Teams</h3>
@@ -132,6 +172,10 @@ export default async function TripPage({ params }: { params: Promise<{ code: str
                 <div className={styles.field}>
                   <label htmlFor="venmo">Venmo</label>
                   <input id="venmo" name="venmo" type="text" placeholder="username" />
+                </div>
+                <div className={styles.field}>
+                  <label htmlFor="cashapp">Cash App</label>
+                  <input id="cashapp" name="cashapp" type="text" placeholder="cashtag" />
                 </div>
               </div>
               <button type="submit" className={styles.btn}>

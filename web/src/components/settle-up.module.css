@@ -1,0 +1,49 @@
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 12px;
+  background: var(--bg);
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  flex-wrap: wrap;
+}
+
+.text {
+  font-size: 14px;
+  color: var(--text);
+}
+
+.from,
+.to {
+  font-weight: 600;
+}
+
+.amount {
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.payBtn {
+  font-family: var(--font-inter), sans-serif;
+  font-weight: 600;
+  font-size: 12px;
+  padding: 7px 12px;
+  border-radius: 6px;
+  background: var(--fairway);
+  color: var(--on-accent);
+  text-decoration: none;
+  white-space: nowrap;
+}

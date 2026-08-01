@@ -63,6 +63,15 @@ export default async function RoundPage({
     scores[row.member_id][row.hole - 1] = row.strokes;
   }
 
+  // Scope stroke-format leaderboard/skins/Nassau/scorecard to whoever was
+  // actually snapshotted into this round at creation time — not every
+  // *current* trip member. Otherwise a player who joins the trip later
+  // shows up with no scores in old rounds, and since skins/Nassau only pay
+  // out once every listed player has a complete hole, that silently breaks
+  // payouts for every hole of every round that predates them.
+  const roundPlayerIds = new Set((roundPlayers ?? []).map((rp) => rp.member_id));
+  const strokePlayers = players.filter((p) => roundPlayerIds.has(p.id));
+
   const playerA = players.find((p) => p.id === round.match_player_a);
   const playerB = players.find((p) => p.id === round.match_player_b);
   const match = isMatch && playerA && playerB ? calcMatchPlay(scores, playerA.id, playerB.id) : null;
@@ -96,7 +105,7 @@ export default async function RoundPage({
     ? [playerA, playerB].filter((p): p is { id: string; name: string } => !!p)
     : isScramble
       ? teamRows
-      : players;
+      : strokePlayers;
 
   const nameOf = (id: string) => players.find((p) => p.id === id)?.name ?? "?";
   const ryderMatches = (pairRows ?? []).map((pr) => ({
@@ -118,7 +127,7 @@ export default async function RoundPage({
     }
   }
 
-  const leaderboard = players
+  const leaderboard = strokePlayers
     .map((p) => {
       const holes = scores[p.id] ?? [];
       let strokes = 0;
@@ -138,9 +147,11 @@ export default async function RoundPage({
     .filter((r) => r.thru > 0)
     .sort((a, b) => (a.diff! - b.diff!) || b.thru - a.thru);
 
-  const skins = round.skins_bet > 0 && players.length >= 2 ? calcSkins(scores, players, round.skins_bet) : null;
+  const skins =
+    round.skins_bet > 0 && strokePlayers.length >= 2 ? calcSkins(scores, strokePlayers, round.skins_bet) : null;
   const skinsWon = skins ? skins.holes.filter((h) => h.winnerId !== null).length : 0;
-  const nassau = round.nassau_bet > 0 && players.length >= 2 ? calcNassau(scores, players, round.nassau_bet) : null;
+  const nassau =
+    round.nassau_bet > 0 && strokePlayers.length >= 2 ? calcNassau(scores, strokePlayers, round.nassau_bet) : null;
 
   return (
     <>
@@ -274,7 +285,7 @@ export default async function RoundPage({
                 </tr>
               </thead>
               <tbody>
-                {players.map((p) => (
+                {strokePlayers.map((p) => (
                   <tr key={p.id}>
                     <td>{p.name}</td>
                     <td className={`${styles.amt} ${amtClass(skins.net[p.id])}`}>{fmt(skins.net[p.id])}</td>
@@ -308,7 +319,7 @@ export default async function RoundPage({
                 </tr>
               </thead>
               <tbody>
-                {players.map((p) => (
+                {strokePlayers.map((p) => (
                   <tr key={p.id}>
                     <td>{p.name}</td>
                     <td className={`${styles.amt} ${amtClass(nassau.net[p.id])}`}>{fmt(nassau.net[p.id])}</td>
