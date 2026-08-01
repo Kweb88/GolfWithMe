@@ -3,6 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import { AppHeader } from "@/components/app-header";
 import { BottomNav } from "@/components/bottom-nav";
 import { CoursePicker } from "@/components/course-picker";
+import { RoundFormatFields } from "@/components/round-format-fields";
 import { createRound } from "@/app/actions";
 import styles from "@/app/page.module.css";
 
@@ -20,10 +21,10 @@ export default async function NewRoundPage({ params }: { params: Promise<{ code:
 
   if (!trip) notFound();
 
-  const { data: courses } = await supabase
-    .from("courses")
-    .select("id, name, city, region, country")
-    .order("name");
+  const [{ data: courses }, { data: players }] = await Promise.all([
+    supabase.from("courses").select("id, name, city, region, country").order("name"),
+    supabase.from("trip_members").select("id, name").eq("trip_id", trip.id).order("joined_at"),
+  ]);
 
   const createRoundForTrip = createRound.bind(null, trip.id, trip.code);
 
@@ -41,20 +42,8 @@ export default async function NewRoundPage({ params }: { params: Promise<{ code:
                 <input id="roundDate" name="roundDate" type="date" />
               </div>
             </div>
-            <div className={styles.row} style={{ marginTop: 10 }}>
-              <div className={styles.field}>
-                <label htmlFor="skinsBet">Skins bet ($/hole)</label>
-                <input id="skinsBet" name="skinsBet" type="number" min="0" step="0.5" defaultValue="2" />
-              </div>
-              <div className={styles.field}>
-                <label htmlFor="nassauBet">Nassau bet ($/segment)</label>
-                <input id="nassauBet" name="nassauBet" type="number" min="0" step="1" defaultValue="10" />
-              </div>
-            </div>
-            <div className={styles.hint}>
-              Stroke Play for now — Match Play, Scramble, and Ryder Cup are coming next. Set either bet to 0 to
-              skip it.
-            </div>
+            <RoundFormatFields players={players ?? []} />
+            <div className={styles.hint}>Scramble and Ryder Cup are coming next. Set either bet to 0 to skip it.</div>
             <button type="submit" className={styles.btn}>
               Create Round
             </button>

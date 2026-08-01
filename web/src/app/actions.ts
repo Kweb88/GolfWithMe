@@ -141,8 +141,14 @@ export async function createRound(tripId: string, tripCode: string, formData: Fo
   const courseId = String(formData.get("courseId") ?? "").trim() || null;
   const courseLocation = String(formData.get("courseLocation") ?? "").trim() || null;
   const roundDate = String(formData.get("roundDate") ?? "").trim() || null;
-  const skinsBet = Number(formData.get("skinsBet") ?? 0) || 0;
-  const nassauBet = Number(formData.get("nassauBet") ?? 0) || 0;
+  const format = String(formData.get("format") ?? "stroke").trim();
+
+  const isMatch = format === "match";
+  const skinsBet = isMatch ? 0 : Number(formData.get("skinsBet") ?? 0) || 0;
+  const nassauBet = isMatch ? 0 : Number(formData.get("nassauBet") ?? 0) || 0;
+  const matchPlayerA = isMatch ? String(formData.get("matchPlayerA") ?? "").trim() || null : null;
+  const matchPlayerB = isMatch ? String(formData.get("matchPlayerB") ?? "").trim() || null : null;
+  if (isMatch && (!matchPlayerA || !matchPlayerB || matchPlayerA === matchPlayerB)) return;
 
   const { data: round, error } = await supabase
     .from("rounds")
@@ -152,9 +158,11 @@ export async function createRound(tripId: string, tripCode: string, formData: Fo
       course_id: courseId,
       course_location: courseLocation,
       round_date: roundDate,
-      format: "stroke",
+      format: isMatch ? "match" : "stroke",
       skins_bet: skinsBet,
       nassau_bet: nassauBet,
+      match_player_a: matchPlayerA,
+      match_player_b: matchPlayerB,
       par: DEFAULT_PAR,
     })
     .select("id")

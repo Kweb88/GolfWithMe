@@ -48,7 +48,8 @@
   color: var(--text-soft);
 }
 
-.field input {
+.field input,
+.field select {
   font-family: var(--font-inter), sans-serif;
   padding: 9px 10px;
   border: 1.5px solid var(--border);
@@ -58,7 +59,8 @@
   color: var(--text);
 }
 
-.field input:focus {
+.field input:focus,
+.field select:focus {
   outline: 2px solid var(--fairway);
   outline-offset: 1px;
 }

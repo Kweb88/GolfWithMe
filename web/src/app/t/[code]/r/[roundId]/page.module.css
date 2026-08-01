@@ -102,3 +102,25 @@
 .segmentWinner {
   font-weight: 600;
 }
+
+.matchStatus {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  padding: 16px 8px;
+  flex-wrap: wrap;
+  text-align: center;
+}
+
+.matchName {
+  font-weight: 700;
+  font-size: 15px;
+}
+
+.matchStatusText {
+  font-variant-numeric: tabular-nums;
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--fairway);
+}

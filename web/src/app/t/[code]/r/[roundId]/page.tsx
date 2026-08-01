@@ -3,7 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import { AppHeader } from "@/components/app-header";
 import { BottomNav } from "@/components/bottom-nav";
 import { ScorecardGrid } from "@/components/scorecard-grid";
-import { calcSkins, calcNassau } from "@/lib/scoring";
+import { calcSkins, calcNassau, calcMatchPlay } from "@/lib/scoring";
 import styles from "./page.module.css";
 
 function fmt(n: number) {
@@ -35,7 +35,7 @@ export default async function RoundPage({
 
   const { data: round } = await supabase
     .from("rounds")
-    .select("id, course_name, course_location, round_date, skins_bet, nassau_bet, par")
+    .select("id, course_name, course_location, round_date, format, skins_bet, nassau_bet, match_player_a, match_player_b, par")
     .eq("id", roundId)
     .eq("trip_id", trip.id)
     .maybeSingle();
@@ -48,6 +48,7 @@ export default async function RoundPage({
 
   const players = members ?? [];
   const par = round.par as number[];
+  const isMatch = round.format === "match";
 
   const scores: Record<string, (number | null)[]> = {};
   for (const p of players) scores[p.id] = new Array(18).fill(null);
@@ -55,6 +56,11 @@ export default async function RoundPage({
     if (!scores[row.member_id]) scores[row.member_id] = new Array(18).fill(null);
     scores[row.member_id][row.hole - 1] = row.strokes;
   }
+
+  const playerA = players.find((p) => p.id === round.match_player_a);
+  const playerB = players.find((p) => p.id === round.match_player_b);
+  const scorecardPlayers = isMatch ? [playerA, playerB].filter((p): p is { id: string; name: string } => !!p) : players;
+  const match = isMatch && playerA && playerB ? calcMatchPlay(scores, playerA.id, playerB.id) : null;
 
   const leaderboard = players
     .map((p) => {
@@ -91,43 +97,65 @@ export default async function RoundPage({
             {round.round_date ? ` · ${round.round_date}` : ""}
           </div>
           <div className={styles.hint}>
-            {round.skins_bet > 0 ? `Skins: $${round.skins_bet}/hole` : ""}
-            {round.skins_bet > 0 && round.nassau_bet > 0 ? " · " : ""}
-            {round.nassau_bet > 0 ? `Nassau: $${round.nassau_bet}/segment` : ""}
+            {isMatch ? (
+              "Match Play"
+            ) : (
+              <>
+                {round.skins_bet > 0 ? `Skins: $${round.skins_bet}/hole` : ""}
+                {round.skins_bet > 0 && round.nassau_bet > 0 ? " · " : ""}
+                {round.nassau_bet > 0 ? `Nassau: $${round.nassau_bet}/segment` : ""}
+              </>
+            )}
           </div>
         </div>
 
-        <div className={styles.card}>
-          <h3>Leaderboard</h3>
-          {leaderboard.length ? (
-            <table className={styles.leaderboard}>
-              <thead>
-                <tr>
-                  <th>#</th>
-                  <th>Player</th>
-                  <th>Thru</th>
-                  <th>Strokes</th>
-                  <th>Score</th>
-                </tr>
-              </thead>
-              <tbody>
-                {leaderboard.map((r, i) => (
-                  <tr key={r.id}>
-                    <td className={styles.rank}>{i + 1}</td>
-                    <td>{r.name}</td>
-                    <td className="mono">{r.thru}</td>
-                    <td className="mono">{r.strokes}</td>
-                    <td className={`${styles.score} ${r.diff! < 0 ? styles.under : r.diff! > 0 ? styles.over : ""}`}>
-                      {r.diff === 0 ? "E" : `${r.diff! > 0 ? "+" : ""}${r.diff}`}
-                    </td>
+        {isMatch && match && playerA && playerB && (
+          <div className={styles.card}>
+            <h3>Match Status</h3>
+            <div className={styles.matchStatus}>
+              <span className={styles.matchName}>{playerA.name}</span>
+              <span className={styles.matchStatusText}>{match.statusText}</span>
+              <span className={styles.matchName}>{playerB.name}</span>
+            </div>
+            <div className={styles.hint}>
+              {match.decided ? "Match complete." : `${match.holesPlayed} of 18 holes played.`}
+            </div>
+          </div>
+        )}
+
+        {!isMatch && (
+          <div className={styles.card}>
+            <h3>Leaderboard</h3>
+            {leaderboard.length ? (
+              <table className={styles.leaderboard}>
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Player</th>
+                    <th>Thru</th>
+                    <th>Strokes</th>
+                    <th>Score</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          ) : (
-            <div className={styles.hint}>Leaderboard appears once scores are entered.</div>
-          )}
-        </div>
+                </thead>
+                <tbody>
+                  {leaderboard.map((r, i) => (
+                    <tr key={r.id}>
+                      <td className={styles.rank}>{i + 1}</td>
+                      <td>{r.name}</td>
+                      <td className="mono">{r.thru}</td>
+                      <td className="mono">{r.strokes}</td>
+                      <td className={`${styles.score} ${r.diff! < 0 ? styles.under : r.diff! > 0 ? styles.over : ""}`}>
+                        {r.diff === 0 ? "E" : `${r.diff! > 0 ? "+" : ""}${r.diff}`}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            ) : (
+              <div className={styles.hint}>Leaderboard appears once scores are entered.</div>
+            )}
+          </div>
+        )}
 
         {skins && (
           <div className={styles.card}>
@@ -190,7 +218,7 @@ export default async function RoundPage({
 
         <div className={styles.card}>
           <h3>Scorecard</h3>
-          <ScorecardGrid roundId={round.id} par={par} players={players} initialScores={scores} />
+          <ScorecardGrid roundId={round.id} par={par} players={scorecardPlayers} initialScores={scores} />
         </div>
       </main>
       <BottomNav active="trips" />
