@@ -16,7 +16,7 @@
   border: 1px solid var(--border);
   text-align: center;
   padding: 0;
-  height: 36px;
+  height: 42px;
   font-size: 12px;
 }
 
@@ -44,23 +44,62 @@
   background: var(--fairway);
 }
 
-.table td.holecell input {
+.table td.holecell {
+  padding: 3px;
+}
+
+.scoreBtn {
   width: 100%;
   height: 100%;
-  border: none;
+  min-width: 34px;
+  border: 1.5px solid transparent;
+  border-radius: 50%;
   text-align: center;
   font-family: var(--font-jetbrains-mono), monospace;
-  font-size: 12px;
+  font-size: 13px;
+  font-weight: 700;
   background: transparent;
   color: var(--text);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.table td.holecell input:focus {
-  outline: 2px solid var(--sand);
-  outline-offset: -2px;
+.scoreBtn:active {
+  transform: scale(0.92);
 }
 
-.table td.parrow input,
+.scoreBtn.empty {
+  border-color: var(--border);
+  color: var(--text-soft);
+}
+
+.scoreBtn.par {
+  border-color: transparent;
+}
+
+.scoreBtn.birdie,
+.scoreBtn.eagle {
+  border-color: var(--good);
+  color: var(--good);
+}
+
+.scoreBtn.eagle {
+  box-shadow: inset 0 0 0 1.5px var(--surface), inset 0 0 0 3px var(--good);
+}
+
+.scoreBtn.bogey,
+.scoreBtn.double {
+  border-radius: 4px;
+  border-color: var(--flag-dark);
+  color: var(--flag-dark);
+}
+
+.scoreBtn.double {
+  box-shadow: inset 0 0 0 1.5px var(--surface), inset 0 0 0 3px var(--flag-dark);
+}
+
 .table td.parrow {
   color: var(--text-soft);
   font-size: 11px;
@@ -74,4 +113,51 @@
   background: var(--parchment-2);
   font-weight: 700;
   font-family: var(--font-inter), sans-serif;
+}
+
+.legend {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 10px 12px;
+  font-size: 11px;
+  color: var(--text-soft);
+  border-top: 1px solid var(--border);
+  background: var(--surface);
+}
+
+.legendShape {
+  width: 14px;
+  height: 14px;
+  border: 1.5px solid var(--border);
+  border-radius: 50%;
+  margin-left: 8px;
+}
+
+.legendShape:first-child {
+  margin-left: 0;
+}
+
+.legendShape.par {
+  border-color: var(--border);
+}
+
+.legendShape.birdie,
+.legendShape.eagle {
+  border-color: var(--good);
+}
+
+.legendShape.eagle {
+  box-shadow: inset 0 0 0 1.5px var(--surface), inset 0 0 0 3px var(--good);
+}
+
+.legendShape.bogey,
+.legendShape.double {
+  border-radius: 3px;
+  border-color: var(--flag-dark);
+}
+
+.legendShape.double {
+  box-shadow: inset 0 0 0 1.5px var(--surface), inset 0 0 0 3px var(--flag-dark);
 }
