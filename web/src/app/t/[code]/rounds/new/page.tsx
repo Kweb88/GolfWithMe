@@ -1,6 +1,7 @@
 import { notFound, redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { AppHeader } from "@/components/app-header";
+import { BottomNav } from "@/components/bottom-nav";
 import { CoursePicker } from "@/components/course-picker";
 import { createRound } from "@/app/actions";
 import styles from "@/app/page.module.css";
@@ -60,6 +61,7 @@ export default async function NewRoundPage({ params }: { params: Promise<{ code:
           </form>
         </div>
       </main>
+      <BottomNav active="trips" />
     </>
   );
 }

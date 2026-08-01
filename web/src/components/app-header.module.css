@@ -1,12 +1,12 @@
 .header {
-  background: var(--fairway);
-  color: var(--header-fg);
+  background: var(--surface);
+  color: var(--text);
   padding: 14px 18px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 10px;
-  border-bottom: 4px solid var(--sand);
+  border-bottom: 1px solid var(--border);
   position: sticky;
   top: 0;
   z-index: 40;
@@ -15,47 +15,50 @@
 .brand {
   display: flex;
   align-items: center;
-  gap: 9px;
+  gap: 7px;
 }
 
-.wordmark {
-  font-weight: 900;
-  font-size: 19px;
-  letter-spacing: 0.2px;
-  margin: 0;
+.logo {
+  font-size: 18px;
   line-height: 1;
 }
 
+.wordmark {
+  font-weight: 800;
+  font-size: 18px;
+  letter-spacing: -0.01em;
+  margin: 0;
+  line-height: 1;
+  color: var(--text);
+}
+
 .wordmark .with {
-  color: var(--sand);
-  font-weight: 600;
-  font-style: italic;
+  color: var(--fairway);
+  font-weight: 800;
 }
 
 .codePill {
-  background: var(--fairway-2);
-  border: 1.5px solid var(--sand);
-  color: var(--header-fg);
+  background: var(--parchment-2);
   border-radius: 20px;
   padding: 6px 12px;
-  font-family: var(--font-jetbrains-mono), monospace;
+  font-variant-numeric: tabular-nums;
   font-size: 12px;
   font-weight: 700;
   letter-spacing: 1px;
+  color: var(--text-soft);
 }
 
 .signOut {
   font-family: var(--font-inter), sans-serif;
   font-weight: 600;
-  font-size: 12px;
+  font-size: 13px;
   background: transparent;
-  color: var(--header-fg);
-  border: 1px solid rgba(251, 246, 233, 0.4);
-  border-radius: 6px;
-  padding: 7px 12px;
+  color: var(--text-soft);
+  border: none;
   cursor: pointer;
+  padding: 6px 4px;
 }
 
 .signOut:hover {
-  background: rgba(251, 246, 233, 0.1);
+  color: var(--flag-dark);
 }

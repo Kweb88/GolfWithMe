@@ -2,6 +2,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { AppHeader } from "@/components/app-header";
+import { BottomNav } from "@/components/bottom-nav";
 import { addPlayer } from "../../actions";
 import styles from "./page.module.css";
 
@@ -26,6 +27,7 @@ export default async function TripPage({ params }: { params: Promise<{ code: str
             <p>No trip found for code {code.toUpperCase()}.</p>
           </div>
         </main>
+        <BottomNav active="trips" />
       </>
     );
   }
@@ -126,6 +128,7 @@ export default async function TripPage({ params }: { params: Promise<{ code: str
           </div>
         )}
       </main>
+      <BottomNav active="trips" />
     </>
   );
 }

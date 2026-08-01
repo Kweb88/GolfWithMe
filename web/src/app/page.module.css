@@ -13,7 +13,6 @@
 }
 
 .card h3 {
-  font-family: var(--font-fraunces), serif;
   font-weight: 700;
   font-size: 16px;
   margin: 0 0 12px;
@@ -60,7 +59,7 @@
 }
 
 .field input:focus {
-  outline: 2px solid var(--sand);
+  outline: 2px solid var(--fairway);
   outline-offset: 1px;
 }
 
@@ -69,16 +68,16 @@
   font-weight: 600;
   font-size: 13px;
   border: none;
-  border-radius: 6px;
-  padding: 9px 16px;
+  border-radius: 8px;
+  padding: 10px 16px;
   cursor: pointer;
-  background: var(--sand);
-  color: var(--fairway);
+  background: var(--fairway);
+  color: var(--on-accent);
   margin-top: 12px;
 }
 
-.btn:hover {
-  filter: brightness(1.08);
+.btn:active {
+  background: var(--fairway-2);
 }
 
 .tripGrid {
@@ -97,14 +96,14 @@
 }
 
 .tripCard:hover {
-  border-color: var(--sand);
+  border-color: var(--fairway);
 }
 
 .tripCard .codeTag {
   position: absolute;
   top: 14px;
   right: 14px;
-  font-family: var(--font-jetbrains-mono), monospace;
+  font-variant-numeric: tabular-nums;
   font-size: 10px;
   background: var(--parchment-2);
   padding: 2px 6px;
@@ -114,7 +113,7 @@
 }
 
 .tripCard h4 {
-  font-family: var(--font-fraunces), serif;
+  font-weight: 700;
   font-size: 17px;
   margin: 0 0 4px;
 }

@@ -6,17 +6,17 @@ export function AppHeader({ tripCode }: { tripCode?: string }) {
   return (
     <header className={styles.header}>
       <Link href="/" className={styles.brand}>
-        <span aria-hidden style={{ fontSize: 20 }}>
+        <span aria-hidden className={styles.logo}>
           ⛳
         </span>
-        <div className={`${styles.wordmark} display`}>
+        <div className={styles.wordmark}>
           Golf<span className={styles.with}>With</span>Me
         </div>
       </Link>
       {tripCode ? (
-        <span className={styles.codePill}>CODE: {tripCode}</span>
+        <span className={styles.codePill}>{tripCode}</span>
       ) : (
-        <SignOutButton />
+        <SignOutButton className={styles.signOut} />
       )}
     </header>
   );

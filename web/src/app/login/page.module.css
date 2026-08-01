@@ -16,9 +16,9 @@
 }
 
 .wordmark .with {
-  color: var(--sand);
-  font-weight: 600;
-  font-style: italic;
+  color: var(--fairway);
+  font-weight: 800;
+  font-style: normal;
 }
 
 .tagline {
@@ -54,7 +54,7 @@
 }
 
 .button:hover {
-  border-color: var(--sand);
+  border-color: var(--fairway);
 }
 
 .button:disabled {

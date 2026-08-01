@@ -25,10 +25,6 @@
   background: var(--bg);
 }
 
-.item b {
-  font-family: var(--font-fraunces), serif;
-}
-
 .item .loc {
   color: var(--text-soft);
   font-size: 11px;

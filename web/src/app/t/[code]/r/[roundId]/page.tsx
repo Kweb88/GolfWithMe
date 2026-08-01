@@ -1,6 +1,7 @@
 import { notFound, redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { AppHeader } from "@/components/app-header";
+import { BottomNav } from "@/components/bottom-nav";
 import { ScorecardGrid } from "@/components/scorecard-grid";
 import styles from "./page.module.css";
 
@@ -118,6 +119,7 @@ export default async function RoundPage({
           <ScorecardGrid roundId={round.id} par={par} players={players} initialScores={scores} />
         </div>
       </main>
+      <BottomNav active="trips" />
     </>
   );
 }

@@ -1,52 +1,53 @@
 :root {
-  --fairway: #1b3a2b;
-  --fairway-2: #2c5741;
-  --parchment: #f1e9d3;
-  --parchment-2: #e4d8b8;
-  --parchment-3: #d8c9a0;
-  --ink: #241f1a;
-  --ink-soft: #6b6151;
-  --flag: #b8422f;
-  --flag-dark: #8f3123;
-  --sand: #c7a467;
-  --gold: #a9822e;
-  --white-line: #fbf6e9;
+  /* One signature accent (fairway green), plus a clean white/near-black
+     neutral scale — closer to how Instagram/Strava actually use color:
+     restrained chrome, color reserved for interactive/active moments. */
+  --fairway: #2e7d4f;
+  --fairway-2: #256640;
+  --flag: #e0384a;
+  --flag-dark: #d6303c;
+  --sand: #dbdbdb;
+  --parchment: #fafafa;
+  --parchment-2: #f0f0f0;
+  --ink: #111111;
+  --ink-soft: #737373;
+  --white-line: #ffffff;
 
   --bg: var(--parchment);
   --surface: var(--white-line);
   --text: var(--ink);
   --text-soft: var(--ink-soft);
-  --border: var(--parchment-3);
-  --heading: var(--fairway);
+  --border: #dbdbdb;
+  --heading: var(--text);
   --good: var(--fairway);
+  --header-fg: var(--text);
 
-  /* The header bar is always the dark fairway green, in both themes, so its
-     text stays a constant light cream instead of flipping with the theme. */
-  --header-fg: #fbf6e9;
+  /* Buttons stay the vivid accent green in both themes, so their text stays
+     a constant white rather than flipping with --text. */
+  --on-accent: #ffffff;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --fairway: #234531;
-    --fairway-2: #35694a;
-    --parchment: #14201a;
-    --parchment-2: #1c2b22;
-    --parchment-3: #2a3c30;
-    --ink: #f1ead9;
-    --ink-soft: #a9a290;
-    --flag: #d15a42;
-    --flag-dark: #e97258;
-    --sand: #d4b578;
-    --gold: #d6ac52;
-    --white-line: #1a2a21;
+    --fairway: #34c471;
+    --fairway-2: #2a9d5c;
+    --flag: #ff5a6e;
+    --flag-dark: #ff6b5b;
+    --sand: #2a2a2a;
+    --parchment: #000000;
+    --parchment-2: #1a1a1a;
+    --ink: #f5f5f5;
+    --ink-soft: #a8a8a8;
+    --white-line: #121212;
 
     --bg: var(--parchment);
     --surface: var(--white-line);
     --text: var(--ink);
     --text-soft: var(--ink-soft);
-    --border: var(--parchment-3);
-    --heading: var(--sand);
-    --good: #5fb87a;
+    --border: #2a2a2a;
+    --heading: var(--text);
+    --good: var(--fairway);
+    --header-fg: var(--text);
   }
 
   html {
@@ -72,7 +73,7 @@ body {
 
 body {
   min-height: 100%;
-  font-family: var(--font-inter), sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, var(--font-inter), "Segoe UI", Roboto, sans-serif;
   color: var(--text);
   background: var(--bg);
   -webkit-font-smoothing: antialiased;
@@ -85,9 +86,10 @@ a {
 }
 
 .display {
-  font-family: var(--font-fraunces), serif;
+  font-weight: 800;
+  letter-spacing: -0.01em;
 }
 
 .mono {
-  font-family: var(--font-jetbrains-mono), monospace;
+  font-variant-numeric: tabular-nums;
 }

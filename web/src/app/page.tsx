@@ -2,6 +2,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { AppHeader } from "@/components/app-header";
+import { BottomNav } from "@/components/bottom-nav";
 import { createTrip, joinTrip } from "./actions";
 import styles from "./page.module.css";
 
@@ -104,6 +105,7 @@ export default async function Home() {
           </form>
         </div>
       </main>
+      <BottomNav active="trips" />
     </>
   );
 }

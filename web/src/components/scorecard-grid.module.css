@@ -8,7 +8,7 @@
   border-collapse: collapse;
   width: 100%;
   min-width: 780px;
-  font-family: var(--font-jetbrains-mono), monospace;
+  font-variant-numeric: tabular-nums;
 }
 
 .table th,
@@ -55,7 +55,7 @@
   border: 1.5px solid transparent;
   border-radius: 50%;
   text-align: center;
-  font-family: var(--font-jetbrains-mono), monospace;
+  font-variant-numeric: tabular-nums;
   font-size: 13px;
   font-weight: 700;
   background: transparent;

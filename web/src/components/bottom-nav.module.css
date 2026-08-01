@@ -1,0 +1,50 @@
+.nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 56px;
+  padding-bottom: env(safe-area-inset-bottom);
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  display: flex;
+  z-index: 45;
+}
+
+.item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  color: var(--text-soft);
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.item svg {
+  width: 24px;
+  height: 24px;
+}
+
+.item.active {
+  color: var(--text);
+}
+
+.item.disabled {
+  color: var(--border);
+  cursor: default;
+}
+
+.label {
+  font-size: 10px;
+  font-weight: 600;
+}
+
+/* Reserve room at the bottom of scrollable content so it isn't hidden
+   behind the fixed nav bar. */
+.spacer {
+  height: calc(56px + env(safe-area-inset-bottom));
+}
