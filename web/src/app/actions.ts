@@ -441,3 +441,26 @@ export async function submitCourseReview(courseName: string, formData: FormData)
     await supabase.from("course_reviews").insert({ course_name: courseName, author_id: user.id, rating, review });
   }
 }
+
+export async function updateProfile(formData: FormData) {
+  const { supabase, user } = await requireUser();
+
+  const name = String(formData.get("name") ?? "").trim();
+  if (!name) return;
+
+  const avatarEmoji = String(formData.get("avatarEmoji") ?? "⛳").trim() || "⛳";
+  const homeCourse = String(formData.get("homeCourse") ?? "").trim() || null;
+  const favoriteFormat = String(formData.get("favoriteFormat") ?? "Stroke Play").trim() || "Stroke Play";
+  const bio = String(formData.get("bio") ?? "").trim() || null;
+
+  await supabase
+    .from("profiles")
+    .update({
+      name,
+      avatar_emoji: avatarEmoji,
+      home_course: homeCourse,
+      favorite_format: favoriteFormat,
+      bio,
+    })
+    .eq("id", user.id);
+}
