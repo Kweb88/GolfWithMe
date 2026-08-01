@@ -31,6 +31,54 @@
   display: block;
 }
 
+.previewWrap {
+  position: relative;
+  margin-top: 10px;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.preview {
+  width: 100%;
+  max-height: 320px;
+  object-fit: cover;
+  display: block;
+}
+
+.uploadingBadge {
+  position: absolute;
+  bottom: 8px;
+  left: 8px;
+  background: rgba(0, 0, 0, 0.65);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 4px 9px;
+  border-radius: 20px;
+}
+
+.removePhoto {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(0, 0, 0, 0.65);
+  color: #fff;
+  font-size: 16px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.actionsRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 10px;
+}
+
 .photoToggle {
   font-family: var(--font-inter), sans-serif;
   font-size: 12px;
@@ -39,21 +87,7 @@
   background: transparent;
   border: none;
   cursor: pointer;
-  padding: 8px 0 0;
-  display: block;
-}
-
-.photoInput {
-  width: 100%;
-  font-family: var(--font-inter), sans-serif;
-  font-size: 13px;
-  padding: 8px 10px;
-  border: 1.5px solid var(--border);
-  border-radius: 8px;
-  background: var(--bg);
-  color: var(--text);
-  margin-top: 8px;
-  display: block;
+  padding: 0;
 }
 
 .postBtn {
@@ -66,5 +100,19 @@
   cursor: pointer;
   background: var(--fairway);
   color: var(--on-accent);
-  margin-top: 10px;
+}
+
+.postBtn:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.error {
+  font-size: 11px;
+  color: var(--flag-dark);
+  margin-top: 8px;
+}
+
+.hiddenInput {
+  display: none;
 }

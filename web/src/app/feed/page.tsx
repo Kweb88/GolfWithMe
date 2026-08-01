@@ -64,7 +64,7 @@ export default async function FeedPage() {
       <AppHeader />
       <main className={styles.main}>
         {trips.length > 0 ? (
-          <FeedComposer trips={trips.map((t) => ({ id: t.id, name: t.name }))} />
+          <FeedComposer userId={data.user.id} trips={trips.map((t) => ({ id: t.id, name: t.name }))} />
         ) : (
           <div className={styles.card}>
             <div className={styles.emptyMini}>Join or create a trip to start posting.</div>
