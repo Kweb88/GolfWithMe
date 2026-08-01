@@ -69,3 +69,36 @@
 .over {
   color: var(--flag-dark);
 }
+
+.amt {
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+}
+
+.amtPos {
+  color: var(--good);
+}
+
+.amtNeg {
+  color: var(--flag-dark);
+}
+
+.amtZero {
+  color: var(--text-soft);
+}
+
+.segmentRow {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--parchment-2);
+  font-size: 13px;
+}
+
+.segmentRow:last-child {
+  border-bottom: none;
+}
+
+.segmentWinner {
+  font-weight: 600;
+}
