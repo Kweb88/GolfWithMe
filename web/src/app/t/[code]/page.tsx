@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { AppHeader } from "@/components/app-header";
@@ -29,7 +30,7 @@ export default async function TripPage({ params }: { params: Promise<{ code: str
     );
   }
 
-  const [{ data: players }, { data: membership }] = await Promise.all([
+  const [{ data: players }, { data: membership }, { data: rounds }] = await Promise.all([
     supabase
       .from("trip_members")
       .select("id, name, venmo, cashapp, zelle")
@@ -41,6 +42,11 @@ export default async function TripPage({ params }: { params: Promise<{ code: str
       .eq("trip_id", trip.id)
       .eq("profile_id", data.user.id)
       .maybeSingle(),
+    supabase
+      .from("rounds")
+      .select("id, course_name, round_date")
+      .eq("trip_id", trip.id)
+      .order("created_at", { ascending: false }),
   ]);
 
   const isMember = !!membership;
@@ -77,6 +83,25 @@ export default async function TripPage({ params }: { params: Promise<{ code: str
             ))
           ) : (
             <div className={styles.emptyMini}>No players yet.</div>
+          )}
+        </div>
+
+        <div className={styles.card}>
+          <h3>Rounds</h3>
+          {rounds && rounds.length > 0 ? (
+            rounds.map((r) => (
+              <Link key={r.id} href={`/t/${trip.code}/r/${r.id}`} className={styles.roundRow}>
+                <span className={styles.playerName}>{r.course_name}</span>
+                <span className={styles.playerContact}>{r.round_date ?? ""}</span>
+              </Link>
+            ))
+          ) : (
+            <div className={styles.emptyMini}>No rounds logged yet.</div>
+          )}
+          {isMember && (
+            <Link href={`/t/${trip.code}/rounds/new`} className={styles.btn} style={{ display: "inline-block", textDecoration: "none" }}>
+              + Log a Round
+            </Link>
           )}
         </div>
 

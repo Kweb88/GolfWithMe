@@ -18,6 +18,7 @@
   --text-soft: var(--ink-soft);
   --border: var(--parchment-3);
   --heading: var(--fairway);
+  --good: var(--fairway);
 
   /* The header bar is always the dark fairway green, in both themes, so its
      text stays a constant light cream instead of flipping with the theme. */
@@ -45,6 +46,7 @@
     --text-soft: var(--ink-soft);
     --border: var(--parchment-3);
     --heading: var(--sand);
+    --good: #5fb87a;
   }
 
   html {

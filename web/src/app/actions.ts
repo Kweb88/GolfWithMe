@@ -127,3 +127,61 @@ export async function addPlayer(tripId: string, formData: FormData) {
     zelle: String(formData.get("zelle") ?? "").trim() || null,
   });
 }
+
+// Matches a typical par-72 routing: a mix of 3s, 4s, and 5s rather than an
+// unrealistic flat set of par-4s.
+const DEFAULT_PAR = [4, 4, 3, 5, 4, 4, 3, 5, 4, 4, 4, 3, 5, 4, 4, 3, 5, 4];
+
+export async function createRound(tripId: string, tripCode: string, formData: FormData) {
+  const { supabase } = await requireUser();
+
+  const courseName = String(formData.get("courseName") ?? "").trim();
+  if (!courseName) return;
+
+  const courseId = String(formData.get("courseId") ?? "").trim() || null;
+  const courseLocation = String(formData.get("courseLocation") ?? "").trim() || null;
+  const roundDate = String(formData.get("roundDate") ?? "").trim() || null;
+  const skinsBet = Number(formData.get("skinsBet") ?? 0) || 0;
+  const nassauBet = Number(formData.get("nassauBet") ?? 0) || 0;
+
+  const { data: round, error } = await supabase
+    .from("rounds")
+    .insert({
+      trip_id: tripId,
+      course_name: courseName,
+      course_id: courseId,
+      course_location: courseLocation,
+      round_date: roundDate,
+      format: "stroke",
+      skins_bet: skinsBet,
+      nassau_bet: nassauBet,
+      par: DEFAULT_PAR,
+    })
+    .select("id")
+    .single();
+
+  if (error || !round) {
+    console.error("createRound failed", error);
+    return;
+  }
+
+  const { data: members } = await supabase.from("trip_members").select("id").eq("trip_id", tripId);
+  if (members && members.length) {
+    await supabase.from("round_players").insert(members.map((m) => ({ round_id: round.id, member_id: m.id })));
+  }
+
+  redirect(`/t/${tripCode}/r/${round.id}`);
+}
+
+export async function updateScore(roundId: string, memberId: string, hole: number, strokes: number | null) {
+  const { supabase } = await requireUser();
+
+  if (strokes !== null && (!Number.isInteger(strokes) || strokes < 1 || strokes > 20)) return;
+
+  await supabase
+    .from("scores")
+    .upsert(
+      { round_id: roundId, member_id: memberId, hole, strokes, updated_at: new Date().toISOString() },
+      { onConflict: "round_id,member_id,hole" },
+    );
+}

@@ -1,0 +1,72 @@
+.main {
+  padding: 18px 18px 40px;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 18px;
+  margin-bottom: 14px;
+}
+
+.card h3 {
+  font-family: var(--font-fraunces), serif;
+  font-weight: 700;
+  font-size: 16px;
+  margin: 0 0 12px;
+  color: var(--heading);
+}
+
+.hint {
+  font-size: 12px;
+  color: var(--text-soft);
+  margin-top: 6px;
+  line-height: 1.5;
+}
+
+.leaderboard {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.leaderboard th {
+  text-align: left;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  color: var(--text-soft);
+  padding: 6px 10px;
+  border-bottom: 2px solid var(--border);
+}
+
+.leaderboard td {
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--parchment-2);
+  font-size: 13px;
+}
+
+.leaderboard tr:first-child td {
+  font-weight: 700;
+}
+
+.rank {
+  font-family: var(--font-jetbrains-mono), monospace;
+  color: var(--text-soft);
+  width: 24px;
+}
+
+.score {
+  font-family: var(--font-jetbrains-mono), monospace;
+  font-weight: 700;
+}
+
+.under {
+  color: var(--good);
+}
+
+.over {
+  color: var(--flag-dark);
+}

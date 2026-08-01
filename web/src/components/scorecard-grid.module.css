@@ -1,0 +1,77 @@
+.wrap {
+  overflow-x: auto;
+  border: 1.5px solid var(--fairway);
+  border-radius: 8px;
+}
+
+.table {
+  border-collapse: collapse;
+  width: 100%;
+  min-width: 780px;
+  font-family: var(--font-jetbrains-mono), monospace;
+}
+
+.table th,
+.table td {
+  border: 1px solid var(--border);
+  text-align: center;
+  padding: 0;
+  height: 36px;
+  font-size: 12px;
+}
+
+.table th.rowlabel,
+.table td.rowlabel {
+  text-align: left;
+  padding-left: 10px;
+  font-family: var(--font-inter), sans-serif;
+  font-weight: 600;
+  min-width: 130px;
+  position: sticky;
+  left: 0;
+  background: var(--surface);
+  z-index: 2;
+}
+
+.table thead th {
+  background: var(--fairway);
+  color: var(--header-fg);
+  font-weight: 700;
+  font-size: 11px;
+}
+
+.table thead th.rowlabel {
+  background: var(--fairway);
+}
+
+.table td.holecell input {
+  width: 100%;
+  height: 100%;
+  border: none;
+  text-align: center;
+  font-family: var(--font-jetbrains-mono), monospace;
+  font-size: 12px;
+  background: transparent;
+  color: var(--text);
+}
+
+.table td.holecell input:focus {
+  outline: 2px solid var(--sand);
+  outline-offset: -2px;
+}
+
+.table td.parrow input,
+.table td.parrow {
+  color: var(--text-soft);
+  font-size: 11px;
+}
+
+.table td.holecell.divider9 {
+  border-right: 3px solid var(--sand);
+}
+
+.table td.totalcol {
+  background: var(--parchment-2);
+  font-weight: 700;
+  font-family: var(--font-inter), sans-serif;
+}
