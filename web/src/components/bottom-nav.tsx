@@ -18,7 +18,7 @@ const TABS: { key: Tab; label: string; href: string; icon: React.ReactNode }[] =
   {
     key: "feed",
     label: "Feed",
-    href: "",
+    href: "/feed",
     icon: (
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <path d="M20.8 8.6c0 4.5-8.8 10-8.8 10s-8.8-5.5-8.8-10a4.8 4.8 0 0 1 8.8-2.7A4.8 4.8 0 0 1 20.8 8.6z" />

@@ -3,7 +3,10 @@ import { createClient } from "@/lib/supabase/server";
 import { AppHeader } from "@/components/app-header";
 import { BottomNav } from "@/components/bottom-nav";
 import { ScorecardGrid } from "@/components/scorecard-grid";
+import { RoundLikeButton } from "@/components/round-like-button";
 import { calcSkins, calcNassau, calcMatchPlay } from "@/lib/scoring";
+import { relativeTime } from "@/lib/time";
+import { addRoundComment } from "@/app/actions";
 import styles from "./page.module.css";
 
 function fmt(n: number) {
@@ -43,12 +46,19 @@ export default async function RoundPage({
     .maybeSingle();
   if (!round) notFound();
 
-  const [{ data: members }, { data: scoreRows }, { data: roundPlayers }, { data: pairRows }] = await Promise.all([
-    supabase.from("trip_members").select("id, name").eq("trip_id", trip.id).order("joined_at"),
-    supabase.from("scores").select("member_id, hole, strokes").eq("round_id", round.id),
-    supabase.from("round_players").select("member_id, team").eq("round_id", round.id),
-    supabase.from("round_ryder_pairs").select("id, member_a, member_b").eq("round_id", round.id),
-  ]);
+  const [{ data: members }, { data: scoreRows }, { data: roundPlayers }, { data: pairRows }, { data: comments }, { data: likes }] =
+    await Promise.all([
+      supabase.from("trip_members").select("id, name").eq("trip_id", trip.id).order("joined_at"),
+      supabase.from("scores").select("member_id, hole, strokes").eq("round_id", round.id),
+      supabase.from("round_players").select("member_id, team").eq("round_id", round.id),
+      supabase.from("round_ryder_pairs").select("id, member_a, member_b").eq("round_id", round.id),
+      supabase.from("round_comments").select("id, author_name, text, created_at").eq("round_id", round.id).order("created_at"),
+      supabase.from("round_likes").select("profile_id").eq("round_id", round.id),
+    ]);
+
+  const likeCount = likes?.length ?? 0;
+  const likedByMe = (likes ?? []).some((l) => l.profile_id === data.user.id);
+  const addCommentForRound = addRoundComment.bind(null, round.id);
 
   const players = members ?? [];
   const par = round.par as number[];
@@ -172,6 +182,7 @@ export default async function RoundPage({
               </>
             )}
           </div>
+          <RoundLikeButton roundId={round.id} count={likeCount} likedByMe={likedByMe} />
         </div>
 
         {isRyder && (
@@ -339,6 +350,29 @@ export default async function RoundPage({
             initialScores={isScramble ? teamScores : scores}
             teamMemberIds={isScramble ? teamMemberIds : undefined}
           />
+        </div>
+
+        <div className={styles.card}>
+          <h3>Comments</h3>
+          {comments && comments.length > 0 ? (
+            comments.map((c) => (
+              <div key={c.id} className={styles.commentRow}>
+                <div className={styles.commentMeta}>
+                  <span className={styles.commentAuthor}>{c.author_name}</span>
+                  <span className={styles.commentTime}>{relativeTime(c.created_at)}</span>
+                </div>
+                <div className={styles.commentText}>{c.text}</div>
+              </div>
+            ))
+          ) : (
+            <div className={styles.hint}>No comments yet.</div>
+          )}
+          <form action={addCommentForRound} className={styles.commentForm}>
+            <input type="text" name="text" placeholder="Add a comment..." required />
+            <button type="submit" className={styles.btn}>
+              Post
+            </button>
+          </form>
         </div>
       </main>
       <BottomNav active="trips" />

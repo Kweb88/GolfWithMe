@@ -1,0 +1,14 @@
+.likeBtn {
+  font-family: var(--font-inter), sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 8px 0 0;
+  color: var(--text-soft);
+}
+
+.likeBtn.liked {
+  color: var(--text);
+}

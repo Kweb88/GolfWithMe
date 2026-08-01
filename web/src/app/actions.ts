@@ -70,6 +70,14 @@ export async function createTrip(formData: FormData) {
     name: profile?.name ?? "You",
   });
 
+  await supabase.from("feed_posts").insert({
+    trip_id: trip.id,
+    author_id: user.id,
+    author_name: profile?.name ?? "Someone",
+    type: "created",
+    text: `${profile?.name ?? "Someone"} started the trip 🏌️`,
+  });
+
   redirect(`/t/${trip.code}`);
 }
 
@@ -107,6 +115,14 @@ export async function joinTrip(formData: FormData) {
       trip_id: trip.id,
       profile_id: user.id,
       name: profile?.name ?? "You",
+    });
+
+    await supabase.from("feed_posts").insert({
+      trip_id: trip.id,
+      author_id: user.id,
+      author_name: profile?.name ?? "Someone",
+      type: "join",
+      text: `${profile?.name ?? "Someone"} joined the trip`,
     });
   }
 
@@ -176,7 +192,7 @@ export async function setTripTeams(tripId: string, formData: FormData) {
 const DEFAULT_PAR = [4, 4, 3, 5, 4, 4, 3, 5, 4, 4, 4, 3, 5, 4, 4, 3, 5, 4];
 
 export async function createRound(tripId: string, tripCode: string, formData: FormData) {
-  const { supabase } = await requireUser();
+  const { supabase, user } = await requireUser();
 
   const courseName = String(formData.get("courseName") ?? "").trim();
   if (!courseName) return;
@@ -265,6 +281,15 @@ export async function createRound(tripId: string, tripCode: string, formData: Fo
       .insert(ryderPairs.map((p) => ({ round_id: round.id, member_a: p.a, member_b: p.b })));
   }
 
+  const { data: profile } = await supabase.from("profiles").select("name").eq("id", user.id).single();
+  await supabase.from("feed_posts").insert({
+    trip_id: tripId,
+    author_id: user.id,
+    author_name: profile?.name ?? "Someone",
+    type: "round",
+    text: `New round logged: ${courseName}${courseLocation ? ` — ${courseLocation}` : ""}`,
+  });
+
   redirect(`/t/${tripCode}/r/${round.id}`);
 }
 
@@ -300,4 +325,74 @@ export async function updateTeamScore(roundId: string, memberIds: string[], hole
     })),
     { onConflict: "round_id,member_id,hole" },
   );
+}
+
+export async function createFeedPost(formData: FormData) {
+  const { supabase, user } = await requireUser();
+
+  const tripId = String(formData.get("tripId") ?? "").trim();
+  const text = String(formData.get("text") ?? "").trim();
+  const photoUrl = String(formData.get("photoUrl") ?? "").trim() || null;
+  if (!tripId || (!text && !photoUrl)) return;
+
+  const { data: profile } = await supabase.from("profiles").select("name").eq("id", user.id).single();
+
+  await supabase.from("feed_posts").insert({
+    trip_id: tripId,
+    author_id: user.id,
+    author_name: profile?.name ?? "Someone",
+    type: "post",
+    text: text || null,
+    photo_url: photoUrl,
+  });
+}
+
+export async function toggleFeedReaction(postId: string) {
+  const { supabase, user } = await requireUser();
+
+  const { data: existing } = await supabase
+    .from("feed_reactions")
+    .select("post_id")
+    .eq("post_id", postId)
+    .eq("profile_id", user.id)
+    .maybeSingle();
+
+  if (existing) {
+    await supabase.from("feed_reactions").delete().eq("post_id", postId).eq("profile_id", user.id);
+  } else {
+    await supabase.from("feed_reactions").insert({ post_id: postId, profile_id: user.id });
+  }
+}
+
+export async function addRoundComment(roundId: string, formData: FormData) {
+  const { supabase, user } = await requireUser();
+
+  const text = String(formData.get("text") ?? "").trim();
+  if (!text) return;
+
+  const { data: profile } = await supabase.from("profiles").select("name").eq("id", user.id).single();
+
+  await supabase.from("round_comments").insert({
+    round_id: roundId,
+    author_id: user.id,
+    author_name: profile?.name ?? "Someone",
+    text,
+  });
+}
+
+export async function toggleRoundLike(roundId: string) {
+  const { supabase, user } = await requireUser();
+
+  const { data: existing } = await supabase
+    .from("round_likes")
+    .select("round_id")
+    .eq("round_id", roundId)
+    .eq("profile_id", user.id)
+    .maybeSingle();
+
+  if (existing) {
+    await supabase.from("round_likes").delete().eq("round_id", roundId).eq("profile_id", user.id);
+  } else {
+    await supabase.from("round_likes").insert({ round_id: roundId, profile_id: user.id });
+  }
 }

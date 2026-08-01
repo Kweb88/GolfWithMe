@@ -1,0 +1,63 @@
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 14px;
+}
+
+.header {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.author {
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.tripBadge {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--fairway);
+  background: var(--parchment-2);
+  border-radius: 20px;
+  padding: 2px 9px;
+}
+
+.time {
+  font-size: 11px;
+  color: var(--text-soft);
+  margin-left: auto;
+}
+
+.text {
+  font-size: 14px;
+  line-height: 1.5;
+  margin-top: 8px;
+  white-space: pre-wrap;
+}
+
+.photo {
+  width: 100%;
+  border-radius: 8px;
+  margin-top: 10px;
+  display: block;
+}
+
+.likeBtn {
+  font-family: var(--font-inter), sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 8px 0 0;
+  color: var(--text-soft);
+}
+
+.likeBtn.liked {
+  color: var(--text);
+}
