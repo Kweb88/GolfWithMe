@@ -134,7 +134,15 @@ export async function deleteTrip(tripId: string) {
   const { data: trip } = await supabase.from("trips").select("id, created_by").eq("id", tripId).maybeSingle();
   if (!trip || trip.created_by !== user.id) return;
 
-  await supabase.from("trips").delete().eq("id", tripId);
+  // .select("id") after delete lets us tell "actually deleted" apart from
+  // "silently blocked by RLS" (a policy-blocked delete matches zero rows and
+  // returns no error, it just does nothing) instead of redirecting either way.
+  const { data: deleted, error } = await supabase.from("trips").delete().eq("id", tripId).select("id");
+  if (error || !deleted || deleted.length === 0) {
+    console.error("deleteTrip blocked or failed", error);
+    return;
+  }
+
   redirect("/");
 }
 
