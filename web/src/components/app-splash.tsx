@@ -4,9 +4,9 @@ import { useEffect, useState } from "react";
 import { HoleInOneLoader } from "./hole-in-one-loader";
 import styles from "./app-splash.module.css";
 
-// Slightly longer than the loader's own 5.5s animation cycle, so the ball
+// Slightly longer than the loader's own 4s animation cycle, so the ball
 // actually completes its flight and drops in before the splash clears.
-const SPLASH_DURATION_MS = 5600;
+const SPLASH_DURATION_MS = 4100;
 const FADE_MS = 300;
 
 export function AppSplash({ children }: { children: React.ReactNode }) {
