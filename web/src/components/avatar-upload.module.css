@@ -1,0 +1,67 @@
+.wrap {
+  text-align: center;
+}
+
+.photo {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin: 0 auto 10px;
+  display: block;
+  border: 1.5px solid var(--border);
+}
+
+.photoPlaceholder {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  margin: 0 auto 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  color: var(--text-soft);
+  background: var(--bg);
+  border: 1.5px dashed var(--border);
+}
+
+.actions {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+}
+
+.uploadBtn {
+  font-family: var(--font-inter), sans-serif;
+  font-weight: 600;
+  font-size: 12px;
+  border: 1.5px solid var(--border);
+  border-radius: 6px;
+  padding: 7px 12px;
+  cursor: pointer;
+  background: transparent;
+  color: var(--text);
+}
+
+.removeBtn {
+  font-family: var(--font-inter), sans-serif;
+  font-weight: 600;
+  font-size: 12px;
+  border: 1.5px solid var(--border);
+  border-radius: 6px;
+  padding: 7px 12px;
+  cursor: pointer;
+  background: transparent;
+  color: var(--flag-dark);
+}
+
+.error {
+  font-size: 11px;
+  color: var(--flag-dark);
+  margin-top: 8px;
+}
+
+.hiddenInput {
+  display: none;
+}

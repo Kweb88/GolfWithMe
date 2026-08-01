@@ -1,0 +1,12 @@
+.outlineBtn {
+  font-family: var(--font-inter), sans-serif;
+  font-weight: 600;
+  font-size: 13px;
+  border: 1.5px solid var(--border);
+  border-radius: 6px;
+  padding: 9px 14px;
+  cursor: pointer;
+  background: transparent;
+  color: var(--text);
+  width: 100%;
+}

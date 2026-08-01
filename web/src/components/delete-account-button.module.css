@@ -1,0 +1,17 @@
+.deleteBtn {
+  font-family: var(--font-inter), sans-serif;
+  font-weight: 600;
+  font-size: 13px;
+  background: transparent;
+  color: var(--flag-dark);
+  border: 1.5px solid var(--flag-dark);
+  border-radius: 6px;
+  padding: 8px 14px;
+  cursor: pointer;
+  width: 100%;
+}
+
+.deleteBtn:active {
+  background: var(--flag-dark);
+  color: var(--on-accent);
+}

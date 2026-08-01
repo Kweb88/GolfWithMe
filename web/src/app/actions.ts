@@ -2,6 +2,7 @@
 
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 
 const CODE_CHARS = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"; // no 0/O or 1/I
 
@@ -463,4 +464,116 @@ export async function updateProfile(formData: FormData) {
       bio,
     })
     .eq("id", user.id);
+}
+
+export async function updateAvatarUrl(url: string | null) {
+  const { supabase, user } = await requireUser();
+  await supabase.from("profiles").update({ avatar_url: url }).eq("id", user.id);
+}
+
+// Uses the service-role admin client to actually delete the auth.users row
+// (the RLS-scoped client has no permission to do that). That delete cascades
+// to the profiles row per the schema, which in turn is set null (not
+// restricted) on every trip/comment/post it authored, per migration 0004 —
+// so this removes the account without destroying other members' shared
+// trip history.
+export async function deleteAccount() {
+  const { supabase, user } = await requireUser();
+
+  const admin = createAdminClient();
+  const { error } = await admin.auth.admin.deleteUser(user.id);
+  if (error) {
+    console.error("deleteAccount failed", error);
+    return;
+  }
+
+  await supabase.auth.signOut();
+  redirect("/login");
+}
+
+// "Download your data": everything authored by or scoped to the current
+// user, not a dump of other members' private trip data.
+export async function exportMyData() {
+  const { supabase, user } = await requireUser();
+
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("name, home_course, favorite_format, bio, created_at")
+    .eq("id", user.id)
+    .single();
+
+  const { data: memberships } = await supabase.from("trip_members").select("id, trip_id").eq("profile_id", user.id);
+  const tripIds = [...new Set((memberships ?? []).map((m) => m.trip_id))];
+  const memberIds = (memberships ?? []).map((m) => m.id);
+
+  const { data: trips } =
+    tripIds.length > 0
+      ? await supabase.from("trips").select("id, code, name, location, start_date, end_date").in("id", tripIds)
+      : { data: [] };
+  const tripsById = new Map((trips ?? []).map((t) => [t.id, t]));
+
+  const { data: scores } =
+    memberIds.length > 0
+      ? await supabase.from("scores").select("round_id, hole, strokes").in("member_id", memberIds)
+      : { data: [] };
+
+  const roundIds = [...new Set((scores ?? []).map((s) => s.round_id))];
+  const { data: rounds } =
+    roundIds.length > 0
+      ? await supabase.from("rounds").select("id, trip_id, course_name, round_date, format").in("id", roundIds)
+      : { data: [] };
+  const roundsById = new Map((rounds ?? []).map((r) => [r.id, r]));
+
+  const { data: feedPosts } = await supabase
+    .from("feed_posts")
+    .select("trip_id, type, text, photo_url, created_at")
+    .eq("author_id", user.id);
+
+  const { data: roundComments } = await supabase
+    .from("round_comments")
+    .select("round_id, text, created_at")
+    .eq("author_id", user.id);
+
+  const { data: courseReviews } = await supabase
+    .from("course_reviews")
+    .select("course_name, rating, review, created_at")
+    .eq("author_id", user.id);
+
+  const scoresByRound = new Map<string, { hole: number; strokes: number | null }[]>();
+  for (const s of scores ?? []) {
+    if (!scoresByRound.has(s.round_id)) scoresByRound.set(s.round_id, []);
+    scoresByRound.get(s.round_id)!.push({ hole: s.hole, strokes: s.strokes });
+  }
+
+  return {
+    exportedAt: new Date().toISOString(),
+    profile,
+    trips: (trips ?? []).map((t) => ({
+      code: t.code,
+      name: t.name,
+      location: t.location,
+      startDate: t.start_date,
+      endDate: t.end_date,
+    })),
+    rounds: (rounds ?? []).map((r) => ({
+      trip: tripsById.get(r.trip_id)?.name ?? null,
+      courseName: r.course_name,
+      roundDate: r.round_date,
+      format: r.format,
+      myScores: (scoresByRound.get(r.id) ?? []).slice().sort((a, b) => a.hole - b.hole),
+    })),
+    feedPosts: (feedPosts ?? []).map((p) => ({
+      trip: tripsById.get(p.trip_id)?.name ?? null,
+      type: p.type,
+      text: p.text,
+      photoUrl: p.photo_url,
+      createdAt: p.created_at,
+    })),
+    roundComments: (roundComments ?? []).map((c) => ({
+      roundCourse: roundsById.get(c.round_id)?.course_name ?? null,
+      text: c.text,
+      createdAt: c.created_at,
+    })),
+    courseReviews: courseReviews ?? [],
+  };
 }

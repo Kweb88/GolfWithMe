@@ -33,6 +33,41 @@
   margin-bottom: 8px;
 }
 
+.bigPhoto {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin: 0 auto 8px;
+  display: block;
+  border: 1.5px solid var(--border);
+}
+
+.accountActions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.outlineLink {
+  font-family: var(--font-inter), sans-serif;
+  font-weight: 600;
+  font-size: 13px;
+  border: 1.5px solid var(--border);
+  border-radius: 6px;
+  padding: 9px 14px;
+  background: transparent;
+  color: var(--text);
+  text-align: center;
+  text-decoration: none;
+}
+
+.dangerZone {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid var(--parchment-2);
+}
+
 .name {
   font-weight: 800;
   font-size: 19px;

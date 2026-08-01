@@ -1,8 +1,13 @@
+import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { AppHeader } from "@/components/app-header";
 import { BottomNav } from "@/components/bottom-nav";
 import { AvatarPicker } from "@/components/avatar-picker";
+import { AvatarUpload } from "@/components/avatar-upload";
+import { InviteFriendButton } from "@/components/invite-friend-button";
+import { ExportDataButton } from "@/components/export-data-button";
+import { DeleteAccountButton } from "@/components/delete-account-button";
 import { computeCrew } from "@/lib/crew";
 import { updateProfile } from "@/app/actions";
 import styles from "./page.module.css";
@@ -16,7 +21,7 @@ export default async function ProfilePage() {
 
   const { data: profile } = await supabase
     .from("profiles")
-    .select("name, avatar_emoji, home_course, favorite_format, bio")
+    .select("name, avatar_emoji, avatar_url, home_course, favorite_format, bio")
     .eq("id", data.user.id)
     .single();
 
@@ -34,7 +39,12 @@ export default async function ProfilePage() {
       <AppHeader />
       <main className={styles.main}>
         <div className={styles.profileCard}>
-          <div className={styles.bigAvatar}>{profile?.avatar_emoji ?? "⛳"}</div>
+          {profile?.avatar_url ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={profile.avatar_url} alt="" className={styles.bigPhoto} />
+          ) : (
+            <div className={styles.bigAvatar}>{profile?.avatar_emoji ?? "⛳"}</div>
+          )}
           <div className={styles.name}>{profile?.name}</div>
           {profile?.home_course && <div className={styles.hint}>🏠 {profile.home_course}</div>}
           <div className={styles.hint}>Favorite format: {profile?.favorite_format ?? "Stroke Play"}</div>
@@ -66,7 +76,33 @@ export default async function ProfilePage() {
         </div>
 
         <div className={styles.card}>
+          <h3>Profile Photo</h3>
+          <AvatarUpload userId={data.user.id} currentUrl={profile?.avatar_url ?? null} />
+        </div>
+
+        <div className={styles.card}>
+          <h3>Account</h3>
+          <div className={styles.accountActions}>
+            <InviteFriendButton />
+            <Link href="/help" className={styles.outlineLink}>
+              Help &amp; FAQ
+            </Link>
+            <ExportDataButton />
+          </div>
+          <div className={styles.dangerZone}>
+            <div className={styles.hint} style={{ marginBottom: 8 }}>
+              Deleting your account removes your login and profile. Trips you&apos;re part of stay intact for other
+              members.
+            </div>
+            <DeleteAccountButton />
+          </div>
+        </div>
+
+        <div className={styles.card}>
           <h3>Edit Profile</h3>
+          <div className={styles.hint} style={{ marginTop: -8, marginBottom: 10 }}>
+            No photo? Pick an emoji avatar instead.
+          </div>
           <form action={updateProfile}>
             <AvatarPicker initial={profile?.avatar_emoji ?? "⛳"} />
             <div className={styles.field} style={{ marginTop: 12 }}>
