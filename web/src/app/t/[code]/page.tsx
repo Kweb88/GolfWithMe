@@ -4,6 +4,7 @@ import { createClient } from "@/lib/supabase/server";
 import { AppHeader } from "@/components/app-header";
 import { BottomNav } from "@/components/bottom-nav";
 import { TripTeamSetup } from "@/components/trip-team-setup";
+import { TripVisibilityForm } from "@/components/trip-visibility-form";
 import { DeleteTripButton } from "@/components/delete-trip-button";
 import { SettleUp } from "@/components/settle-up";
 import { TripAwards } from "@/components/trip-awards";
@@ -21,7 +22,9 @@ export default async function TripPage({ params }: { params: Promise<{ code: str
 
   const { data: trip } = await supabase
     .from("trips")
-    .select("id, code, name, location, start_date, end_date, team_a_name, team_b_name, created_by")
+    .select(
+      "id, code, name, location, start_date, end_date, team_a_name, team_b_name, created_by, is_public, seeking_active, seeking_spots, seeking_note",
+    )
     .eq("code", code.toUpperCase())
     .maybeSingle();
 
@@ -193,6 +196,22 @@ export default async function TripPage({ params }: { params: Promise<{ code: str
               players={players.map((p) => ({ id: p.id, name: p.name, team: p.team }))}
               teamAName={trip.team_a_name}
               teamBName={trip.team_b_name}
+            />
+          </div>
+        )}
+
+        {isMember && (
+          <div className={styles.card}>
+            <h3>Public &amp; Find a Fourth</h3>
+            <div className={styles.hint} style={{ marginTop: -8, marginBottom: 10 }}>
+              Public trips show up in Explore so other golfers can find and join them.
+            </div>
+            <TripVisibilityForm
+              tripId={trip.id}
+              isPublic={trip.is_public}
+              seekingActive={trip.seeking_active}
+              seekingSpots={trip.seeking_spots}
+              seekingNote={trip.seeking_note}
             />
           </div>
         )}

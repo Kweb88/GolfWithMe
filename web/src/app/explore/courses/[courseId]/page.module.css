@@ -26,59 +26,22 @@
   line-height: 1.5;
 }
 
-.playerRow {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 10px 0;
-  border-bottom: 1px solid var(--parchment-2);
+.avg {
+  font-size: 15px;
+  font-weight: 700;
+  margin-top: 10px;
 }
 
-.playerRow:last-child {
-  border-bottom: none;
-}
-
-.roundRow {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  padding: 12px 14px;
-  background: var(--bg);
-  border: 1.5px solid var(--border);
-  border-radius: 8px;
-  margin-bottom: 8px;
-  color: var(--text);
-}
-
-.roundRow:hover {
-  border-color: var(--fairway);
-}
-
-.playerName {
-  font-weight: 600;
-  flex: 1;
-  min-width: 100px;
-}
-
-.playerContact {
-  font-size: 12px;
+.count {
+  font-weight: 500;
   color: var(--text-soft);
-  font-variant-numeric: tabular-nums;
-}
-
-.row {
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
+  font-size: 12px;
 }
 
 .field {
   display: flex;
   flex-direction: column;
   gap: 5px;
-  flex: 1;
-  min-width: 120px;
 }
 
 .field label {
@@ -89,7 +52,8 @@
   color: var(--text-soft);
 }
 
-.field input {
+.field select,
+.field textarea {
   font-family: var(--font-inter), sans-serif;
   padding: 9px 10px;
   border: 1.5px solid var(--border);
@@ -97,6 +61,7 @@
   font-size: 14px;
   background: var(--bg);
   color: var(--text);
+  resize: vertical;
 }
 
 .btn {
@@ -112,23 +77,41 @@
   margin-top: 12px;
 }
 
-.btn:active {
-  background: var(--fairway-2);
+.reviewRow {
+  padding: 10px 0;
+  border-bottom: 1px solid var(--parchment-2);
 }
 
-.checkboxRow {
+.reviewRow:last-child {
+  border-bottom: none;
+}
+
+.reviewMeta {
   display: flex;
-  align-items: center;
+  align-items: baseline;
   gap: 8px;
-  font-size: 13px;
-  font-weight: 600;
-  padding: 6px 0;
-  cursor: pointer;
+  flex-wrap: wrap;
 }
 
-.checkboxRow input {
-  width: 16px;
-  height: 16px;
+.reviewAuthor {
+  font-weight: 700;
+  font-size: 13px;
+}
+
+.reviewStars {
+  font-size: 11px;
+}
+
+.reviewTime {
+  font-size: 11px;
+  color: var(--text-soft);
+  margin-left: auto;
+}
+
+.reviewText {
+  font-size: 13px;
+  margin-top: 4px;
+  line-height: 1.4;
 }
 
 .emptyMini {
@@ -136,10 +119,4 @@
   font-size: 13px;
   text-align: center;
   padding: 12px 0;
-}
-
-.notFound {
-  text-align: center;
-  padding: 60px 20px;
-  color: var(--text-soft);
 }

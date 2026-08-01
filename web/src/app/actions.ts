@@ -396,3 +396,48 @@ export async function toggleRoundLike(roundId: string) {
     await supabase.from("round_likes").insert({ round_id: roundId, profile_id: user.id });
   }
 }
+
+export async function updateTripVisibility(tripId: string, formData: FormData) {
+  const { supabase } = await requireUser();
+
+  const isPublic = formData.get("isPublic") === "on";
+  const seekingActive = formData.get("seekingActive") === "on";
+  const seekingSpots = Math.min(20, Math.max(1, Number(formData.get("seekingSpots") ?? 1) || 1));
+  const seekingNote = String(formData.get("seekingNote") ?? "").trim() || null;
+
+  await supabase
+    .from("trips")
+    .update({
+      is_public: isPublic,
+      seeking_active: seekingActive,
+      seeking_spots: seekingSpots,
+      seeking_note: seekingNote,
+    })
+    .eq("id", tripId);
+}
+
+// One review per (course, author) when it's not tied to a specific round —
+// re-submitting updates that same review instead of piling up duplicates.
+// round_id is left null here; tying a review to a round actually played is
+// a separate, later refinement.
+export async function submitCourseReview(courseName: string, formData: FormData) {
+  const { supabase, user } = await requireUser();
+
+  const rating = Number(formData.get("rating") ?? 0);
+  if (!Number.isInteger(rating) || rating < 1 || rating > 5) return;
+  const review = String(formData.get("review") ?? "").trim() || null;
+
+  const { data: existing } = await supabase
+    .from("course_reviews")
+    .select("id")
+    .eq("course_name", courseName)
+    .eq("author_id", user.id)
+    .is("round_id", null)
+    .maybeSingle();
+
+  if (existing) {
+    await supabase.from("course_reviews").update({ rating, review }).eq("id", existing.id);
+  } else {
+    await supabase.from("course_reviews").insert({ course_name: courseName, author_id: user.id, rating, review });
+  }
+}
