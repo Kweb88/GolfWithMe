@@ -35,20 +35,24 @@ export default async function RoundPage({
 
   const { data: round } = await supabase
     .from("rounds")
-    .select("id, course_name, course_location, round_date, format, skins_bet, nassau_bet, match_player_a, match_player_b, par")
+    .select(
+      "id, course_name, course_location, round_date, format, skins_bet, nassau_bet, match_player_a, match_player_b, team_a_name, team_b_name, par",
+    )
     .eq("id", roundId)
     .eq("trip_id", trip.id)
     .maybeSingle();
   if (!round) notFound();
 
-  const [{ data: members }, { data: scoreRows }] = await Promise.all([
+  const [{ data: members }, { data: scoreRows }, { data: roundPlayers }] = await Promise.all([
     supabase.from("trip_members").select("id, name").eq("trip_id", trip.id).order("joined_at"),
     supabase.from("scores").select("member_id, hole, strokes").eq("round_id", round.id),
+    supabase.from("round_players").select("member_id, team").eq("round_id", round.id),
   ]);
 
   const players = members ?? [];
   const par = round.par as number[];
   const isMatch = round.format === "match";
+  const isScramble = round.format === "scramble";
 
   const scores: Record<string, (number | null)[]> = {};
   for (const p of players) scores[p.id] = new Array(18).fill(null);
@@ -59,8 +63,38 @@ export default async function RoundPage({
 
   const playerA = players.find((p) => p.id === round.match_player_a);
   const playerB = players.find((p) => p.id === round.match_player_b);
-  const scorecardPlayers = isMatch ? [playerA, playerB].filter((p): p is { id: string; name: string } => !!p) : players;
   const match = isMatch && playerA && playerB ? calcMatchPlay(scores, playerA.id, playerB.id) : null;
+
+  const teamAIds = (roundPlayers ?? []).filter((rp) => rp.team === "a").map((rp) => rp.member_id);
+  const teamBIds = (roundPlayers ?? []).filter((rp) => rp.team === "b").map((rp) => rp.member_id);
+  const teamMemberIds: Record<string, string[]> = { a: teamAIds, b: teamBIds };
+  const teamScores: Record<string, (number | null)[]> = {
+    a: teamAIds.length ? (scores[teamAIds[0]] ?? new Array(18).fill(null)) : new Array(18).fill(null),
+    b: teamBIds.length ? (scores[teamBIds[0]] ?? new Array(18).fill(null)) : new Array(18).fill(null),
+  };
+  const teamRows = [
+    { id: "a", name: round.team_a_name ?? "Team A" },
+    { id: "b", name: round.team_b_name ?? "Team B" },
+  ];
+  const teamTotals = teamRows.map((t) => {
+    const holes = teamScores[t.id];
+    let strokes = 0;
+    let thru = 0;
+    for (let i = 0; i < 18; i++) {
+      const v = holes[i];
+      if (v !== null && v !== undefined) {
+        strokes += v;
+        thru++;
+      }
+    }
+    return { ...t, strokes, thru };
+  });
+
+  const scorecardPlayers = isMatch
+    ? [playerA, playerB].filter((p): p is { id: string; name: string } => !!p)
+    : isScramble
+      ? teamRows
+      : players;
 
   const leaderboard = players
     .map((p) => {
@@ -97,9 +131,7 @@ export default async function RoundPage({
             {round.round_date ? ` · ${round.round_date}` : ""}
           </div>
           <div className={styles.hint}>
-            {isMatch ? (
-              "Match Play"
-            ) : (
+            {isMatch ? "Match Play" : isScramble ? "Scramble" : (
               <>
                 {round.skins_bet > 0 ? `Skins: $${round.skins_bet}/hole` : ""}
                 {round.skins_bet > 0 && round.nassau_bet > 0 ? " · " : ""}
@@ -108,6 +140,32 @@ export default async function RoundPage({
             )}
           </div>
         </div>
+
+        {isScramble && (
+          <div className={styles.card}>
+            <h3>Team Leaderboard</h3>
+            <table className={styles.leaderboard}>
+              <thead>
+                <tr>
+                  <th>Team</th>
+                  <th>Thru</th>
+                  <th>Strokes</th>
+                </tr>
+              </thead>
+              <tbody>
+                {[...teamTotals]
+                  .sort((a, b) => (b.thru > 0 && a.thru > 0 ? a.strokes - b.strokes : b.thru - a.thru))
+                  .map((t) => (
+                    <tr key={t.id}>
+                      <td>{t.name}</td>
+                      <td className="mono">{t.thru}</td>
+                      <td className="mono">{t.thru > 0 ? t.strokes : "–"}</td>
+                    </tr>
+                  ))}
+              </tbody>
+            </table>
+          </div>
+        )}
 
         {isMatch && match && playerA && playerB && (
           <div className={styles.card}>
@@ -123,7 +181,7 @@ export default async function RoundPage({
           </div>
         )}
 
-        {!isMatch && (
+        {!isMatch && !isScramble && (
           <div className={styles.card}>
             <h3>Leaderboard</h3>
             {leaderboard.length ? (
@@ -218,7 +276,13 @@ export default async function RoundPage({
 
         <div className={styles.card}>
           <h3>Scorecard</h3>
-          <ScorecardGrid roundId={round.id} par={par} players={scorecardPlayers} initialScores={scores} />
+          <ScorecardGrid
+            roundId={round.id}
+            par={par}
+            players={scorecardPlayers}
+            initialScores={isScramble ? teamScores : scores}
+            teamMemberIds={isScramble ? teamMemberIds : undefined}
+          />
         </div>
       </main>
       <BottomNav active="trips" />

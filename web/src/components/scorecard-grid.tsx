@@ -2,14 +2,18 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { updateScore } from "@/app/actions";
+import { updateScore, updateTeamScore } from "@/app/actions";
 import { ScorePicker } from "@/components/score-picker";
 import { scoreShape } from "@/lib/scoring";
 import styles from "./scorecard-grid.module.css";
 
 type Player = { id: string; name: string };
-type Scores = Record<string, (number | null)[]>; // memberId -> 18 holes (0-indexed)
+type Scores = Record<string, (number | null)[]>; // rowId -> 18 holes (0-indexed)
 type ActiveCell = { memberId: string; memberName: string; hole: number } | null; // hole is 1-indexed
+
+// In team mode, `players` is really "one row per team" (id/name are the
+// team's), and teamMemberIds maps each row id to the real trip_members who
+// share that row's score — a scramble score gets written to all of them.
 
 function segTotal(holes: (number | null)[], start: number, end: number) {
   let sum = 0;
@@ -26,11 +30,13 @@ export function ScorecardGrid({
   par,
   players,
   initialScores,
+  teamMemberIds,
 }: {
   roundId: string;
   par: number[];
   players: Player[];
   initialScores: Scores;
+  teamMemberIds?: Record<string, string[]>;
 }) {
   const [scores, setScores] = useState<Scores>(initialScores);
   const [active, setActive] = useState<ActiveCell>(null);
@@ -49,7 +55,11 @@ export function ScorecardGrid({
       return next;
     });
     setActive(null);
-    await updateScore(roundId, memberId, hole, strokes);
+    if (teamMemberIds) {
+      await updateTeamScore(roundId, teamMemberIds[memberId] ?? [], hole, strokes);
+    } else {
+      await updateScore(roundId, memberId, hole, strokes);
+    }
     router.refresh();
   }
 

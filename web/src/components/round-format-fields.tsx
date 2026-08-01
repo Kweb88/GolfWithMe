@@ -2,25 +2,33 @@
 
 import { useState } from "react";
 import styles from "@/app/page.module.css";
+import teamStyles from "./round-format-fields.module.css";
 
 type Player = { id: string; name: string };
+type Format = "stroke" | "match" | "scramble";
 
 export function RoundFormatFields({ players }: { players: Player[] }) {
-  const [format, setFormat] = useState<"stroke" | "match">("stroke");
+  const [format, setFormat] = useState<Format>("stroke");
+  const [teams, setTeams] = useState<Record<string, "a" | "b">>(() => {
+    const initial: Record<string, "a" | "b"> = {};
+    players.forEach((p, i) => (initial[p.id] = i % 2 === 0 ? "a" : "b"));
+    return initial;
+  });
 
   return (
     <>
       <div className={styles.row} style={{ marginTop: 10 }}>
         <div className={styles.field}>
           <label htmlFor="format">Format</label>
-          <select id="format" name="format" value={format} onChange={(e) => setFormat(e.target.value as "stroke" | "match")}>
+          <select id="format" name="format" value={format} onChange={(e) => setFormat(e.target.value as Format)}>
             <option value="stroke">Stroke Play (skins &amp; Nassau)</option>
             <option value="match">Match Play (1v1)</option>
+            <option value="scramble">Scramble (teams)</option>
           </select>
         </div>
       </div>
 
-      {format === "stroke" ? (
+      {format === "stroke" && (
         <div className={styles.row} style={{ marginTop: 10 }}>
           <div className={styles.field}>
             <label htmlFor="skinsBet">Skins bet ($/hole)</label>
@@ -31,7 +39,9 @@ export function RoundFormatFields({ players }: { players: Player[] }) {
             <input id="nassauBet" name="nassauBet" type="number" min="0" step="1" defaultValue="10" />
           </div>
         </div>
-      ) : (
+      )}
+
+      {format === "match" && (
         <div className={styles.row} style={{ marginTop: 10 }}>
           <div className={styles.field}>
             <label htmlFor="matchPlayerA">Player A</label>
@@ -54,6 +64,46 @@ export function RoundFormatFields({ players }: { players: Player[] }) {
             </select>
           </div>
         </div>
+      )}
+
+      {format === "scramble" && (
+        <>
+          <div className={styles.row} style={{ marginTop: 10 }}>
+            <div className={styles.field}>
+              <label htmlFor="teamAName">Team A name</label>
+              <input id="teamAName" name="teamAName" type="text" defaultValue="Team A" />
+            </div>
+            <div className={styles.field}>
+              <label htmlFor="teamBName">Team B name</label>
+              <input id="teamBName" name="teamBName" type="text" defaultValue="Team B" />
+            </div>
+          </div>
+          <div className={styles.field} style={{ marginTop: 10 }}>
+            <label>Assign players</label>
+            {players.map((p) => (
+              <div key={p.id} className={teamStyles.teamRow}>
+                <span className={teamStyles.teamName}>{p.name}</span>
+                <div className={teamStyles.toggle}>
+                  <button
+                    type="button"
+                    className={`${teamStyles.toggleBtn} ${teams[p.id] === "a" ? teamStyles.selected : ""}`}
+                    onClick={() => setTeams((t) => ({ ...t, [p.id]: "a" }))}
+                  >
+                    A
+                  </button>
+                  <button
+                    type="button"
+                    className={`${teamStyles.toggleBtn} ${teams[p.id] === "b" ? teamStyles.selected : ""}`}
+                    onClick={() => setTeams((t) => ({ ...t, [p.id]: "b" }))}
+                  >
+                    B
+                  </button>
+                </div>
+                <input type="hidden" name={`team_${p.id}`} value={teams[p.id] ?? "a"} />
+              </div>
+            ))}
+          </div>
+        </>
       )}
     </>
   );

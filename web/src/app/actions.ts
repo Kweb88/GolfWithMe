@@ -144,11 +144,32 @@ export async function createRound(tripId: string, tripCode: string, formData: Fo
   const format = String(formData.get("format") ?? "stroke").trim();
 
   const isMatch = format === "match";
-  const skinsBet = isMatch ? 0 : Number(formData.get("skinsBet") ?? 0) || 0;
-  const nassauBet = isMatch ? 0 : Number(formData.get("nassauBet") ?? 0) || 0;
+  const isScramble = format === "scramble";
+
+  const skinsBet = !isMatch && !isScramble ? Number(formData.get("skinsBet") ?? 0) || 0 : 0;
+  const nassauBet = !isMatch && !isScramble ? Number(formData.get("nassauBet") ?? 0) || 0 : 0;
+
   const matchPlayerA = isMatch ? String(formData.get("matchPlayerA") ?? "").trim() || null : null;
   const matchPlayerB = isMatch ? String(formData.get("matchPlayerB") ?? "").trim() || null : null;
   if (isMatch && (!matchPlayerA || !matchPlayerB || matchPlayerA === matchPlayerB)) return;
+
+  const { data: members } = await supabase.from("trip_members").select("id").eq("trip_id", tripId);
+
+  let teamAName: string | null = null;
+  let teamBName: string | null = null;
+  const memberTeam = new Map<string, "a" | "b" | null>();
+  if (isScramble && members) {
+    teamAName = String(formData.get("teamAName") ?? "").trim() || "Team A";
+    teamBName = String(formData.get("teamBName") ?? "").trim() || "Team B";
+    for (const m of members) {
+      const t = String(formData.get(`team_${m.id}`) ?? "a");
+      memberTeam.set(m.id, t === "b" ? "b" : "a");
+    }
+    // A scramble needs at least one player on each side to mean anything.
+    const hasA = [...memberTeam.values()].some((t) => t === "a");
+    const hasB = [...memberTeam.values()].some((t) => t === "b");
+    if (!hasA || !hasB) return;
+  }
 
   const { data: round, error } = await supabase
     .from("rounds")
@@ -158,11 +179,13 @@ export async function createRound(tripId: string, tripCode: string, formData: Fo
       course_id: courseId,
       course_location: courseLocation,
       round_date: roundDate,
-      format: isMatch ? "match" : "stroke",
+      format: isMatch ? "match" : isScramble ? "scramble" : "stroke",
       skins_bet: skinsBet,
       nassau_bet: nassauBet,
       match_player_a: matchPlayerA,
       match_player_b: matchPlayerB,
+      team_a_name: teamAName,
+      team_b_name: teamBName,
       par: DEFAULT_PAR,
     })
     .select("id")
@@ -173,9 +196,14 @@ export async function createRound(tripId: string, tripCode: string, formData: Fo
     return;
   }
 
-  const { data: members } = await supabase.from("trip_members").select("id").eq("trip_id", tripId);
   if (members && members.length) {
-    await supabase.from("round_players").insert(members.map((m) => ({ round_id: round.id, member_id: m.id })));
+    await supabase.from("round_players").insert(
+      members.map((m) => ({
+        round_id: round.id,
+        member_id: m.id,
+        team: isScramble ? (memberTeam.get(m.id) ?? "a") : null,
+      })),
+    );
   }
 
   redirect(`/t/${tripCode}/r/${round.id}`);
@@ -192,4 +220,25 @@ export async function updateScore(roundId: string, memberId: string, hole: numbe
       { round_id: roundId, member_id: memberId, hole, strokes, updated_at: new Date().toISOString() },
       { onConflict: "round_id,member_id,hole" },
     );
+}
+
+// Scramble: the whole team plays one ball, so a single hole score gets
+// written to every teammate's row (each one is a full member of the
+// scores table, they just always carry the same value as their team).
+export async function updateTeamScore(roundId: string, memberIds: string[], hole: number, strokes: number | null) {
+  const { supabase } = await requireUser();
+
+  if (strokes !== null && (!Number.isInteger(strokes) || strokes < 1 || strokes > 20)) return;
+  if (!memberIds.length) return;
+
+  await supabase.from("scores").upsert(
+    memberIds.map((memberId) => ({
+      round_id: roundId,
+      member_id: memberId,
+      hole,
+      strokes,
+      updated_at: new Date().toISOString(),
+    })),
+    { onConflict: "round_id,member_id,hole" },
+  );
 }

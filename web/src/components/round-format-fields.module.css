@@ -1,0 +1,40 @@
+.teamRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--parchment-2);
+}
+
+.teamRow:last-child {
+  border-bottom: none;
+}
+
+.teamName {
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.toggle {
+  display: flex;
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.toggleBtn {
+  font-family: var(--font-inter), sans-serif;
+  font-weight: 600;
+  font-size: 12px;
+  padding: 6px 14px;
+  border: none;
+  background: var(--surface);
+  color: var(--text-soft);
+  cursor: pointer;
+}
+
+.toggleBtn.selected {
+  background: var(--fairway);
+  color: var(--on-accent);
+}
