@@ -4,6 +4,7 @@ import { createClient } from "@/lib/supabase/server";
 import { AppHeader } from "@/components/app-header";
 import { BottomNav } from "@/components/bottom-nav";
 import { TripTeamSetup } from "@/components/trip-team-setup";
+import { DeleteTripButton } from "@/components/delete-trip-button";
 import { SettleUp } from "@/components/settle-up";
 import { computeTripBetBalances } from "@/lib/settle-up";
 import { simplifyDebts } from "@/lib/money";
@@ -18,7 +19,7 @@ export default async function TripPage({ params }: { params: Promise<{ code: str
 
   const { data: trip } = await supabase
     .from("trips")
-    .select("id, code, name, location, start_date, end_date, team_a_name, team_b_name")
+    .select("id, code, name, location, start_date, end_date, team_a_name, team_b_name, created_by")
     .eq("code", code.toUpperCase())
     .maybeSingle();
 
@@ -90,6 +91,7 @@ export default async function TripPage({ params }: { params: Promise<{ code: str
           <div className={styles.hint}>
             Share code <b>{trip.code}</b> — anyone who joins sees and edits the same live trip.
           </div>
+          {data.user.id === trip.created_by && <DeleteTripButton tripId={trip.id} tripName={trip.name} />}
         </div>
 
         <div className={styles.card}>

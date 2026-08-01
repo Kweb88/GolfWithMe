@@ -128,6 +128,16 @@ export async function addPlayer(tripId: string, formData: FormData) {
   });
 }
 
+export async function deleteTrip(tripId: string) {
+  const { supabase, user } = await requireUser();
+
+  const { data: trip } = await supabase.from("trips").select("id, created_by").eq("id", tripId).maybeSingle();
+  if (!trip || trip.created_by !== user.id) return;
+
+  await supabase.from("trips").delete().eq("id", tripId);
+  redirect("/");
+}
+
 // Ryder Cup teams live at the trip level (they persist across every round
 // of the trip), unlike Scramble's teams which are set per-round.
 export async function setTripTeams(tripId: string, formData: FormData) {
