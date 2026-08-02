@@ -1,8 +1,12 @@
 import styles from "./hole-in-one-loader.module.css";
 
-export function HoleInOneLoader() {
+// fill: use when embedding inside a fixed-size container (e.g. a device
+// mock-up) instead of as a real full-page loading screen — 100dvh reflects
+// the actual browser viewport, not this component's containing box, so it
+// would blow past a smaller parent and center itself off-screen.
+export function HoleInOneLoader({ fill = false }: { fill?: boolean } = {}) {
   return (
-    <div className={styles.screen}>
+    <div className={styles.screen} style={fill ? { minHeight: "100%", height: "100%" } : undefined}>
       <div className={styles.scene}>
         <div className={styles.ground} />
         <div className={styles.tee} />
